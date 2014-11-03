@@ -3,14 +3,14 @@
   Group 8
 */
 
-#include "LogIn.h"
+#include "Login.h"
 
-wxBEGIN_EVENT_TABLE(LogIn, wxPanel)
-  EVT_BUTTON      (ID_SUBMIT, LogIn::OnSubmit)
-  EVT_TEXT_ENTER  (wxID_ANY, LogIn::OnTextEnter)
+wxBEGIN_EVENT_TABLE(Login, wxPanel)
+  EVT_BUTTON      (ID_SUBMIT, Login::OnSubmit)
+  EVT_TEXT_ENTER  (wxID_ANY, Login::OnTextEnter)
 wxEND_EVENT_TABLE()
 
-LogIn::LogIn(wxFrame *frame, int x, int y, int w, int h)
+Login::Login(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
   username = new wxTextCtrl(this, ID_USERNAME, wxT(""), wxPoint(150, 100), wxSize(200,25),
@@ -47,11 +47,11 @@ LogIn::LogIn(wxFrame *frame, int x, int y, int w, int h)
   SetSizer(column);
 }
 
-void LogIn::OnSubmit(wxCommandEvent& event){
+void Login::OnSubmit(wxCommandEvent& event){
   event.Skip();
 }
 
-void LogIn::OnTextEnter(wxCommandEvent& event){
+void Login::OnTextEnter(wxCommandEvent& event){
   if(ID_USERNAME == event.GetId())
     password->SetFocus();
   else{
@@ -60,10 +60,10 @@ void LogIn::OnTextEnter(wxCommandEvent& event){
   }
 }
 
-wxString LogIn::getUsername(){
+wxString Login::getUsername(){
   return username->GetLineText(0);
 }
 
-wxString LogIn::getPassword(){
+wxString Login::getPassword(){
   return password->GetLineText(0);
 }

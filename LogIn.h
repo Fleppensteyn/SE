@@ -18,11 +18,11 @@ enum{
   ID_SUBMIT
 };
 
-class LogIn : wxPanel
+class Login : wxPanel
 {
 public:
-  LogIn(wxFrame *frame, int x, int y, int w, int h);
-  //virtual ~LogIn(){}
+  Login(wxFrame *frame, int x, int y, int w, int h);
+  //virtual ~Login(){}
 
   void OnSubmit(wxCommandEvent& event);
   void OnTextEnter(wxCommandEvent& event);

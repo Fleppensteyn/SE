@@ -9,7 +9,7 @@
   #include "wx/wx.h"
 #endif
 
-#include "LogIn.h"
+#include "Login.h"
 
 class App : public wxApp
 {
@@ -25,7 +25,7 @@ public:
   void OnExit(wxCommandEvent& event);
   void OnSubmit(wxCommandEvent& event);
 private:
-  LogIn *panel;
+  Login *panel;
 
   wxDECLARE_EVENT_TABLE();
 };
@@ -56,7 +56,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   CreateStatusBar(1);
   SetStatusText("");
 
-  panel = new LogIn(this, 300, 400, 200, 300);
+  panel = new Login(this, 300, 400, 200, 300);
 }
 
 void Frame::OnExit(wxCommandEvent& event){
