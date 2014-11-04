@@ -18,7 +18,7 @@ enum{
   ID_SUBMIT
 };
 
-class Login : wxPanel
+class Login : public wxPanel
 {
 public:
   Login(wxFrame *frame, int x, int y, int w, int h);

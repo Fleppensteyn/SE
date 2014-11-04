@@ -40,7 +40,7 @@ Login::Login(wxFrame *frame, int x, int y, int w, int h)
   wxBoxSizer *column = new wxBoxSizer(wxVERTICAL);
   column->AddStretchSpacer(1);
   column->Add(row1, 0, wxALL | wxALIGN_CENTER, 20);
-  column->Add(row2, 0, wxALL | wxALIGN_CENTER, 20);
+  column->Add(row2, 0, wxALL | wxALIGN_CENTER, 10);
   column->Add(submit, 0, wxALL | wxALIGN_CENTER, 10);
   column->AddStretchSpacer(1);
 
