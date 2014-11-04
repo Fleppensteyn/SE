@@ -62,7 +62,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   SetStatusText("");
   GetStatusBar()->SetForegroundColour(wxColour(wxT("RED")));
   failed_login_txt = new wxStaticText(GetStatusBar(), wxID_ANY,wxT("Login failed: incorrect username and/or password"), wxPoint(3, 5), wxDefaultSize, 0 );
-  txt->Show(false);
+  failed_login_txt->Show(false);
   s = false;
   
   panel_login = new Login(this, 300, 400, 200, 300);
