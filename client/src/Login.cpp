@@ -5,6 +5,8 @@
 
 #include "Login.h"
 
+//A summary of all events of the class Login that need to be captured
+//and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(Login, wxPanel)
   EVT_BUTTON      (ID_SUBMIT, Login::OnSubmit)
   EVT_TEXT_ENTER  (wxID_ANY, Login::OnTextEnter)
@@ -13,6 +15,7 @@ wxEND_EVENT_TABLE()
 Login::Login(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
+  //Create the text input boxes
   username = new wxTextCtrl(this, ID_USERNAME, wxT(""), wxPoint(150, 100), wxSize(200,25),
                             wxTE_PROCESS_ENTER);
   username->SetHint("username");
@@ -27,8 +30,9 @@ Login::Login(wxFrame *frame, int x, int y, int w, int h)
   usertext->SetFont(font);
   passtext->SetFont(font);
 
-  submit = new wxButton(this, ID_SUBMIT, wxT("Submit"));
+  submit = new wxButton(this, ID_SUBMIT, wxT("Login"));
 
+  //Positioning the gui elements
   wxBoxSizer *row1 = new wxBoxSizer(wxHORIZONTAL);
   row1->Add(usertext, 0, wxALL, 5);
   row1->Add(username, 0, wxALL, 0);
@@ -47,16 +51,20 @@ Login::Login(wxFrame *frame, int x, int y, int w, int h)
   SetSizer(column);
 }
 
+Login::~Login(){
+  
+}
+
 void Login::OnSubmit(wxCommandEvent& event){
   event.Skip();
 }
 
 void Login::OnTextEnter(wxCommandEvent& event){
-  if(ID_USERNAME == event.GetId())
+  if(ID_USERNAME == event.GetId()) //The enter was typed while in username input box
     password->SetFocus();
-  else{
+  else{ //The enter was typed while in password input box
     wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT);
-    wxPostEvent(this, event);
+    wxPostEvent(this, event); //Fire a submit event
   }
 }
 
