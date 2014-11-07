@@ -3,6 +3,11 @@
   Group 8
 */
 
+#ifdef __MINGW32__
+#include "wx/setup.h"
+#define wxUSE_IPV6 1
+#endif
+
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
@@ -11,6 +16,7 @@
 
 #include "Login.h"
 #include "Overview.h"
+#include "ServerCommunication.h"
 
 //The main application class
 class App : public wxApp
@@ -58,8 +64,8 @@ private:
   wxStaticText *failed_login_txt; //The error message that is displayed after a failed login attempt
   wxMenuItem *logout; //Logout menu item
   wxMenuItem *close_tab; //Menu item to close open tab
+  ServerCommunication * server_com;
 
-  bool s; 
   wxDECLARE_EVENT_TABLE();
 };
 
@@ -83,6 +89,8 @@ bool App::OnInit(){
 Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
       : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
+  server_com = new ServerCommunication("http://se.putman.pw/api.php");
+
   wxMenu *menuFile = new wxMenu; //The File menu
   close_tab = menuFile->Append(ID_CLOSE_TAB, wxT("& Close tab"));
   close_tab->Enable(false);
@@ -103,23 +111,27 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   failed_login_txt = new wxStaticText(GetStatusBar(), wxID_ANY,wxT("Login failed: incorrect username and/or password"), wxPoint(3, 5), wxDefaultSize, 0 );
   failed_login_txt->Show(false);
 
-  s = false; //Temporarely used for login simulation
-  
   //Create the program title bar at the top of the screen
-  wxStaticText *program_title = new wxStaticText(this, wxID_ANY, "Curriculum Viewer", wxPoint(50,50), wxSize(100,70) );
-  wxFont font = program_title->GetFont();
+  wxPanel *title_panel = new wxPanel(this);
+  title_panel->SetBackgroundColour(wxColour(0xFF,0x55,0x33));
+  wxStaticText *program_title_text = new wxStaticText(title_panel, wxID_ANY, "Curriculum Viewer", wxPoint(10,10), wxSize(100,60) );
+  wxFont font = program_title_text->GetFont();
   font.Scale(4);
-  program_title->SetFont(font);
-  program_title->SetForegroundColour(wxColour(wxT("WHITE")));
-  program_title->SetBackgroundColour(wxColour(0xFF,0x55,0x33));
+  program_title_text->SetFont(font);
+  program_title_text->SetForegroundColour(wxColour(wxT("WHITE")));
+  wxStaticBoxSizer *program_title = new wxStaticBoxSizer(wxHORIZONTAL,this,"");
+  program_title->Add(title_panel, 1, wxEXPAND);
 
   //Create the bar at the bottom of the screen
-  wxStaticText *group_info = new wxStaticText(this, wxID_ANY, L"\u00a9  2014 Genius@Work\nPowered by Group8", wxPoint(50,50), wxSize(100, 30));
-  font = group_info->GetFont();
+  wxPanel *info_panel = new wxPanel(this);
+  info_panel->SetBackgroundColour(wxColour(0xB6,0xB6,0xB6));
+  wxStaticText *group_info_text = new wxStaticText(info_panel, wxID_ANY, L"\u00a9  2014 Genius@Work\nPowered by Group8", wxPoint(1,1), wxSize(100, 20));
+  font = group_info_text->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  group_info->SetFont(font);
-  group_info->SetForegroundColour(wxColour(wxT("WHITE")));
-  group_info->SetBackgroundColour(wxColour(0xB6,0xB6,0xB6));
+  group_info_text->SetFont(font);
+  group_info_text->SetForegroundColour(wxColour(wxT("WHITE")));
+  wxStaticBoxSizer *group_info = new wxStaticBoxSizer(wxHORIZONTAL,this,"");
+  group_info->Add(info_panel, 1, wxEXPAND);
 
   //Initiate the login and overview panels
   panel_login = new Login(this, 300, 400, 200, 300);
@@ -136,6 +148,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 }//Frame
 
 void Frame::OnExit(wxCommandEvent& event){
+  delete server_com;
   Close(true);
 }//OnExit
 
@@ -144,15 +157,21 @@ void Frame::OnSubmit(wxCommandEvent& event){
     failed_login_txt->Show(false);  //remove the error message
   wxString msg = "Checking login info...";
   SetStatusText(msg);
-  //do login check here!! (replace 's' with return boolean of login check)
-  if(s){  //login successful 
-    SetStatusText("Login successful");
+
+  std::string resp;
+  bool loggedin = server_com->checkLogin(panel_login->getUsername().c_str(),
+                                        panel_login->getPassword().c_str(),
+                                        resp);
+
+  if (loggedin) {
+    SetStatusText(wxString(resp));
     SwitchPanels();
-  }
-  else{ //login failed
+  } else{
+    wxString fail_txt = "Login failed: ";
+    fail_txt += resp;
     SetStatusText("");
+    failed_login_txt->SetLabel(fail_txt);
     failed_login_txt->Show(true);
-    s = true; //temporarely used to simulate login functionality
   }
 }//OnSubmit
 
@@ -162,7 +181,7 @@ void Frame::OnLogout(wxCommandEvent& event){
 
 void Frame::OnCloseTab(wxCommandEvent& event){
   panel_overview->OnCloseTab();
-}
+}//OnCloseTab
 
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview
