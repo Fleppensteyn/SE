@@ -30,7 +30,7 @@ Login::Login(wxFrame *frame, int x, int y, int w, int h)
   usertext->SetFont(font);
   passtext->SetFont(font);
 
-  submit = new wxButton(this, ID_SUBMIT, wxT("Login"));
+  wxButton *submit = new wxButton(this, ID_SUBMIT, wxT("Login"));
 
   //Positioning the gui elements
   wxBoxSizer *row1 = new wxBoxSizer(wxHORIZONTAL);

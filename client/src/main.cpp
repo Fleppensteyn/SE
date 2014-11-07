@@ -16,6 +16,7 @@
 
 #include "Login.h"
 #include "Overview.h"
+#include "CourseCreator.h"
 #include "ServerCommunication.h"
 
 //The main application class
@@ -28,7 +29,8 @@ public:
 
 enum{
   ID_LOGOUT,
-  ID_CLOSE_TAB
+  ID_CLOSE_TAB,
+  ID_NEW_COURSE
 };
 
 //The frame within which the entire program is run.
@@ -55,6 +57,9 @@ public:
   //If in overview, closes the tab that is currently open
   void OnCloseTab(wxCommandEvent& event);
 
+  //If in overview, opens 'Create new course' dialog
+  void OnNewCourse(wxCommandEvent& event);
+
   //Switches between the Login and Overview panel
   void SwitchPanels();
 
@@ -62,10 +67,10 @@ private:
   Login *panel_login; //The login panel for all login functionality and components
   Overview *panel_overview; //The overview panel showing the standard overview once logged in
   wxStaticText *failed_login_txt; //The error message that is displayed after a failed login attempt
-  wxMenuItem *logout; //Logout menu item
-  wxMenuItem *close_tab; //Menu item to close open tab
   ServerCommunication * server_com;
 
+  wxMenuBar *menubar_login; //menubar used for the login screen
+  wxMenuBar *menubar_overview; //menubar used for the overview
   wxDECLARE_EVENT_TABLE();
 };
 
@@ -75,6 +80,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (wxID_EXIT, Frame::OnExit)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
   EVT_MENU    (ID_CLOSE_TAB, Frame::OnCloseTab)
+  EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
 wxEND_EVENT_TABLE()
 
@@ -91,17 +97,27 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 {
   server_com = new ServerCommunication("http://se.putman.pw/api.php");
 
-  wxMenu *menuFile = new wxMenu; //The File menu
-  close_tab = menuFile->Append(ID_CLOSE_TAB, wxT("& Close tab"));
-  close_tab->Enable(false);
-  menuFile->AppendSeparator();
-  logout = menuFile->Append(ID_LOGOUT, wxT("&Logout"));
-  logout->Enable(false);
-  menuFile->Append(wxID_EXIT);
+  //Create the menu bar for the login screen
+  wxMenu *menuFile_login = new wxMenu; //The login File menu
+  menuFile_login->Append(wxID_EXIT);
 
-  wxMenuBar *menuBar = new wxMenuBar();
-  menuBar->Append(menuFile, "&File");
-  SetMenuBar(menuBar);
+  menubar_login = new wxMenuBar();
+  menubar_login->Append(menuFile_login, "&File");
+  SetMenuBar(menubar_login);
+
+  //Create the menu bar for the overview screen
+  wxMenu *menuFile_overview = new wxMenu; //The overview File menu
+  menuFile_overview->Append(ID_CLOSE_TAB, wxT("&Close tab"));
+  menuFile_overview->AppendSeparator();
+  menuFile_overview->Append(ID_LOGOUT, wxT("&Logout"));
+  menuFile_overview->Append(wxID_EXIT);
+
+  wxMenu *menuCourses = new wxMenu;
+  menuCourses->Append(ID_NEW_COURSE, wxT("New course"));
+
+  menubar_overview = new wxMenuBar();
+  menubar_overview->Append(menuFile_overview, "&File");
+  menubar_overview->Append(menuCourses, "&Course");
 
   CreateStatusBar(1);
   SetStatusText("");
@@ -140,7 +156,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Arrangement of panels and bars onscreen.
   wxBoxSizer *panels = new wxBoxSizer(wxVERTICAL);
-  panels->Add(program_title, 0, wxEXPAND | wxALIGN_CENTER);
+  panels->Add(program_title, 0, wxEXPAND | wxALIGN_LEFT);
   panels->Add(panel_login, 1, wxEXPAND);
   panels->Add(panel_overview, 1, wxEXPAND);
   panels->Add(group_info, 0, wxEXPAND);
@@ -183,19 +199,26 @@ void Frame::OnCloseTab(wxCommandEvent& event){
   panel_overview->OnCloseTab();
 }//OnCloseTab
 
+void Frame::OnNewCourse(wxCommandEvent& event){
+  CourseCreator cc(this);
+  if (cc.ShowModal() == wxID_OK){
+
+  } else {
+
+  }
+}//OnNewCourse
+
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview
-    SetSize(1500,800);
+    SetSize(1400,850);
     panel_login->Hide();
     panel_overview->Show();
-    logout->Enable(true);
-    close_tab->Enable(true);
+    SetMenuBar(menubar_overview);
   } else {  //Switch from overview back to login
     SetSize(700,500);
     panel_overview->Hide();
     panel_login->Show();
-    logout->Enable(false);
-    close_tab->Enable(false);
+    SetMenuBar(menubar_login);
   }
   Layout();
 }//SwithPanels
