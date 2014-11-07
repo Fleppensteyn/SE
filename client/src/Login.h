@@ -49,7 +49,6 @@ public:
 
   wxTextCtrl *username; //The username input box
   wxTextCtrl *password; //The password input box
-  wxButton   *submit;   //The 'Login' button
 
 private:
   wxDECLARE_EVENT_TABLE();

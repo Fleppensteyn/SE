@@ -11,6 +11,7 @@
 
 #include "Login.h"
 #include "Overview.h"
+#include "CourseCreator.h"
 
 //The main application class
 class App : public wxApp
@@ -22,7 +23,8 @@ public:
 
 enum{
   ID_LOGOUT,
-  ID_CLOSE_TAB
+  ID_CLOSE_TAB,
+  ID_NEW_COURSE
 };
 
 //The frame within which the entire program is run.
@@ -49,6 +51,9 @@ public:
   //If in overview, closes the tab that is currently open
   void OnCloseTab(wxCommandEvent& event);
 
+  //If in overview, opens 'Create new course' dialog
+  void OnNewCourse(wxCommandEvent& event);
+
   //Switches between the Login and Overview panel
   void SwitchPanels();
 
@@ -56,8 +61,9 @@ private:
   Login *panel_login; //The login panel for all login functionality and components
   Overview *panel_overview; //The overview panel showing the standard overview once logged in
   wxStaticText *failed_login_txt; //The error message that is displayed after a failed login attempt
-  wxMenuItem *logout; //Logout menu item
-  wxMenuItem *close_tab; //Menu item to close open tab
+
+  wxMenuBar *menubar_login; //menubar used for the login screen
+  wxMenuBar *menubar_overview; //menubar used for the overview
 
   bool s; 
   wxDECLARE_EVENT_TABLE();
@@ -69,6 +75,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (wxID_EXIT, Frame::OnExit)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
   EVT_MENU    (ID_CLOSE_TAB, Frame::OnCloseTab)
+  EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
 wxEND_EVENT_TABLE()
 
@@ -83,17 +90,27 @@ bool App::OnInit(){
 Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
       : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
-  wxMenu *menuFile = new wxMenu; //The File menu
-  close_tab = menuFile->Append(ID_CLOSE_TAB, wxT("& Close tab"));
-  close_tab->Enable(false);
-  menuFile->AppendSeparator();
-  logout = menuFile->Append(ID_LOGOUT, wxT("&Logout"));
-  logout->Enable(false);
-  menuFile->Append(wxID_EXIT);
+  //Create the menu bar for the login screen
+  wxMenu *menuFile_login = new wxMenu; //The login File menu
+  menuFile_login->Append(wxID_EXIT);
 
-  wxMenuBar *menuBar = new wxMenuBar();
-  menuBar->Append(menuFile, "&File");
-  SetMenuBar(menuBar);
+  menubar_login = new wxMenuBar();
+  menubar_login->Append(menuFile_login, "&File");
+  SetMenuBar(menubar_login);
+
+  //Create the menu bar for the overview screen
+  wxMenu *menuFile_overview = new wxMenu; //The overview File menu
+  menuFile_overview->Append(ID_CLOSE_TAB, wxT("&Close tab"));
+  menuFile_overview->AppendSeparator();
+  menuFile_overview->Append(ID_LOGOUT, wxT("&Logout"));
+  menuFile_overview->Append(wxID_EXIT);
+
+  wxMenu *menuCourses = new wxMenu;
+  menuCourses->Append(ID_NEW_COURSE, wxT("New course"));
+
+  menubar_overview = new wxMenuBar();
+  menubar_overview->Append(menuFile_overview, "&File");
+  menubar_overview->Append(menuCourses, "&Course");
 
   CreateStatusBar(1);
   SetStatusText("");
@@ -106,20 +123,26 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   s = false; //Temporarely used for login simulation
   
   //Create the program title bar at the top of the screen
-  wxStaticText *program_title = new wxStaticText(this, wxID_ANY, "Curriculum Viewer", wxPoint(50,50), wxSize(100,70) );
-  wxFont font = program_title->GetFont();
+  wxPanel *title_panel = new wxPanel(this);
+  title_panel->SetBackgroundColour(wxColour(0xFF,0x55,0x33));
+  wxStaticText *program_title_text = new wxStaticText(title_panel, wxID_ANY, "Curriculum Viewer", wxPoint(10,10), wxSize(100,60) );
+  wxFont font = program_title_text->GetFont();
   font.Scale(4);
-  program_title->SetFont(font);
-  program_title->SetForegroundColour(wxColour(wxT("WHITE")));
-  program_title->SetBackgroundColour(wxColour(0xFF,0x55,0x33));
+  program_title_text->SetFont(font);
+  program_title_text->SetForegroundColour(wxColour(wxT("WHITE")));
+  wxStaticBoxSizer *program_title = new wxStaticBoxSizer(wxHORIZONTAL,this,"");
+  program_title->Add(title_panel, 1, wxEXPAND);
 
   //Create the bar at the bottom of the screen
-  wxStaticText *group_info = new wxStaticText(this, wxID_ANY, L"\u00a9  2014 Genius@Work\nPowered by Group8", wxPoint(50,50), wxSize(100, 30));
-  font = group_info->GetFont();
+  wxPanel *info_panel = new wxPanel(this);
+  info_panel->SetBackgroundColour(wxColour(0xB6,0xB6,0xB6));
+  wxStaticText *group_info_text = new wxStaticText(info_panel, wxID_ANY, L"\u00a9  2014 Genius@Work\nPowered by Group8", wxPoint(1,1), wxSize(100, 20));
+  font = group_info_text->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  group_info->SetFont(font);
-  group_info->SetForegroundColour(wxColour(wxT("WHITE")));
-  group_info->SetBackgroundColour(wxColour(0xB6,0xB6,0xB6));
+  group_info_text->SetFont(font);
+  group_info_text->SetForegroundColour(wxColour(wxT("WHITE")));
+  wxStaticBoxSizer *group_info = new wxStaticBoxSizer(wxHORIZONTAL,this,"");
+  group_info->Add(info_panel, 1, wxEXPAND);
 
   //Initiate the login and overview panels
   panel_login = new Login(this, 300, 400, 200, 300);
@@ -128,7 +151,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Arrangement of panels and bars onscreen.
   wxBoxSizer *panels = new wxBoxSizer(wxVERTICAL);
-  panels->Add(program_title, 0, wxEXPAND | wxALIGN_CENTER);
+  panels->Add(program_title, 0, wxEXPAND | wxALIGN_LEFT);
   panels->Add(panel_login, 1, wxEXPAND);
   panels->Add(panel_overview, 1, wxEXPAND);
   panels->Add(group_info, 0, wxEXPAND);
@@ -162,21 +185,28 @@ void Frame::OnLogout(wxCommandEvent& event){
 
 void Frame::OnCloseTab(wxCommandEvent& event){
   panel_overview->OnCloseTab();
-}
+}//OnCloseTab
+
+void Frame::OnNewCourse(wxCommandEvent& event){
+  CourseCreator cc(this);
+  if (cc.ShowModal() == wxID_OK){
+
+  } else {
+
+  }
+}//OnNewCourse
 
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview
-    SetSize(1500,800);
+    SetSize(1400,850);
     panel_login->Hide();
     panel_overview->Show();
-    logout->Enable(true);
-    close_tab->Enable(true);
+    SetMenuBar(menubar_overview);
   } else {  //Switch from overview back to login
     SetSize(700,500);
     panel_overview->Hide();
     panel_login->Show();
-    logout->Enable(false);
-    close_tab->Enable(false);
+    SetMenuBar(menubar_login);
   }
   Layout();
 }//SwithPanels
