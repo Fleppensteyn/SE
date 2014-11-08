@@ -1,11 +1,6 @@
 <?php
 include("../config.php"); //contains some useful global definitions
 require(DATA_ROOT."core.php");//Include everywhere for session related stuff.
-
-ob_start(); //buffer the next output instead of printing directly
-echo "Testing database with a generic query\n";
-$GLOBALS["db"]->dump_query('SELECT id, name, class FROM users;');
-$content = ob_get_clean(); //save the buffer to a variable
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,11 +15,42 @@ $content = ob_get_clean(); //save the buffer to a variable
    <h1>Curriculum Viewer</h1>
 
    <ul id="nav">
-      <li><a href="#">Log in</a></li>
+		<li><a href="index.php">Home</a></li>
+      <li><a href="logout.php">Log out</a></li>
+      <li><a href="curricula.php">Curricula</a></li>
+      <li><a href="vakken.php">Alle vakken weergeven</a></li>
    </ul>
 
    <div id="content">
-      <p>Test</p>
+      <table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
+			<tr>
+		<form name="form1" method="post" action="checklogin.php">
+		<td>
+			<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">
+				<tr>
+					<td colspan="3"><strong>Login</strong></td>
+				</tr>
+				<tr>
+					<td width="78">Gebruikersnaam</td>
+					<td width="6">:</td>
+					<td width="294"><input name="myusername" type="text" id="myusername"></td>
+				</tr>
+				<tr>
+					<td>Wachtwoord</td>
+					<td>:</td>
+					<td><input name="password" type="text" id="mypassword"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td><input type="submit" name="Submit" value="Inloggen"></td>
+				</tr>
+			</table>
+		</td>
+		</form>
+			</tr>
+		</table>
+
       <pre><?php echo $content; ?></pre>
 
    </div>
