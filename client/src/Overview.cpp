@@ -34,17 +34,15 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   column->AddSpacer(5);
 
   SetSizer(column);
+
 }
 
 Overview::~Overview(){
-  for(int i = 0; i < tabs.size(); i++)
-    delete tabs[i]; //Delete all created curriculum objects
   tabs.clear();
 }
 
 void Overview::OnCloseTab(){
   int page = curricula->GetSelection();
   curricula->RemovePage(page);
-  delete tabs[page];
   tabs.erase(tabs.begin() + page);
 }//OnCloseTab

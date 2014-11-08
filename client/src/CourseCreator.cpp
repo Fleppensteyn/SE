@@ -59,7 +59,7 @@ CourseCreator::CourseCreator(wxFrame *frame)
 
   wxArrayString *affiliations = new wxArrayString(9,temp1);
   affiliation = new wxComboBox(box2, ID_AFFILIATION, wxT("Affiliated to CS"), wxPoint(120,27),
-                               wxSize(300,500), *affiliations, wxCB_READONLY | wxTE_PROCESS_ENTER,
+                               wxSize(300,25), *affiliations, wxCB_READONLY | wxTE_PROCESS_ENTER,
                                wxDefaultValidator);
   //Course type selection
   const wxString temp2[] = {wxT("Academic Skills"), //REPLACE THIS WITH LIST FROM DATABASE
@@ -71,12 +71,12 @@ CourseCreator::CourseCreator(wxFrame *frame)
                       wxT("Biology Essentials")};
   wxArrayString *course_types = new wxArrayString(7,temp2);
   course_type = new wxComboBox(box2, ID_COURSE_TYPE, wxT("Academic Skills"), wxPoint(120,67),
-                               wxSize(300,500), *course_types, wxCB_READONLY | wxTE_PROCESS_ENTER,
+                               wxSize(300,25), *course_types, wxCB_READONLY | wxTE_PROCESS_ENTER,
                                wxDefaultValidator);
 
   //Create button
   wxButton *create = new wxButton(this, ID_SUBMIT_COURSE, wxT("Create"));// this course"));
-  
+
   //Positioning of elements
   wxBoxSizer *button_row = new wxBoxSizer(wxHORIZONTAL);
   button_row->Add(CreateButtonSizer(wxCANCEL), 0, wxALIGN_LEFT);
@@ -126,7 +126,5 @@ void CourseCreator::DisplayError(int error){
 }//DisplayError
 
 void CourseCreator::ClearErrors(){
-  for(int i = 0; i < errors.size(); i++)
-    delete errors[i];
   errors.clear();
 }//ClearErrors
