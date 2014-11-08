@@ -19,6 +19,7 @@ Login::Login(wxFrame *frame, int x, int y, int w, int h)
   username = new wxTextCtrl(this, ID_USERNAME, wxT(""), wxPoint(150, 100), wxSize(200,25),
                             wxTE_PROCESS_ENTER);
   username->SetHint("username");
+  username->SetFocus();
   password = new wxTextCtrl(this, ID_PASSWORD, wxT(""), wxPoint(150, 200), wxSize(200,25),
                             wxTE_PASSWORD | wxTE_PROCESS_ENTER);
   password->SetHint("password");

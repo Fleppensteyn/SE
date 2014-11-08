@@ -77,7 +77,50 @@ CourseCreator::CourseCreator(wxFrame *frame)
   //Create button
   wxButton *create = new wxButton(this, ID_SUBMIT_COURSE, wxT("Create"));// this course"));
 
-  //Positioning of elements
+  //Positioning of elements in box1
+  wxBoxSizer *box1_row1 = new wxBoxSizer(wxHORIZONTAL);
+  box1_row1->Add(name_text, 0, wxTOP | wxALIGN_RIGHT, 3);
+  box1_row1->AddSpacer(10);
+  box1_row1->Add(course_name, 0, wxALIGN_LEFT);
+  box1_row1->AddSpacer(54);
+
+  wxBoxSizer *box1_row2 = new wxBoxSizer(wxHORIZONTAL);
+  box1_row2->Add(ects_text, 0, wxTOP | wxALIGN_RIGHT, 3);
+  box1_row2->AddSpacer(10);
+  box1_row2->Add(ects, 0, wxALIGN_LEFT);
+  box1_row2->AddSpacer(314);
+
+  wxBoxSizer *box1_column = new wxBoxSizer(wxVERTICAL);
+  box1_column->AddSpacer(27);
+  box1_column->Add(box1_row1, 0, wxALIGN_RIGHT);
+  box1_column->AddSpacer(15);
+  box1_column->Add(box1_row2, 0, wxALIGN_RIGHT);
+  box1_column->AddSpacer(25);
+
+  box1->SetSizer(box1_column);
+
+  //Positioning of elements in box2
+  wxBoxSizer *box2_row1 = new wxBoxSizer(wxHORIZONTAL);
+  box2_row1->Add(affiliation_text, 0, wxTOP | wxALIGN_RIGHT, 3);
+  box2_row1->AddSpacer(10);
+  box2_row1->Add(affiliation, 0, wxALIGN_LEFT);
+  box2_row1->AddSpacer(54);
+
+  wxBoxSizer *box2_row2 = new wxBoxSizer(wxHORIZONTAL);
+  box2_row2->Add(course_type_text, 0, wxTOP | wxALIGN_RIGHT, 3);
+  box2_row2->AddSpacer(10);
+  box2_row2->Add(course_type, 0, wxALIGN_LEFT);
+  box2_row2->AddSpacer(54);
+
+  wxBoxSizer *box2_column = new wxBoxSizer(wxVERTICAL);
+  box2_column->AddSpacer(27);
+  box2_column->Add(box2_row1, 0, wxALIGN_RIGHT);
+  box2_column->AddSpacer(15);
+  box2_column->Add(box2_row2, 0, wxALIGN_RIGHT);
+
+  box2->SetSizer(box2_column);
+
+  //Positioning of elements in dialog
   wxBoxSizer *button_row = new wxBoxSizer(wxHORIZONTAL);
   button_row->Add(CreateButtonSizer(wxCANCEL), 0, wxALIGN_LEFT);
   button_row->AddStretchSpacer(1);
