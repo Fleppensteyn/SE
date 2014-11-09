@@ -56,6 +56,8 @@ private:
   wxComboBox *course_type;  //Drop-down list box for all possible course types
   std::vector<wxStaticText*> errors; //Error messages that apply at any given time
 
+  wxStaticBox *box1;
+
   wxDECLARE_EVENT_TABLE();
 };
 

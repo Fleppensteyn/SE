@@ -126,6 +126,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   GetStatusBar()->SetForegroundColour(wxColour(wxT("RED")));
   failed_login_txt = new wxStaticText(GetStatusBar(), wxID_ANY,wxT("Login failed: incorrect username and/or password"), wxPoint(3, 5), wxDefaultSize, 0 );
   failed_login_txt->Show(false);
+  GetStatusBar()->SetForegroundColour(wxColour(wxT("BLACK")));
 
   //Create the program title bar at the top of the screen
   wxPanel *title_panel = new wxPanel(this);

@@ -17,21 +17,19 @@ CourseCreator::CourseCreator(wxFrame *frame)
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
   //Static boxes and static text elements
-  wxStaticBox *box1 = new wxStaticBox(this, wxID_ANY, "Course specifics", wxPoint(20, 10),
+  box1 = new wxStaticBox(this, wxID_ANY, "Course specifics", wxPoint(20, 10),
                                       wxSize(460, 120));
   wxStaticBox *box2 = new wxStaticBox(this, wxID_ANY, "Course affiliations", wxPoint(20, 140),
                                       wxSize(460, 190));
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  wxStaticText *name_text = new wxStaticText(box1, wxID_ANY, "Course Name:", wxPoint (30, 30), wxSize(80,20));
+  wxStaticText *name_text = new wxStaticText(box1, -1, "Course Name:");
   name_text->SetFont(font);
-  wxStaticText *ects_text = new wxStaticText(box1, wxID_ANY, "ECTS:", wxPoint(77, 70), wxSize(33,20));
+  wxStaticText *ects_text = new wxStaticText(box1, -1, "ECTS:");
   ects_text->SetFont(font);
-  wxStaticText *affiliation_text = new wxStaticText(box2, wxID_ANY, "Affiliation:", wxPoint(49,30),
-                                                    wxSize(61,20));
+  wxStaticText *affiliation_text = new wxStaticText(box2, -1, "Affiliation:");
   affiliation_text->SetFont(font);
-  wxStaticText *course_type_text = new wxStaticText(box2, wxID_ANY, "Course Type:", wxPoint(36,70),
-                                                    wxSize(74,20));
+  wxStaticText *course_type_text = new wxStaticText(box2, -1, "Course Type:");
   course_type_text->SetFont(font);
 
   //Course name input box
@@ -78,45 +76,40 @@ CourseCreator::CourseCreator(wxFrame *frame)
   wxButton *create = new wxButton(this, ID_SUBMIT_COURSE, wxT("Create"));// this course"));
 
   //Positioning of elements in box1
-  wxBoxSizer *box1_row1 = new wxBoxSizer(wxHORIZONTAL);
-  box1_row1->Add(name_text, 0, wxTOP | wxALIGN_RIGHT, 3);
-  box1_row1->AddSpacer(10);
-  box1_row1->Add(course_name, 0, wxALIGN_LEFT);
-  box1_row1->AddSpacer(54);
+  wxFlexGridSizer *box1_flex = new wxFlexGridSizer(2, 2, 15, 10);
+  box1_flex->Add(name_text, 0, wxALIGN_RIGHT | wxTOP, 3);
+  box1_flex->Add(course_name, 0, wxALIGN_LEFT);
+  box1_flex->Add(ects_text, 0, wxALIGN_RIGHT | wxTOP, 3);
+  box1_flex->Add(ects, 0, wxALIGN_LEFT);
 
-  wxBoxSizer *box1_row2 = new wxBoxSizer(wxHORIZONTAL);
-  box1_row2->Add(ects_text, 0, wxTOP | wxALIGN_RIGHT, 3);
-  box1_row2->AddSpacer(10);
-  box1_row2->Add(ects, 0, wxALIGN_LEFT);
-  box1_row2->AddSpacer(314);
+  wxBoxSizer *box1_row = new wxBoxSizer(wxHORIZONTAL);
+  box1_row->AddStretchSpacer(1);
+  box1_row->Add(box1_flex, 0, wxALIGN_CENTER);
+  box1_row->AddStretchSpacer(1);
 
   wxBoxSizer *box1_column = new wxBoxSizer(wxVERTICAL);
-  box1_column->AddSpacer(27);
-  box1_column->Add(box1_row1, 0, wxALIGN_RIGHT);
-  box1_column->AddSpacer(15);
-  box1_column->Add(box1_row2, 0, wxALIGN_RIGHT);
-  box1_column->AddSpacer(25);
+  box1_column->AddStretchSpacer(1);
+  box1_column->Add(box1_row, 0, wxALIGN_CENTER);
+  box1_column->AddStretchSpacer(1);
 
   box1->SetSizer(box1_column);
 
   //Positioning of elements in box2
-  wxBoxSizer *box2_row1 = new wxBoxSizer(wxHORIZONTAL);
-  box2_row1->Add(affiliation_text, 0, wxTOP | wxALIGN_RIGHT, 3);
-  box2_row1->AddSpacer(10);
-  box2_row1->Add(affiliation, 0, wxALIGN_LEFT);
-  box2_row1->AddSpacer(54);
+  wxFlexGridSizer *box2_flex = new wxFlexGridSizer(2, 2, 15, 10);
+  box2_flex->Add(affiliation_text, 0, wxALIGN_RIGHT | wxTOP, 3);
+  box2_flex->Add(affiliation, 0, wxALIGN_LEFT);
+  box2_flex->Add(course_type_text, 0, wxALIGN_RIGHT | wxTOP, 3);
+  box2_flex->Add(course_type, 0, wxALIGN_LEFT);
 
-  wxBoxSizer *box2_row2 = new wxBoxSizer(wxHORIZONTAL);
-  box2_row2->Add(course_type_text, 0, wxTOP | wxALIGN_RIGHT, 3);
-  box2_row2->AddSpacer(10);
-  box2_row2->Add(course_type, 0, wxALIGN_LEFT);
-  box2_row2->AddSpacer(54);
+  wxBoxSizer *box2_row = new wxBoxSizer(wxHORIZONTAL);
+  box2_row->AddStretchSpacer(1);
+  box2_row->Add(box2_flex, 0, wxALIGN_CENTER);
+  box2_row->AddStretchSpacer(1);
 
   wxBoxSizer *box2_column = new wxBoxSizer(wxVERTICAL);
-  box2_column->AddSpacer(27);
-  box2_column->Add(box2_row1, 0, wxALIGN_RIGHT);
-  box2_column->AddSpacer(15);
-  box2_column->Add(box2_row2, 0, wxALIGN_RIGHT);
+  box2_column->AddStretchSpacer(1);
+  box2_column->Add(box2_row, 0, wxALIGN_CENTER);
+  box2_column->AddStretchSpacer(4);
 
   box2->SetSizer(box2_column);
 
@@ -152,7 +145,8 @@ void CourseCreator::OnTextEnter(wxCommandEvent& event){
 
 void CourseCreator::OnSubmitCourse(wxCommandEvent& event){
   ClearErrors(); //Clear the errors of the previous creation attempt
-  if(course_name->GetLineText(0) == course_name->GetHint())
+  if(course_name->GetLineText(0) == course_name->GetHint() || 
+     course_name->GetValue() == "")
     DisplayError(ERROR_NO_NAME); //No course name was specified
 
   for(int i = 0; i < errors.size(); i++)
@@ -162,12 +156,14 @@ void CourseCreator::OnSubmitCourse(wxCommandEvent& event){
 void CourseCreator::DisplayError(int error){
   switch(error){
     case ERROR_NO_NAME:
-       errors.push_back(new wxStaticText(this, wxID_ANY, "Course name can't be empty",
-                                              wxPoint(130,20), wxSize(300,15)));
+       errors.push_back(new wxStaticText(box1, wxID_ANY, "Course name can't be empty",
+                                              wxPoint(150,10), wxSize(300,17)));
        break;
   }
 }//DisplayError
 
 void CourseCreator::ClearErrors(){
+  for(int i = 0; i < errors.size(); i++)
+    errors[i]->Destroy();
   errors.clear();
 }//ClearErrors
