@@ -16,6 +16,9 @@
 
 #include <vector>
 
+//There can be no more than 50 courses in a curriculum
+const int MAXCOURSES = 50;
+
 //Contains all gui elements and functionality of a single curriculum
 class Curriculum : public wxPanel
 {

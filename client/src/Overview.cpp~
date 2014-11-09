@@ -15,6 +15,10 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   temporary_curriculum->SetBackgroundColour(wxColour(120,120,120));
   curricula->AddPage(temporary_curriculum, wxT("Empty"), true);
   tabs.push_back(temporary_curriculum);
+  Curriculum *temporary_curriculum2 = new Curriculum(curricula);
+  temporary_curriculum2->SetBackgroundColour(wxColour(120,120,120));
+  curricula->AddPage(temporary_curriculum2, wxT("Empty"), true);
+  tabs.push_back(temporary_curriculum2);
 
   //Setup the catalogue
   catalogue = new Catalogue(this);
