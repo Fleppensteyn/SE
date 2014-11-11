@@ -14,6 +14,7 @@
 
 #include "Curriculum.h"
 #include "Catalogue.h"
+#include "Courses.h"
 #include <vector>
 
 enum{
@@ -42,6 +43,7 @@ public:
 private:
   std::vector<Curriculum*> tabs; //A vector containing pointer to all open curricula
   Catalogue *catalogue; //The course catalogue
+  Courses *courses;
 
   //wxDECLARE_EVENT_TABLE();
 };

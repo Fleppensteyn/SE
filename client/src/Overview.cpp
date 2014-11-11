@@ -35,6 +35,7 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
 
   SetSizer(column);
 
+  courses = new Courses();
 }
 
 Overview::~Overview(){
