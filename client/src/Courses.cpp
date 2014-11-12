@@ -6,13 +6,7 @@
 #include "Courses.h"
 
 Courses::Courses(){
-  addAffiliation(1, wxColour(wxT("GREEN"))); //add affiliation from database
-  addCourseType(1, wxColour(wxT("BLUE"))); //add course type from database
-  addCourse(1,"a","a","a",1,1,1,true); //add newly created course
-  addCourse(2,"a","a","a",1,1,1); //add course from database
-  getCourse(1); //in range
-  getCourse(4); //out of range
-  //wxMessageOutputBest().Printf("course=%u", all_courses[1].ID);
+
 }//Courses
 
 Courses::~Courses(){
@@ -31,7 +25,7 @@ void Courses::addCourse(unsigned int ID, wxString name, wxString line, wxString 
   }
   for(i = 0; i < course_types.size(); i++){
     if(course_types[i].ID == type)
-      course.type == course_types[i].colour;
+      course.type = course_types[i].colour;
   }
   all_courses.push_back(course);
 }//addCourse
@@ -64,9 +58,9 @@ Course Courses::getCourse(unsigned int ID){
 }//getCourse
 
 int Courses::search(unsigned int ID){
-  unsigned int min = 0,
-               max = all_courses.size()-1,
-               mid;
+  int min = 0,
+      max = all_courses.size()-1,
+      mid;
   while(max >= min){
     mid = min + ((max - min) / 2);
     if(all_courses[mid].ID == ID)
@@ -74,7 +68,7 @@ int Courses::search(unsigned int ID){
     else if(all_courses[mid].ID < ID)
       min = mid + 1;
     else
-      max = min - 1;
+      max = mid - 1;
   }
   return -1; //ID doesn't exist
 }//search
