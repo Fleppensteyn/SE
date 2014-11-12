@@ -71,3 +71,7 @@ int Courses::search(unsigned int ID){
   }
   return -1; //ID doesn't exist
 }//search
+
+std::vector<Course> Courses::getCourseVec(){
+  return all_courses;
+}

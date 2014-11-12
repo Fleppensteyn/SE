@@ -51,6 +51,8 @@ public:
 
   int search(unsigned int ID);
 
+  std::vector<Course> getCourseVec();
+
 private:
   std::vector<ColourAttribute> affiliations;
   std::vector<ColourAttribute> course_types;

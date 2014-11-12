@@ -82,9 +82,9 @@ void Database::fillCourses(Courses* courses){
   rc = sqlite3_step(stmt);
   while (rc == SQLITE_ROW){
     courses->addCourse(sqlite3_column_int(stmt, 0),
-                       sqlite3_column_text(stmt,1),
-                       sqlite3_column_text(stmt,2),
-                       sqlite3_column_text(stmt,3),
+                       wxString::FromUTF8((const char *)sqlite3_column_text(stmt,1)),
+                       wxString::FromUTF8((const char *)sqlite3_column_text(stmt,2)),
+                       wxString::FromUTF8((const char *)sqlite3_column_text(stmt,3)),
                        sqlite3_column_int(stmt, 4),
                        sqlite3_column_int(stmt, 5),
                        sqlite3_column_int(stmt, 6));

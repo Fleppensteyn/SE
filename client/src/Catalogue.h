@@ -14,10 +14,10 @@
 
 #include "DrawingHelper.h"
 
-const int catalogue_width = 250; //Width of the catalogue panel
+const int catalogue_width = 260; //Width of the catalogue panel
 
 //Contains all gui elements and functionality of the course catalogue
-class Catalogue : public wxPanel
+class Catalogue : public wxScrolledCanvas
 {
 public:
   //Set up the catalogue panel
@@ -25,12 +25,14 @@ public:
   virtual ~Catalogue();
 
 private:
-  void paintEvent(wxPaintEvent& event);
-  void render(wxDC& dc);
+  // void paintEvent(wxPaintEvent& event);
+  void OnDraw(wxDC& dc);
+  // void scrollEvent(wxScrollEvent& event);
   wxPanel *overview;
   Courses *courses;
+  std::vector<wxBitmap> bmaps;
 
-  wxDECLARE_EVENT_TABLE();
+  // wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* CATALOGUE_H_ */
