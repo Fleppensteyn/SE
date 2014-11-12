@@ -8,6 +8,11 @@
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
+  this->courses = new Courses();
+  this->mousemanager = new MouseManager(this);
+  this->database = new Database("client.db");
+  this->database->fillCourses(this->courses);
+
   curricula = new wxBookCtrl(this, ID_CURRICULA);
 
   //Set an empty curriculum to initially fill the screen
@@ -17,8 +22,8 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   tabs.push_back(temporary_curriculum);
 
   //Setup the catalogue
-  catalogue = new Catalogue(this);
-  catalogue->SetBackgroundColour(wxColour(150,150,150));
+  catalogue = new Catalogue(this, this->courses);
+  catalogue->SetBackgroundColour(wxColour("#FFFFFF"));
 
   //Position the curricula and catalogue
   wxBoxSizer *row = new wxBoxSizer(wxHORIZONTAL);
@@ -35,11 +40,13 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
 
   SetSizer(column);
 
-  courses = new Courses();
 }
 
 Overview::~Overview(){
   tabs.clear();
+  delete mousemanager;
+  delete courses;
+  delete database;
 }
 
 void Overview::OnCloseTab(){

@@ -15,7 +15,9 @@
 #include "Curriculum.h"
 #include "Catalogue.h"
 #include "Courses.h"
+#include "MouseManager.h"
 #include <vector>
+#include "Database.h"
 
 enum{
   ID_CURRICULA
@@ -44,6 +46,8 @@ private:
   std::vector<Curriculum*> tabs; //A vector containing pointer to all open curricula
   Catalogue *catalogue; //The course catalogue
   Courses *courses;
+  MouseManager *mousemanager;
+  Database *database;
 
   //wxDECLARE_EVENT_TABLE();
 };

@@ -12,19 +12,25 @@
   #include "wx/wx.h"
 #endif
 
-const int catalogue_width = 300; //Width of the catalogue panel
+#include "DrawingHelper.h"
+
+const int catalogue_width = 250; //Width of the catalogue panel
 
 //Contains all gui elements and functionality of the course catalogue
 class Catalogue : public wxPanel
 {
 public:
   //Set up the catalogue panel
-  Catalogue(wxPanel *panel);
+  Catalogue(wxPanel *panel, Courses *courses);
   virtual ~Catalogue();
 
 private:
+  void paintEvent(wxPaintEvent& event);
+  void render(wxDC& dc);
+  wxPanel *overview;
+  Courses *courses;
 
-  //wxDECLARE_EVENT_TABLE();
+  wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* CATALOGUE_H_ */
