@@ -7,7 +7,11 @@
 #define DATABASE_H_
 
 #include "sqlite/sqlite3.h"
-#include "Courses.h"
+
+//#include "wx/string.h"
+
+class Courses;
+class wxString;
 
 enum
 {
@@ -21,6 +25,8 @@ public:
   Database(const char* filename);
   virtual ~Database();
   void fillCourses(Courses* courses);
+  int addNewCourse(wxString name, wxString line, wxString number, unsigned int ects,
+                   wxString affiliation, wxString type);
 
 private:
   bool connect();

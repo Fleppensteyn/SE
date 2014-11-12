@@ -3,6 +3,7 @@
   Group 8
 */
 #include "Database.h"
+#include "Courses.h"
 
 Database::Database(const char* filename){
   this->filename = filename;
@@ -92,4 +93,12 @@ void Database::fillCourses(Courses* courses){
   if (rc != SQLITE_DONE)
     error("evaluating statement");
   sqlite3_finalize(stmt);
+}
+
+int Database::addNewCourse(wxString name, wxString line, wxString number, unsigned int ects,
+                wxString affiliation, wxString type){
+  if(name == "Test")
+    return 1;
+  else
+    return -1;
 }

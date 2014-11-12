@@ -18,6 +18,7 @@
 #include "Overview.h"
 #include "CourseCreator.h"
 #include "ServerCommunication.h"
+#include <vector>
 
 //The main application class
 class App : public wxApp
@@ -202,11 +203,21 @@ void Frame::OnCloseTab(wxCommandEvent& event){
 
 void Frame::OnNewCourse(wxCommandEvent& event){
   CourseCreator cc(this);
-  if (cc.ShowModal() == wxID_OK){
-
-  } else {
-
-  }
+  while (cc.ShowModal() == wxID_OK){
+    std::vector<wxString> data = cc.getData();
+    //SetStatusText(wxString("name: ") << data[0] << wxString(" ects: ") << data[1] <<
+    //              wxString(" aff: ") << data[2] << wxString(" type: ") << data[3] <<
+    //              wxString(" line: ") << data[4] << wxString(" number: ") << data[5]);
+    int ret = panel_overview->addNewCourse(data);
+    if(ret == 1){
+      SetStatusText("Succesfully added new course");
+      return;
+    }
+    else if(ret == -1){
+      cc.DisplayError(ERROR_COURSE_ALREADY_EXISTS);
+    }
+  } 
+  SetStatusText("");
 }//OnNewCourse
 
 void Frame::SwitchPanels(){

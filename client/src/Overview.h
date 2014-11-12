@@ -41,6 +41,8 @@ public:
   //Close the tab that is currently opened
   void OnCloseTab();
 
+  int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
+
   wxBookCtrl *curricula; //Controls the the tab structure of the curricula
 private:
   std::vector<Curriculum*> tabs; //A vector containing pointer to all open curricula

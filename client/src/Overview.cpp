@@ -8,9 +8,9 @@
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
-  this->courses = new Courses();
-  this->mousemanager = new MouseManager(this);
   this->database = new Database("client.db");
+  this->courses = new Courses(this->database);
+  this->mousemanager = new MouseManager(this);
   this->database->fillCourses(this->courses);
 
   curricula = new wxBookCtrl(this, ID_CURRICULA);

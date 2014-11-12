@@ -5,8 +5,8 @@
 
 #include "Courses.h"
 
-Courses::Courses(){
-
+Courses::Courses(Database *database){
+  this->database = database;
 }//Courses
 
 Courses::~Courses(){
@@ -30,12 +30,11 @@ void Courses::addCourse(unsigned int ID, wxString name, wxString line, wxString 
   all_courses.push_back(course);
 }//addCourse
 
-int Courses::addCourse(unsigned int ID, wxString name, wxString line, wxString number,
-                       unsigned int ects, unsigned int affiliation, unsigned int type, bool add){
+int Courses::addNewCourse(std::vector<wxString> data){
   //check if course already exists!
   //if not add it to database!
-  addCourse(ID, name, line, number, ects, affiliation, type);
-  return 1;
+  int ects = wxAtoi(data[1]);
+  return database->addNewCourse(data[0], data[4], data[5], ects, data[2], data[3]);
 }//addCourse
 
 
