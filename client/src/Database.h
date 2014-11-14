@@ -25,8 +25,8 @@ public:
   Database(const char* filename);
   virtual ~Database();
   void fillCourses(Courses* courses);
-  int addNewCourse(wxString name, wxString line, wxString number, unsigned int ects,
-                   wxString affiliation, wxString type);
+  int addNewCourse(wxString name, wxString line, wxString number, int ects,
+                   unsigned int affiliation, unsigned int type);
 
 private:
   bool connect();

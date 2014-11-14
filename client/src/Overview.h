@@ -43,6 +43,8 @@ public:
 
   int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
 
+  Courses* getCourses(){return courses;}
+
   wxBookCtrl *curricula; //Controls the the tab structure of the curricula
 private:
   std::vector<Curriculum*> tabs; //A vector containing pointer to all open curricula

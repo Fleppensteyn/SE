@@ -209,15 +209,15 @@ void Frame::OnCloseTab(wxCommandEvent& event){
 }//OnCloseTab
 
 void Frame::OnNewCourse(wxCommandEvent& event){
-  CourseCreator cc(this);
+  CourseCreator cc(this, panel_overview->getCourses());
   while (cc.ShowModal() == wxID_OK){
     std::vector<wxString> data = cc.getData();
-    //SetStatusText(wxString("name: ") << data[0] << wxString(" ects: ") << data[1] <<
-    //              wxString(" aff: ") << data[2] << wxString(" type: ") << data[3] <<
-    //              wxString(" line: ") << data[4] << wxString(" number: ") << data[5]);
+    //SetStatusText(wxString("name: |") << data[0] << wxString("| ects: |") << data[1] <<
+    //              wxString("| aff: |") << data[2] << wxString("| type: |") << data[3] <<
+    //              wxString("| line: |") << data[4] << wxString("| number: |") << data[5]);
     int ret = panel_overview->addNewCourse(data);
-    if(ret == 1){
-      SetStatusText("Succesfully added new course");
+    if(ret >= 0){
+      SetStatusText(wxString("Succesfully added new course") << ret);
       return;
     }
     else if(ret == -1){
