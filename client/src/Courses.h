@@ -13,6 +13,7 @@
 #endif
 
 #include "Database.h"
+#include "DrawingHelper.h"
 #include <vector>
 
 struct ColourAttribute{
@@ -29,6 +30,7 @@ struct Course{
   unsigned int ects;
   wxColour affiliation;
   wxColour type;
+  wxBitmap bitmap;
 };
 
 //Contains all gui elements and functionality of a single curriculum
@@ -48,7 +50,7 @@ public:
 
   void addCourseType(unsigned int ID, wxString name, wxColour colour);
 
-  Course getCourse(unsigned int ID);
+  Course * getCourse(unsigned int ID);
 
   wxColour getAffiliationColour(wxString name);
 
@@ -56,7 +58,8 @@ public:
 
   int search(unsigned int ID);
 
-  std::vector<Course> getCourseVec();
+  std::vector<Course *> filter(SearchPars pars);
+
 
 private:
   std::vector<ColourAttribute> affiliations;

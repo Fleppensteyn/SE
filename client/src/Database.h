@@ -7,7 +7,7 @@
 #define DATABASE_H_
 
 #include "sqlite/sqlite3.h"
-
+#include <vector>
 //#include "wx/string.h"
 
 class Courses;
@@ -19,6 +19,14 @@ enum
   FILL_COURSETYPES
 };
 
+struct SearchPars
+{
+  int category;
+  int affiliation;
+  int ects;
+  char * pattern;
+};
+
 class Database
 {
 public:
@@ -27,6 +35,7 @@ public:
   void fillCourses(Courses* courses);
   int addNewCourse(wxString name, wxString line, wxString number, int ects,
                    unsigned int affiliation, unsigned int type);
+  std::vector<int> filter(SearchPars par);
 
 private:
   bool connect();

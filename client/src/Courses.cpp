@@ -27,6 +27,7 @@ void Courses::addCourse(unsigned int ID, wxString name, wxString line, wxString 
     if(course_types[i].ID == type)
       course.type = course_types[i].colour;
   }
+  course.bitmap = DrawingHelper::drawCourse(course);
   all_courses.push_back(course);
 }//addCourse
 
@@ -62,11 +63,11 @@ void Courses::addCourseType(unsigned int ID, wxString name, wxColour colour){
   course_types.push_back(ct);
 }//addCourseType
 
-Course Courses::getCourse(unsigned int ID){
-  Course course = Course();
+Course * Courses::getCourse(unsigned int ID){
+  Course * course = NULL;
   int index = search(ID);
   if(index != -1)
-    course = all_courses[index];
+    course = &all_courses[index];
   return course;
 }//getCourse
 
@@ -100,6 +101,15 @@ int Courses::search(unsigned int ID){
   return -1; //ID doesn't exist
 }//search
 
-std::vector<Course> Courses::getCourseVec(){
-  return all_courses;
+std::vector<Course *> Courses::filter(SearchPars pars){
+  std::vector<int> ids = database->filter(pars);
+  std::vector<Course *> ret;
+
+  int index;
+  for (unsigned i = 0; i < ids.size(); i++){
+    index = search(ids[i]);
+    if (index > -1)
+      ret.push_back(&all_courses[index]);
+  }
+  return ret;
 }

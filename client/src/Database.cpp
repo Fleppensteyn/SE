@@ -120,3 +120,29 @@ int Database::addNewCourse(wxString name, wxString line, wxString number, int ec
   sqlite3_finalize(stmt);
   return ret;
 }
+
+std::vector<int> Database::filter(SearchPars par){
+  std::vector<int> ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+
+  wxString where = wxString("");
+  wxString query = wxString("SELECT id FROM courses ") << where
+            << "ORDER BY typeid ASC, affilid ASC, number ASC;";
+
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("preparing statement");
+    sqlite3_finalize(stmt);
+    return ret;
+  }
+  rc = sqlite3_step(stmt);
+  while (rc == SQLITE_ROW){
+    ret.push_back(sqlite3_column_int(stmt, 0));
+    rc = sqlite3_step(stmt);
+  }
+  if (rc != SQLITE_DONE)
+    error("evaluating statement");
+  sqlite3_finalize(stmt);
+  return ret;
+}

@@ -14,6 +14,7 @@
 
 #include "Courses.h"
 
+struct Course;
 
 enum {
   ALIGN_LEFT,
