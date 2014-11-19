@@ -35,8 +35,8 @@ void Database::fillColours(Courses* courses, int filltype){
   wxString query;
 
   switch (filltype){
-    case FILL_AFFILLIATIONS:query += "SELECT id, colour FROM affiliations;"; break;
-    case FILL_COURSETYPES: query += "SELECT id, colour FROM course_types;"; break;
+    case FILL_AFFILLIATIONS:query += "SELECT * FROM affiliations;"; break;
+    case FILL_COURSETYPES: query += "SELECT * FROM course_types;"; break;
     default: fprintf(stderr, "Error: While filling colour table - Unknown table type\n");return; break;
   }
 
@@ -51,9 +51,11 @@ void Database::fillColours(Courses* courses, int filltype){
     wxString tcs("#");
     switch (filltype){
       case FILL_AFFILLIATIONS: courses->addAffiliation(sqlite3_column_int(stmt, 0),
-                                          wxColour(tcs+sqlite3_column_text(stmt, 1))); break;
+                                          wxString(sqlite3_column_text(stmt,1)),
+                                          wxColour(tcs+sqlite3_column_text(stmt, 2))); break;
       case FILL_COURSETYPES: courses->addCourseType(sqlite3_column_int(stmt, 0),
-                                          wxColour(tcs+sqlite3_column_text(stmt, 1))); break;
+                                          wxString(sqlite3_column_text(stmt,1)),
+                                          wxColour(tcs+sqlite3_column_text(stmt, 2))); break;
     }
     rc = sqlite3_step(stmt);
   }
@@ -95,10 +97,26 @@ void Database::fillCourses(Courses* courses){
   sqlite3_finalize(stmt);
 }
 
-int Database::addNewCourse(wxString name, wxString line, wxString number, unsigned int ects,
-                wxString affiliation, wxString type){
-  if(name == "Test")
-    return 1;
-  else
+int Database::addNewCourse(wxString name, wxString line, wxString number, int ects,
+                           unsigned int affiliation, unsigned int type){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("INSERT INTO courses(name, line, number, ects, affilid, typeid)")
+                   << wxString(" VALUES ('") << name << wxString("' ,'") << line <<
+                   wxString("' ,'") << number << wxString("' ,'") << ects <<
+                   wxString("' ,'") << affiliation << wxString("' ,'") << type << wxString("');");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statment");
+    sqlite3_finalize(stmt);
     return -1;
+  }
+  rc = sqlite3_step(stmt);
+  if(rc == SQLITE_ERROR)
+    ret = -1;
+  else
+    ret = sqlite3_last_insert_rowid(this->db);
+  sqlite3_finalize(stmt);
+  return ret;
 }

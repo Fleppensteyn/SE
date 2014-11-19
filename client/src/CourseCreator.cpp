@@ -8,20 +8,23 @@
 //A summary of all events of the class Login that need to be captured
 //and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(CourseCreator, wxDialog)
-  EVT_BUTTON      (ID_SUBMIT_COURSE, CourseCreator::OnSubmitCourse)
-  EVT_TEXT_ENTER  (wxID_ANY, CourseCreator::OnTextEnter)
-  EVT_CHECKBOX    (ID_LINE_OPTION, CourseCreator::OnLineOption)
+  EVT_BUTTON            (ID_SUBMIT_COURSE, CourseCreator::OnSubmitCourse)
+  EVT_TEXT_ENTER        (wxID_ANY, CourseCreator::OnTextEnter)
+  EVT_COMBOBOX_CLOSEUP  (wxID_ANY, CourseCreator::updatePreview)
+  EVT_TEXT              (wxID_ANY, CourseCreator::updatePreview)
+  EVT_PAINT             (CourseCreator::drawPreview)
 wxEND_EVENT_TABLE()
 
-CourseCreator::CourseCreator(wxFrame *frame)
-      :wxDialog(frame, wxID_ANY, wxT("Course creation"), wxPoint(100,100), wxSize(500, 400),
+CourseCreator::CourseCreator(wxFrame *frame, Courses *courses)
+      :wxDialog(frame, wxID_ANY, wxT("Course creation"), wxPoint(100,100), wxSize(500, 450),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
   //Static boxes and static text elements
   box1 = new wxStaticBox(this, wxID_ANY, "Course specifics", wxPoint(20, 10),
-                                      wxSize(460, 120));
+                         wxSize(460, 120));
   box2 = new wxStaticBox(this, wxID_ANY, "Course affiliations", wxPoint(20, 140),
-                                      wxSize(460, 190));
+                         wxSize(460, 150));
+
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   wxStaticText *name_text = new wxStaticText(box1, -1, "Course Name:");
@@ -32,8 +35,6 @@ CourseCreator::CourseCreator(wxFrame *frame)
   affiliation_text->SetFont(font);
   wxStaticText *course_type_text = new wxStaticText(box2, -1, "Course Type:");
   course_type_text->SetFont(font);
-  wxStaticText *line_text = new wxStaticText(box2, -1, "Line:");
-  line_text->SetFont(font);
   wxStaticText *number_text = new wxStaticText(box2, -1, "Course number:");
   number_text->SetFont(font);
 
@@ -42,7 +43,7 @@ CourseCreator::CourseCreator(wxFrame *frame)
                               wxTE_PROCESS_ENTER);
   course_name->SetHint("course name");
   course_name->SetFocus();
-  course_name->SetMaxLength(30);
+  course_name->SetMaxLength(50);
 
   //ECTS input box
   ects = new wxTextCtrl(box1, ID_ECTS, wxT("6"), wxPoint(120, 67), wxSize(40, 25),
@@ -58,36 +59,23 @@ CourseCreator::CourseCreator(wxFrame *frame)
                       wxT("Foundations Line"),
                       wxT("Computer Systems Line"),
                       wxT("Software Engineering Line"),
-                      wxT("Computer Graphics Line")};
+                      wxT("Computer Graphics Line"),
+                      wxT("Other")};
 
-  wxArrayString *affiliations = new wxArrayString(9,temp1);
+  wxArrayString *affiliations = new wxArrayString(10,temp1);
   affiliation = new wxComboBox(box2, ID_AFFILIATION, wxT("Affiliated to CS"), wxPoint(120,27),
                                wxSize(300,25), *affiliations, wxCB_READONLY | wxTE_PROCESS_ENTER);
   //Course type selection
   const wxString temp2[] = {wxT("Academic Skills"), //REPLACE THIS WITH LIST FROM DATABASE
                       wxT("Mathematics"),
                       wxT("CS Essentials"),
-                      wxT("CS Mandaroty"),
+                      wxT("CS Mandatory"),
                       wxT("CS Elective"),
                       wxT("Economics Essentials"),
                       wxT("Biology Essentials")};
   wxArrayString *course_types = new wxArrayString(7,temp2);
   course_type = new wxComboBox(box2, ID_COURSE_TYPE, wxT("Academic Skills"), wxPoint(120,67),
                                wxSize(300,25), *course_types, wxCB_READONLY | wxTE_PROCESS_ENTER);
-  //Line selection
-  const wxString temp3[] = {wxT("AS"), //REPLACE THIS WITH LIST FROM DATABASE
-                      wxT("M"),
-                      wxT("FI"),
-                      wxT("PR"),
-                      wxT("E")};
-  wxArrayString *lines = new wxArrayString(5,temp3);
-  line_choice = new wxComboBox(box2, ID_LINE_CHOICE, wxT("AS"), wxPoint(120,67),
-                               wxSize(80,25), *lines, wxCB_READONLY | wxTE_PROCESS_ENTER);
-  line_option = new wxCheckBox(box2, ID_LINE_OPTION, "New line:");
-  line_create = new wxTextCtrl(box2, ID_LINE_CREATE, "", wxPoint(0,0), wxSize(50,25),
-                               wxTE_PROCESS_ENTER);
-  line_create->SetMaxLength(2);
-  line_create->Enable(false);
 
   //Course number input box
   course_number = new wxTextCtrl(box2, ID_COURSE_NUMBER, wxT("1"), wxPoint(120, 67), wxSize(40, 25),
@@ -117,18 +105,11 @@ CourseCreator::CourseCreator(wxFrame *frame)
   box1->SetSizer(box1_column);
 
   //Positioning of elements in box2
-  wxBoxSizer *box2_line_row = new wxBoxSizer(wxHORIZONTAL);
-  box2_line_row->Add(line_choice, 0, wxALIGN_LEFT | wxRIGHT, 10);
-  box2_line_row->Add(line_option, 0, wxTOP, 3);
-  box2_line_row->Add(line_create, 0, wxALIGN_RIGHT | wxLEFT, 10);
-
-  wxFlexGridSizer *box2_flex = new wxFlexGridSizer(4, 2, 15, 10);
+  wxFlexGridSizer *box2_flex = new wxFlexGridSizer(3, 2, 15, 10);
   box2_flex->Add(affiliation_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box2_flex->Add(affiliation, 0, wxALIGN_LEFT);
   box2_flex->Add(course_type_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box2_flex->Add(course_type, 0, wxALIGN_LEFT);
-  box2_flex->Add(line_text, 0, wxALIGN_RIGHT | wxTOP, 3);
-  box2_flex->Add(box2_line_row, 0, wxALIGN_LEFT);
   box2_flex->Add(number_text, 0, wxALIGN_RIGHT| wxTOP, 3);
   box2_flex->Add(course_number, 0, wxALIGN_LEFT);
 
@@ -152,10 +133,13 @@ CourseCreator::CourseCreator(wxFrame *frame)
 
   wxBoxSizer *column = new wxBoxSizer(wxVERTICAL);
   column->Add(box1, 0, wxALL | wxEXPAND, 10);
-  column->Add(box2, 0, wxBOTTOM | wxRIGHT | wxLEFT | wxEXPAND, 10);
+  column->Add(box2, 0, wxRIGHT | wxBOTTOM | wxLEFT | wxEXPAND, 10);
+  column->AddSpacer(80);
   column->Add(button_row, 0, wxRIGHT | wxLEFT | wxEXPAND, 10);
 
   SetSizer(column);
+
+  this->courses = courses;
 }//CourseCreator
 
 CourseCreator::~CourseCreator(){
@@ -180,8 +164,6 @@ void CourseCreator::OnSubmitCourse(wxCommandEvent& event){
     DisplayError(ERROR_NO_NAME); //No course name was specified
   if(ects->GetValue() == "")
     DisplayError(ERROR_NO_ECTS); //No ects amount specified
-  if(line_option->IsChecked() && line_create->GetValue() == "")
-    DisplayError(ERROR_NO_LINE);
   if(course_number->GetValue() == "")
     DisplayError(ERROR_NO_NUMBER);
 
@@ -191,14 +173,6 @@ void CourseCreator::OnSubmitCourse(wxCommandEvent& event){
   for(int i = 0; i < errors.size(); i++)
     errors[i]->SetForegroundColour(wxColour(wxT("RED")));
 }//OnSubmitCourse
-
-void CourseCreator::OnLineOption(wxCommandEvent& event){
-  bool selected = false;
-  if(line_option->IsChecked())
-    selected = true;
-  line_choice->Enable(!selected);
-  line_create->Enable(selected);
-}//OnLineOption
 
 void CourseCreator::DisplayError(int error){
   switch(error){
@@ -210,17 +184,13 @@ void CourseCreator::DisplayError(int error){
       errors.push_back(new wxStaticText(box1, wxID_ANY, "Must specify ECTS amount!",
                                         wxPoint(200,70), wxSize(200, 17)));
       break;
-    case ERROR_NO_LINE:
-      errors.push_back(new wxStaticText(box2, wxID_ANY, "Must specify a line!",
-                                        wxPoint(220,85), wxSize(200, 17)));
-      break;
     case ERROR_NO_NUMBER:
       errors.push_back(new wxStaticText(box2, wxID_ANY, "Must specify a course number!",
-                                        wxPoint(150,125), wxSize(300, 17)));
+                                        wxPoint(150,85), wxSize(300, 17)));
       break;
     case ERROR_COURSE_ALREADY_EXISTS:
       errors.push_back(new wxStaticText(this, wxID_ANY, "The specified course already exists!",
-                                        wxPoint(120, 340), wxSize(250, 17)));
+                                        wxPoint(120, 380), wxSize(250, 17)));
       errors[0]->SetForegroundColour(wxColour(wxT("RED")));
       break;
   }
@@ -238,11 +208,65 @@ std::vector<wxString> CourseCreator::getData(){
   data.push_back(ects->GetValue());
   data.push_back(affiliation->GetValue());
   data.push_back(course_type->GetValue());
-  if(line_option->IsChecked())
-    data.push_back(line_create->GetValue());
-  else
-    data.push_back(line_choice->GetValue());
+  data.push_back(determineLine());
   data.push_back(course_number->GetValue());
   return data;
 }//getData
+
+void CourseCreator::updatePreview(wxCommandEvent& event){
+  Refresh();
+}
+
+void CourseCreator::drawPreview(wxPaintEvent& event){
+  Course course = Course();
+  course.name = course_name->GetValue();
+  course.line = determineLine();
+  course.number = course_number->GetValue();
+  course.ects = wxAtoi(ects->GetValue());
+  course.affiliation = courses->getAffiliationColour(affiliation->GetValue());
+  course.type = courses->getTypeColour(course_type->GetValue());
+  preview = DrawingHelper::drawCourse(course);
+  wxPaintDC dc(this);
+  dc.DrawBitmap(preview, 130, 310);
+}//updatePreview
+
+wxString CourseCreator::determineLine(){
+  wxString line = "", 
+           type = course_type->GetValue(),
+           aff = affiliation->GetValue();
+  if(type == wxT("Economics Essentials"))
+    line = wxT("E");
+  else if(type == wxT("Biology Essentials"))
+    line = wxT("B");
+  else if(aff == wxT("Affiliated to CS") ||
+     aff == wxT("Affiliated to Biology") ||
+     aff == wxT("Affiliated to Economics") ||
+     aff == wxT("Other"))
+  {
+    if(type == wxT("Academic Skills"))
+      line = wxT("AS");
+    else if(type == wxT("Mathematics"))
+      line = wxT("M");
+    else if(type == wxT("CS Essentials"))
+      line = wxT("CE");
+    else if(type == wxT("CS Mandatory"))
+      line = wxT("C");
+    else if(type == wxT("CS Elective"))
+      line = wxT("CL");
+  } 
+  else if(aff == wxT("Programming Line"))
+    line = wxT("PR");
+  else if(aff == wxT("Algorithmics Line"))
+    line = wxT("AL");
+  else if(aff == wxT("Foundations Line"))
+    line = wxT("FI");
+  else if(aff == wxT("Computer Systems Line"))
+    line = wxT("CS");
+  else if(aff == wxT("Software Engineering Line"))
+    line = wxT("SE");
+  else if(aff == wxT("Computer Graphics Line"))
+    line = wxT("CI");
+
+  return line;
+}//determineLine
 

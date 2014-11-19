@@ -17,6 +17,7 @@
 
 struct ColourAttribute{
   unsigned int ID;
+  wxString name;
   wxColour colour;
 };
 
@@ -43,11 +44,15 @@ public:
 
   int addNewCourse(std::vector<wxString> data);
 
-  void addAffiliation(unsigned int ID, wxColour colour);
+  void addAffiliation(unsigned int ID, wxString name, wxColour colour);
 
-  void addCourseType(unsigned int ID, wxColour colour);
+  void addCourseType(unsigned int ID, wxString name, wxColour colour);
 
   Course getCourse(unsigned int ID);
+
+  wxColour getAffiliationColour(wxString name);
+
+  wxColour getTypeColour(wxString name);
 
   int search(unsigned int ID);
 

@@ -17,6 +17,7 @@
 #include "Login.h"
 #include "Overview.h"
 #include "CourseCreator.h"
+#include "CurriculumCreator.h"
 #include "ServerCommunication.h"
 #include <vector>
 
@@ -31,7 +32,8 @@ public:
 enum{
   ID_LOGOUT,
   ID_CLOSE_TAB,
-  ID_NEW_COURSE
+  ID_NEW_COURSE,
+  ID_NEW_CURRICULUM
 };
 
 //The frame within which the entire program is run.
@@ -60,6 +62,9 @@ public:
 
   //If in overview, opens 'Create new course' dialog
   void OnNewCourse(wxCommandEvent& event);
+  
+  //If in overview, opens 'Create new curriculum' dialog
+  void OnNewCurriculum(wxCommandEvent& event);
 
   //Switches between the Login and Overview panel
   void SwitchPanels();
@@ -82,6 +87,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
   EVT_MENU    (ID_CLOSE_TAB, Frame::OnCloseTab)
   EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
+  EVT_MENU    (ID_NEW_CURRICULUM, Frame::OnNewCurriculum)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
 wxEND_EVENT_TABLE()
 
@@ -113,12 +119,13 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   menuFile_overview->Append(ID_LOGOUT, wxT("&Logout"));
   menuFile_overview->Append(wxID_EXIT);
 
-  wxMenu *menuCourses = new wxMenu;
-  menuCourses->Append(ID_NEW_COURSE, wxT("New course"));
+  wxMenu *menuNew = new wxMenu;
+  menuNew->Append(ID_NEW_COURSE, wxT("New course"));
+  menuNew->Append(ID_NEW_CURRICULUM, wxT("New curriculum"));
 
   menubar_overview = new wxMenuBar();
   menubar_overview->Append(menuFile_overview, "&File");
-  menubar_overview->Append(menuCourses, "&Course");
+  menubar_overview->Append(menuNew, "&New");
 
   CreateStatusBar(1);
   SetStatusText("");
@@ -202,15 +209,15 @@ void Frame::OnCloseTab(wxCommandEvent& event){
 }//OnCloseTab
 
 void Frame::OnNewCourse(wxCommandEvent& event){
-  CourseCreator cc(this);
+  CourseCreator cc(this, panel_overview->getCourses());
   while (cc.ShowModal() == wxID_OK){
     std::vector<wxString> data = cc.getData();
-    //SetStatusText(wxString("name: ") << data[0] << wxString(" ects: ") << data[1] <<
-    //              wxString(" aff: ") << data[2] << wxString(" type: ") << data[3] <<
-    //              wxString(" line: ") << data[4] << wxString(" number: ") << data[5]);
+    //SetStatusText(wxString("name: |") << data[0] << wxString("| ects: |") << data[1] <<
+    //              wxString("| aff: |") << data[2] << wxString("| type: |") << data[3] <<
+    //              wxString("| line: |") << data[4] << wxString("| number: |") << data[5]);
     int ret = panel_overview->addNewCourse(data);
-    if(ret == 1){
-      SetStatusText("Succesfully added new course");
+    if(ret >= 0){
+      SetStatusText(wxString("Succesfully added new course") << ret);
       return;
     }
     else if(ret == -1){
@@ -219,6 +226,22 @@ void Frame::OnNewCourse(wxCommandEvent& event){
   } 
   SetStatusText("");
 }//OnNewCourse
+
+void Frame::OnNewCurriculum(wxCommandEvent& event){
+	CurriculumCreator cc(this);
+	while(cc.ShowModal() == wxID_OK){
+		std::vector<wxString> data = cc.getData();
+		int ret = 1;//Moet zijn: panel_overview->addNewCurriculum(data);
+    if(ret == 1){
+      SetStatusText("Succesfully added new curriculum");
+      return;
+    }
+    else if(ret == -1){
+      //cc.DisplayError(ERROR_CURRICULUM_ALREADY_EXISTS);
+    }
+  } 
+  SetStatusText("");
+}
 
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview

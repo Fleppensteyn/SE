@@ -13,15 +13,14 @@
 #endif
 
 #include <vector>
+#include "Courses.h"
+#include "DrawingHelper.h"
 
 enum{
   ID_COURSE_NAME,
   ID_ECTS,
   ID_AFFILIATION,
   ID_COURSE_TYPE,
-  ID_LINE_CHOICE,
-  ID_LINE_OPTION,
-  ID_LINE_CREATE,
   ID_COURSE_NUMBER,
   ID_SUBMIT_COURSE
 };
@@ -29,7 +28,6 @@ enum{
 enum{
   ERROR_NO_NAME,
   ERROR_NO_ECTS,
-  ERROR_NO_LINE,
   ERROR_NO_NUMBER,
   ERROR_COURSE_ALREADY_EXISTS
 };
@@ -40,7 +38,7 @@ class CourseCreator : public wxDialog
 public:
   //Sets up the course creation dialog
   // frame - The parent frame
-  CourseCreator(wxFrame *frame);
+  CourseCreator(wxFrame *frame, Courses *courses);
 
   //Delete all error messages
   virtual ~CourseCreator();
@@ -51,14 +49,20 @@ public:
   //Checks if the choises made lead to a valid new course, of not sets error messages
   void OnSubmitCourse(wxCommandEvent& event);
 
-  //Changes the enabled status of the line choice list box and the line create text ctrl
-  void OnLineOption(wxCommandEvent& event);
-
   //Creates an error message corresponding to the passed error
   void DisplayError(int error);
 
   //Delete all error messages
   void ClearErrors();
+
+  //Triggers the update of the preview
+  void updatePreview(wxCommandEvent& event);
+
+  //Updates the preview of the course
+  void drawPreview(wxPaintEvent& event);
+
+  //Determine through hardcoded association what the line for this course would be
+  wxString determineLine();
 
   std::vector<wxString> getData();
 
@@ -67,14 +71,14 @@ private:
   wxTextCtrl *ects;         //Input box for the amount of ECTS awarded for the new course
   wxComboBox *affiliation;  //Drop-down list box for all possible affiliations
   wxComboBox *course_type;  //Drop-down list box for all possible course types
-  wxComboBox *line_choice;  //Drop-down list box for all existing lines
-  wxCheckBox *line_option;  //Checkbox to indicate the use of an existing line or a new line
-  wxTextCtrl *line_create;  //Input box used in case of a new line
   wxTextCtrl *course_number;//Input box for the course number (as in the sequence of the line)
   std::vector<wxStaticText*> errors; //Error messages that apply at any given time
+  wxBitmap preview; //Stores the preview of the created course
 
   wxStaticBox *box1;
   wxStaticBox *box2;
+
+  Courses *courses;
 
   wxDECLARE_EVENT_TABLE();
 };
