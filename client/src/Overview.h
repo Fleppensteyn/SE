@@ -20,7 +20,10 @@
 #include "Database.h"
 
 enum{
-  ID_CURRICULA
+  ID_CURRICULA,
+  ID_FACULTY,
+  ID_YEARS,
+  ID_SHOW
 };
 
 //Contains all gui elements and functionality of the Curriculum and Catalogue overview
@@ -38,22 +41,27 @@ public:
   //Delete all Curricula
   virtual ~Overview();
 
-  //Close the tab that is currently opened
-  void OnCloseTab();
-
   int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
 
   Courses* getCourses(){return courses;}
 
-  wxBookCtrl *curricula; //Controls the the tab structure of the curricula
+  void OnUpdateFaculty(wxCommandEvent& event);
+
+  void OnUpdateYear(wxCommandEvent& event);
+
+  void OnShow(wxCommandEvent& event);
+
 private:
-  std::vector<Curriculum*> tabs; //A vector containing pointer to all open curricula
+  Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue
   Courses *courses;
   MouseManager *mousemanager;
   Database *database;
 
-  //wxDECLARE_EVENT_TABLE();
+  wxComboBox *faculties;
+  wxComboBox *years;
+
+  wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* OVERVIEW_H_ */

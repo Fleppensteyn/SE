@@ -31,7 +31,6 @@ public:
 
 enum{
   ID_LOGOUT,
-  ID_CLOSE_TAB,
   ID_NEW_COURSE,
   ID_NEW_CURRICULUM
 };
@@ -56,9 +55,6 @@ public:
 
   //If logged in, logs the user out and returns to login screen
   void OnLogout(wxCommandEvent& event);
-
-  //If in overview, closes the tab that is currently open
-  void OnCloseTab(wxCommandEvent& event);
 
   //If in overview, opens 'Create new course' dialog
   void OnNewCourse(wxCommandEvent& event);
@@ -85,7 +81,6 @@ private:
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (wxID_EXIT, Frame::OnExit)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
-  EVT_MENU    (ID_CLOSE_TAB, Frame::OnCloseTab)
   EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_MENU    (ID_NEW_CURRICULUM, Frame::OnNewCurriculum)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
@@ -114,8 +109,6 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Create the menu bar for the overview screen
   wxMenu *menuFile_overview = new wxMenu; //The overview File menu
-  menuFile_overview->Append(ID_CLOSE_TAB, wxT("&Close tab"));
-  menuFile_overview->AppendSeparator();
   menuFile_overview->Append(ID_LOGOUT, wxT("&Logout"));
   menuFile_overview->Append(wxID_EXIT);
 
@@ -203,10 +196,6 @@ void Frame::OnSubmit(wxCommandEvent& event){
 void Frame::OnLogout(wxCommandEvent& event){
   SwitchPanels();
 }//OnLogout
-
-void Frame::OnCloseTab(wxCommandEvent& event){
-  panel_overview->OnCloseTab();
-}//OnCloseTab
 
 void Frame::OnNewCourse(wxCommandEvent& event){
   CourseCreator cc(this, panel_overview->getCourses());
