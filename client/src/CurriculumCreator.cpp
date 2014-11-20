@@ -5,6 +5,11 @@
 
 #include "CurriculumCreator.h"
 
+wxBEGIN_EVENT_TABLE(CurriculumCreator, wxDialog)
+  EVT_BUTTON            (ID_SUBMIT_CURRICULUM, CurriculumCreator::OnSubmitCurriculum)
+  EVT_TEXT_ENTER        (wxID_ANY, CurriculumCreator::OnTextEnter)
+wxEND_EVENT_TABLE()
+
 CurriculumCreator::CurriculumCreator(wxFrame *frame)
       :wxDialog(frame, wxID_ANY, wxT("Curriculum creation"), wxPoint(100,100), wxSize(500, 300),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP){
@@ -16,12 +21,12 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   font.SetWeight(wxFONTWEIGHT_BOLD);
   wxStaticText *name_text = new wxStaticText(box1, -1, "Curriculum Name:");
   name_text->SetFont(font);
-  wxStaticText *years_text = new wxStaticText(box1, -1, "Affiliation:");
+  wxStaticText *affiliation_text = new wxStaticText(box1, -1, "Affiliation:");
+  affiliation_text->SetFont(font);
+  wxStaticText *years_text = new wxStaticText(box1, -1, "Years:");
   years_text->SetFont(font);
   wxStaticText *semesters_text = new wxStaticText(box1, -1, "Semesters per year:");
   semesters_text->SetFont(font);
-  wxStaticText *affiliation_text = new wxStaticText(box1, -1, "Affiliation:");
-  affiliation_text->SetFont(font);
 	
 	//Curriculum name input box
   curriculum_name = new wxTextCtrl(box1, ID_CURRICULUM_NAME, wxT(""), wxPoint(120, 27), wxSize(300, 25),
@@ -30,17 +35,7 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   curriculum_name->SetFocus();
   curriculum_name->SetMaxLength(50);
 
-	//Years input box
-	years = new wxTextCtrl(box1, ID_SEMESTERS, wxT("3"), wxPoint(120, 67), wxSize(40, 25),
-                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
-  years->SetMaxLength(2);
-	
-	//Semesters per year input box
-  semesters = new wxTextCtrl(box1, ID_SEMESTERS, wxT("2"), wxPoint(120, 67), wxSize(40, 25),
-                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
-  semesters->SetMaxLength(2);
-  
-  //Affiliation selection
+	//Affiliation selection
   const wxString temp1[] = {wxT("Affiliated to CS"), //REPLACE THIS WITH LIST FROM DATABASE
                       wxT("Affiliated to Biology"),
                       wxT("Affiliated to Economics"),
@@ -53,20 +48,30 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
                       wxT("Other")};
 
   wxArrayString *affiliations = new wxArrayString(10,temp1);
-  affiliation = new wxComboBox(box1, ID_AFFILIATION, wxT("Affiliated to CS"), wxPoint(120,27),
+  affiliation = new wxComboBox(box1, ID_CURAFFILIATION, wxT("Affiliated to CS"), wxPoint(120,27),
                                wxSize(300,25), *affiliations, wxCB_READONLY | wxTE_PROCESS_ENTER);
+
+	//Years input box
+	years = new wxTextCtrl(box1, ID_CURYEARS, wxT("3"), wxPoint(120, 67), wxSize(40, 25),
+                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
+  years->SetMaxLength(2);
+	
+	//Semesters per year input box
+  semesters = new wxTextCtrl(box1, ID_CURSEMESTERS, wxT("2"), wxPoint(120, 67), wxSize(40, 25),
+                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
+  semesters->SetMaxLength(2);
   
   //Create button
   wxButton *create = new wxButton(this, ID_SUBMIT_CURRICULUM, wxT("Create"));
 
   //Positioning of elements
-  wxFlexGridSizer *box1_flex = new wxFlexGridSizer(5, 2, 15, 10);
+  wxFlexGridSizer *box1_flex = new wxFlexGridSizer(4, 2, 15, 10);
   box1_flex->Add(name_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box1_flex->Add(curriculum_name, 0, wxALIGN_LEFT);
-  box1_flex->Add(semesters_text, 0, wxALIGN_RIGHT | wxTOP, 3);
-  box1_flex->Add(semesters, 0, wxALIGN_LEFT);
   box1_flex->Add(affiliation_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box1_flex->Add(affiliation, 0, wxALIGN_LEFT);
+  box1_flex->Add(semesters_text, 0, wxALIGN_RIGHT | wxTOP, 3);
+  box1_flex->Add(semesters, 0, wxALIGN_LEFT);
   box1_flex->Add(years_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box1_flex->Add(years, 0, wxALIGN_LEFT);
   
@@ -96,6 +101,68 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
 
   this->curriculum = curriculum;
 }
+
+CurriculumCreator::~CurriculumCreator(){
+  ClearErrors();
+}//~CurriculumCreator
+
+
+void CurriculumCreator::OnTextEnter(wxCommandEvent& event){
+  int id = event.GetId();
+  if(id == ID_CURRICULUM_NAME) //Enter was pressed in the course name box
+    years->SetFocus();
+  else if(id == ID_CURYEARS) //Enter was pressed in the ects box
+    affiliation->SetFocus();
+  else{ //Enter was pressed in any other box that doesn't inherently handle these events
+    wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_CURRICULUM);
+    wxPostEvent(this, event);
+  }
+}//OnTextEnter
+
+void CurriculumCreator::OnSubmitCurriculum(wxCommandEvent& event){
+  ClearErrors(); //Clear the errors of the previous creation attempt
+  if(curriculum_name->GetValue() == "")
+    DisplayError(ERROR_NO_CURNAME); //No curriculum name was specified
+  if(years->GetValue() == "")
+    DisplayError(ERROR_NO_CURYEARS); //No years amount specified
+  if(semesters->GetValue() == "")
+    DisplayError(ERROR_NO_CURSEMESTERS);//No semesters amount specified
+
+  if(errors.size() == 0)
+    EndModal(wxID_OK);
+
+  for(int i = 0; i < errors.size(); i++)
+    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
+}//OnSubmitCourse
+
+void CurriculumCreator::DisplayError(int error){
+  switch(error){
+    case ERROR_NO_CURNAME:
+      errors.push_back(new wxStaticText(box1, wxID_ANY, "Course name can't be empty!",
+                                        wxPoint(150,10), wxSize(300,17)));
+      break;
+    case ERROR_NO_CURSEMESTERS:
+      errors.push_back(new wxStaticText(box1, wxID_ANY, "Must specify a number of semesters!",
+                                        wxPoint(150,90), wxSize(300, 17)));
+      break;
+    case ERROR_NO_CURYEARS:
+      errors.push_back(new wxStaticText(box1, wxID_ANY, "Must specify a number of years!",
+                                        wxPoint(150,130), wxSize(300, 17)));
+      break;
+    case ERROR_CURRICULUM_ALREADY_EXISTS:
+      errors.push_back(new wxStaticText(this, wxID_ANY, "The specified curriculum already exists!",
+                                        wxPoint(120, 380), wxSize(250, 17)));
+      errors[0]->SetForegroundColour(wxColour(wxT("RED")));
+      break;
+  }
+}//DisplayError
+
+void CurriculumCreator::ClearErrors(){
+  for(int i = 0; i < errors.size(); i++)
+    errors[i]->Destroy();
+  errors.clear();
+}//ClearErrors
+
 
 std::vector<wxString> CurriculumCreator::getData(){
 	
