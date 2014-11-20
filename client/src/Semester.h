@@ -22,6 +22,7 @@ class Semester{
 public:
   //Sets the root for this 'new' semester
   Semester(Course *croot);
+  Semester();
   ~Semester();
 
   //Returns the root

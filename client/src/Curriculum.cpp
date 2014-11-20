@@ -18,35 +18,12 @@ Curriculum::~Curriculum(){
   semesters.clear();
 }
 
-void Curriculum::setCurriculum(Courses *courses){
+void Curriculum::setCurriculum(std::vector<Semester*> vec, wxString name){//Courses *courses){
   //database to tree things first
+  semesters.clear();
+  semesters = vec;
 
-  //but for now let's fake it!!!!!!!!!!
-  curName = wxString("Test Year 1");
-  for(int i = 0; i < 2; i++){
-    Course *course = courses->getCourse(1);
-    Semester *sem = new Semester(course);
-    Node *par = sem->GetRoot();
-    for(int j = 0; j < 3; j++)
-      par = sem->AddChild(par,course);
-    if(i  == 0){
-      Node *split = sem->CreateSplit(par);
-      par = sem->AddChild(split, course,0);
-      par = sem->AddChild(par, course);
-      Node *par2 = sem->AddChild(split, course, 1);
-      par2 = sem->AddChild(par2, course);
-      par2 = sem->AddChild(par2, course);
-      split = sem->CreateSplit(par);
-      par = sem->AddChild(split, course, 0);
-      par2 = sem->AddChild(split, course, 1);
-    }
-    else{
-      for(int j = 0; j < 3; j++)
-        par = sem->AddChild(par,course);
-    }
-    semesters.push_back(sem);
-  }
-  //till here it was faked
+  curName = name;
 
   drawCurriculum();
   Refresh();

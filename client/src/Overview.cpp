@@ -85,5 +85,8 @@ void Overview::OnUpdateYear(wxCommandEvent& event){
 }//OnUpdateYear
 
 void Overview::OnShow(wxCommandEvent& event){
-  curriculum->setCurriculum(courses);
+  wxString fac = faculties->GetValue();
+  wxString ys = years->GetValue();
+  wxString name = faculties->GetValue() << wxString(" ") << ys;
+  curriculum->setCurriculum(database->populateTree(fac, ys), name);
 }

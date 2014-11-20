@@ -11,13 +11,33 @@ Semester::Semester(Course *croot){
   total_height = y_start + 60;
 }
 
+Semester::Semester(){
+  total_height = y_start;
+  root = NULL;
+}
+
 Semester::~Semester(){
 
 }
 
 void Semester::SetRoot(Course *course){
-  Node *temp = new Node(course);
-  temp->SetChild(root);
+  Node *temp;
+  if(course != NULL){
+    temp = new Node(course);
+  }
+  else{
+    temp = new Node(NODE_SPLIT);
+  }
+  if(root == NULL){
+    if(temp->GetNodeType() == NODE_NORMAL){
+      total_width = 240;
+      total_height += 60;
+    }
+    else if(temp->GetNodeType() == NODE_SPLIT)
+      total_width = 490;
+  }
+  else
+    temp->SetChild(root);
   root = temp;
 }//SetRoot
 

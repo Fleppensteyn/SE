@@ -30,7 +30,7 @@ public:
   Curriculum(wxPanel *overview);
   virtual ~Curriculum();
 
-  void setCurriculum(Courses *courses);
+  void setCurriculum(std::vector<Semester*> vec, wxString name);//Courses *courses);
 
   //Updates the curriculum after a drag and drop action
   void updateCurriculum();

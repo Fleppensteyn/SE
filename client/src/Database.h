@@ -8,9 +8,13 @@
 
 #include "sqlite/sqlite3.h"
 #include <vector>
+
 //#include "wx/string.h"
 
 class Courses;
+struct Course;
+class Node;
+class Semester;
 class wxString;
 class wxArrayString;
 
@@ -39,12 +43,18 @@ public:
   std::vector<int> filter(SearchPars par);
   wxArrayString* getFaculties();
   wxArrayString* getYears(wxString name);
+  std::vector<Semester*> populateTree(wxString curname, wxString yearname);
 
 private:
   bool connect();
   void error(const char* msg);
   void fillColours(Courses* courses, int filltype);
+  std::vector<Semester*> populateTree(int fid);
+  void populateSplit(Node *splitnode, Semester *sem, int fid);
+  Node* populateLine(Node *root, std::vector<int> index, std::vector<Course*> course,
+                     Semester *semester);
 
+  Courses *courses;
   sqlite3 *db;
   const char* filename;
 };
