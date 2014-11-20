@@ -12,6 +12,7 @@
 
 class Courses;
 class wxString;
+class wxArrayString;
 
 enum
 {
@@ -36,6 +37,8 @@ public:
   int addNewCourse(wxString name, wxString line, wxString number, int ects,
                    unsigned int affiliation, unsigned int type);
   std::vector<int> filter(SearchPars par);
+  wxArrayString* getFaculties();
+  wxArrayString* getYears(wxString name);
 
 private:
   bool connect();

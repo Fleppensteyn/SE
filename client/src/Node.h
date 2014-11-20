@@ -26,13 +26,18 @@ public:
   NodeType GetNodeType(){return nodetype;}
   unsigned int GetChildCount(){return children.size();}
   unsigned int GetExpectedChildren(){return expected_children;}
+  Node* GetChild(){return (children.size() > 0)?children[0]:NULL;}
   Node* GetChild(unsigned int i){return children[i];}
+  std::vector<Node*> GetChoices(){return choices;}
+  unsigned int GetX(){return x;}
+  unsigned int GetY(){return y;}
 
   void SetCourse(Course *course);
   void SetNodeType(NodeType nodetype);
   void SetChild(Node *node);
   void SetChild(Node *node, unsigned int index);
   void SetChoices(std::vector<Node*> nodes);
+  void SetPosition(unsigned int x, unsigned int y);
 
 private:
   Course *course;
@@ -40,6 +45,8 @@ private:
   std::vector<Node*> children;
   std::vector<Node*> choices;
   unsigned int expected_children;
+  unsigned int x;
+  unsigned int y;
 };
 
 #endif /* NODE_H_ */

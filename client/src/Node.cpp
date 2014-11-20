@@ -40,8 +40,10 @@ void Node::SetChild(Node *node, unsigned int index){
   switch(nodetype){
     case NODE_NORMAL:
     case NODE_CHOICE:
-      if(children.size() > 0) 
+      if(children.size() > 0){
+        node->SetChild(children[1]);
         children.clear();
+      }
       children.push_back(node);
       break;
     case NODE_SPLIT:
@@ -63,3 +65,8 @@ void Node::SetChoices(std::vector<Node*> nodes){
   if(nodetype == NODE_CHOICE)
     choices = nodes;
 }//SetChoices
+
+void Node::SetPosition(unsigned int x, unsigned int y){
+  this->x = x;
+  this->y = y;
+}

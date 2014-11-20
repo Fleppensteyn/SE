@@ -146,3 +146,52 @@ std::vector<int> Database::filter(SearchPars par){
   sqlite3_finalize(stmt);
   return ret;
 }
+
+wxArrayString* Database::getFaculties(){
+  wxArrayString *retarray = new wxArrayString();
+
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  const char* query = "SELECT name FROM curriculum;";
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("preparing statement");
+    sqlite3_finalize(stmt);
+    return retarray;
+  }
+  rc = sqlite3_step(stmt);
+  while (rc == SQLITE_ROW){
+    retarray->Add(sqlite3_column_text(stmt,0), 1);
+    rc = sqlite3_step(stmt);
+  }
+  if (rc != SQLITE_DONE)
+    error("evaluating statement");
+  sqlite3_finalize(stmt);
+
+  return retarray;
+}//getFaculties
+
+wxArrayString* Database::getYears(wxString name){
+  wxArrayString *retarray = new wxArrayString();
+
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("SELECT name FROM years WHERE cid IN ") <<
+                   wxString("(SELECT id FROM curriculum WHERE name='") << name << wxString("');");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("preparing statement");
+    sqlite3_finalize(stmt);
+    return retarray;
+  }
+  rc = sqlite3_step(stmt);
+  while (rc == SQLITE_ROW){
+    retarray->Add(sqlite3_column_text(stmt,0), 1);
+    rc = sqlite3_step(stmt);
+  }
+  if (rc != SQLITE_DONE)
+    error("evaluating statement");
+  sqlite3_finalize(stmt);
+
+  return retarray;
+}//getYears

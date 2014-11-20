@@ -6,9 +6,17 @@
 #ifndef SEMESTER_H_
 #define SEMESTER_H_
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+  #include "wx/wx.h"
+#endif
+
 #include "Courses.h"
 #include "Node.h"
 #include <vector>
+
+const unsigned int y_start = 80;
 
 class Semester{
 public:
@@ -29,8 +37,21 @@ public:
   //Creates a choice node as child of 'parent' course
   Node* CreateChoice(Node *parent, std::vector<Course*> options);
 
+  void setPositions(unsigned int x_start);
+  void show(wxDC& dc);
+
+  unsigned int getWidth(){return total_width;}
+  unsigned int getHeight(){determineHeight(); return total_height;}
+
 private:
   Node *root;
+  unsigned int total_width;
+  unsigned int total_height;
+
+  void setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned int x_start);
+  void showLine(wxDC& dc, Node *snode);
+  unsigned int determineStartX(Node *snode, unsigned int s);
+  void determineHeight();
 };
 
 #endif /* SEMESTER_H_ */

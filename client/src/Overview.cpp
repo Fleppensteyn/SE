@@ -8,8 +8,10 @@
 //A summary of all events of the class Login that need to be captured
 //and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(Overview, wxPanel)
-  EVT_COMBOBOX_CLOSEUP  (ID_FACULTY, Overview::OnUpdateFaculty)
-  EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
+  //EVT_COMBOBOX_CLOSEUP  (ID_FACULTY, Overview::OnUpdateFaculty)
+  EVT_TEXT              (ID_FACULTY, Overview::OnUpdateFaculty)
+  //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
+  EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
   EVT_BUTTON            (ID_SHOW, Overview::OnShow)
 wxEND_EVENT_TABLE()
 
@@ -27,14 +29,13 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
 
   const wxString t[] = {wxT("Computer Science"), wxT("Economics")};
   wxArrayString *temp = new wxArrayString(2, t);
+  wxArrayString *facs = database->getFaculties();
   faculties = new wxComboBox(this, ID_FACULTY, wxT(""), wxPoint(0,0), wxSize(200,25),
-                             *temp, wxCB_READONLY);
-  const wxString t2[] = {wxT("Year 1"), wxT("Year 2")};
-  wxArrayString *temp2 = new wxArrayString(2, t2);
-  years = new wxComboBox(this, ID_YEARS, wxT(""), wxPoint(0,0), wxSize(200,25),
-                             *temp2, wxCB_READONLY);
+                             *facs, wxCB_READONLY);
+  years = new wxComboBox(this, ID_YEARS);
 
-  wxButton *show = new wxButton(this, ID_SHOW, wxT("Show"));
+  show = new wxButton(this, ID_SHOW, wxT("Show"));
+  show->Enable(false);
 
   //Setup the catalogue
   catalogue = new Catalogue(this, this->courses);
@@ -73,13 +74,16 @@ Overview::~Overview(){
 }
 
 void Overview::OnUpdateFaculty(wxCommandEvent& event){
-
-}
+  years->Clear();
+  wxArrayString *temp = database->getYears(faculties->GetValue());
+  years->Append(*temp);
+  show->Enable(false);
+}//OnUpdateFaculty
 
 void Overview::OnUpdateYear(wxCommandEvent& event){
-
-}
+  show->Enable(true);
+}//OnUpdateYear
 
 void Overview::OnShow(wxCommandEvent& event){
-
+  curriculum->setCurriculum(courses);
 }

@@ -60,6 +60,7 @@ private:
 
   wxComboBox *faculties;
   wxComboBox *years;
+  wxButton *show;
 
   wxDECLARE_EVENT_TABLE();
 };
