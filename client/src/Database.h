@@ -49,11 +49,13 @@ private:
   bool connect();
   void error(const char* msg);
   void fillColours(Courses* courses, int filltype);
-  std::vector<Semester*> populateTree(int fid);
-  void populateSplit(Node *splitnode, Semester *sem, int fid);
-  Node* populateLine(Node *root, std::vector<int> index, std::vector<Course*> course,
-                     Semester *semester);
 
+  void getPopulation(int fid);
+  void orderPopulation(std::vector<std::vector<std::vector<int> > > pop);
+  void populateLine(int ind, Node *parent, Semester *sem);
+  void populateSplit(int fid, Node *splitnode, Semester *sem);
+
+  std::vector<std::vector<std::vector<int> > > pop;
   Courses *courses;
   sqlite3 *db;
   const char* filename;
