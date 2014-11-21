@@ -63,6 +63,8 @@ INSERT INTO columns (yid, ind, lid) VALUES (3,1,4);
 INSERT INTO columns (yid, ind, lid) VALUES (3,2,5);
 INSERT INTO columns (yid, ind, lid) VALUES (3,3,6);
 INSERT INTO columns (yid, ind, lid) VALUES (4,1,7);
+INSERT INTO columns (yid, ind, lid) VALUES (4,-1,8);
+INSERT INTO columns (yid, ind, lid) VALUES (4,-1,9);
 
 INSERT INTO lines (id, ind, type, fid) VALUES (1,1,1,1);
 INSERT INTO lines (id, ind, type, fid) VALUES (1,2,1,2);

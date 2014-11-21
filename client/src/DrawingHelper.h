@@ -22,15 +22,17 @@ enum {
   ALIGN_CENTER
 };
 
+const int coursewidth = 240, courseheight = 60;
+
 class DrawingHelper
 {
 public:
+
   DrawingHelper();
   static wxBitmap drawCourse(Course course);
 private:
   static void drawTextAligned(wxDC& dc, wxString txt, int x, int y, int align);
 
 };
-
 
 #endif /* DRAWINGHELPER_H_ */

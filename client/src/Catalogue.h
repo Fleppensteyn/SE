@@ -13,6 +13,8 @@
 #endif
 
 #include "Courses.h"
+#include "MouseManager.h"
+#include "DragDropHelp.h"
 
 const int catalogue_width = 265; //Width of the catalogue panel
 
@@ -21,19 +23,24 @@ class Catalogue : public wxScrolledCanvas
 {
 public:
   //Set up the catalogue panel
-  Catalogue(wxPanel *panel, Courses *courses);
+  Catalogue(wxPanel *panel, Courses *courses, DragDropHelp * dragdrop);
   virtual ~Catalogue();
+  int hitTest(const wxPoint& pos);
+  void select(int index);
+  // void drawSomething(int item, const wxPoint& pos);
+  void startDrag(int item, const wxPoint& pos);
 
 private:
-  // void paintEvent(wxPaintEvent& event);
   void OnDraw(wxDC& dc);
-  // void scrollEvent(wxScrollEvent& event);
   void filter(SearchPars pars);
   void updateSizes();
 
+  int selected;
   int yscroll;
   wxPanel *overview;
   Courses *courses;
+  DragDropHelp * dragdrop;
+  CatalogueMouseManager * mousemanager;
   std::vector<Course *> bmaps;
 
   // wxDECLARE_EVENT_TABLE();

@@ -16,6 +16,7 @@
 #include "Catalogue.h"
 #include "Courses.h"
 #include "MouseManager.h"
+#include "DragDropHelp.h"
 #include <vector>
 #include "Database.h"
 
@@ -57,10 +58,15 @@ private:
   Courses *courses;
   MouseManager *mousemanager;
   Database *database;
+  DragDropHelp * dragdrop;
 
   wxComboBox *faculties;
   wxComboBox *years;
   wxButton *show;
+
+  void drawStuff(wxPaintEvent& event);
+
+  void OnResize(wxSizeEvent& event);
 
   wxDECLARE_EVENT_TABLE();
 };

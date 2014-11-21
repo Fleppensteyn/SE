@@ -17,8 +17,9 @@
 #include "Semester.h"
 #include "Node.h"
 #include "DrawingHelper.h"
+#include "DragDropHelp.h"
 
-const int curriculum_width = 500; 
+const int curriculum_width = 500;
 const unsigned int spacing = 50;
 
 //Contains all gui elements and functionality of a single curriculum
@@ -27,7 +28,7 @@ class Curriculum : public wxScrolledCanvas
 public:
   //Sets up the view of a single curriculum
   // curricula - The parent tab control
-  Curriculum(wxPanel *overview);
+  Curriculum(wxPanel *overview, DragDropHelp * dragdrop);
   virtual ~Curriculum();
 
   void setCurriculum(std::vector<Semester*> vec, wxString name);//Courses *courses);
@@ -35,11 +36,14 @@ public:
   //Updates the curriculum after a drag and drop action
   void updateCurriculum();
 
+  void dragDraw();
+
 private:
   wxString curName;   //Name of the curriculum
   std::vector<Semester*> semesters; //Vector of all courses
   std::vector<wxBitmap> bmaps;
   DrawingHelper dh;
+  DragDropHelp * dragdrop;
 
   //Prints this curriculum in the overview box
   void drawCurriculum();

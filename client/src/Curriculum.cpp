@@ -5,9 +5,10 @@
 
 #include "Curriculum.h"
 
-Curriculum::Curriculum(wxPanel *overview)
+Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
       :wxScrolledCanvas(overview, wxID_ANY, wxPoint(100,100), wxSize(curriculum_width, 100))
 {
+  this->dragdrop = dragdrop;
   wxFont font = GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   font.SetPointSize(30);
@@ -73,7 +74,17 @@ void Curriculum::OnDraw(wxDC& dc){
   dc.DrawText(curName, vpoint.x + ((rsize.GetWidth() - width) / 2), vpoint.y + 10);
   for(int i = 0; i < semesters.size(); i++)
     semesters[i]->show(dc);
+
+  wxPoint dragpos;
+  if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM))
+    dc.DrawBitmap(dragdrop->getCourse()->bitmap, dragpos);
 }//showCurriculum
+
+void Curriculum::dragDraw(){
+  wxPoint dragpos;
+  if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM))
+    Refresh();
+}
 
 unsigned int Curriculum::determineWidth(){
   unsigned int total_width = 0;

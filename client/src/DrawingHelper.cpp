@@ -10,7 +10,7 @@ DrawingHelper::DrawingHelper(){
 }
 
 wxBitmap DrawingHelper::drawCourse(Course course){
-  int width = 240, height = 60;
+  int width = coursewidth, height = courseheight;
   wxBitmap ret(width,height);
   wxMemoryDC dc(ret);
   dc.SetTextForeground(wxColour("#366092"));

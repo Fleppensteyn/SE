@@ -13,6 +13,8 @@ wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
   EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
   EVT_BUTTON            (ID_SHOW, Overview::OnShow)
+  EVT_PAINT             (Overview::drawStuff)
+  EVT_SIZE              (Overview::OnResize)
 wxEND_EVENT_TABLE()
 
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
@@ -20,11 +22,12 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
 {
   this->database = new Database("client.db");
   this->courses = new Courses(this->database);
-  this->mousemanager = new MouseManager(this);
+  this->dragdrop = new DragDropHelp();
+  this->mousemanager = new MouseManager(this, this->dragdrop);
   this->database->fillCourses(this->courses);
 
   //Set an empty curriculum to initially fill the screen
-  curriculum = new Curriculum(this);
+  curriculum = new Curriculum(this, dragdrop);
   curriculum->SetBackgroundColour(wxColour(200,200,200));
 
   const wxString t[] = {wxT("Computer Science"), wxT("Economics")};
@@ -38,7 +41,7 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   show->Enable(false);
 
   //Setup the catalogue
-  catalogue = new Catalogue(this, this->courses);
+  catalogue = new Catalogue(this, this->courses, this->dragdrop);
   catalogue->SetBackgroundColour(wxColour("#FFFFFF"));
 
   //Position the curricula and catalogue and drop-down list buttons
@@ -64,13 +67,13 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   column->AddSpacer(5);
 
   SetSizer(column);
-
 }
 
 Overview::~Overview(){
   delete mousemanager;
   delete courses;
   delete database;
+  delete dragdrop;
 }
 
 void Overview::OnUpdateFaculty(wxCommandEvent& event){
@@ -84,9 +87,26 @@ void Overview::OnUpdateYear(wxCommandEvent& event){
   show->Enable(true);
 }//OnUpdateYear
 
+void Overview::drawStuff(wxPaintEvent& event){
+  wxPaintDC dc(this);
+  wxPoint pos;
+  if (dragdrop->needsDrawing(pos, DRAGDROP_OVERVIEW))
+    dc.DrawBitmap(dragdrop->getCourse()->bitmap, pos);
+  curriculum->dragDraw();
+}
+
 void Overview::OnShow(wxCommandEvent& event){
   wxString fac = faculties->GetValue();
   wxString ys = years->GetValue();
   wxString name = faculties->GetValue() << wxString(" ") << ys;
   curriculum->setCurriculum(database->populateTree(fac, ys), name);
+}
+
+void Overview::OnResize(wxSizeEvent& event){
+  Layout();
+  wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
+       curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();
+  wxSize catalogsize = catalogue->GetClientSize(),
+      curriculumsize = curriculum->GetClientSize();
+  dragdrop->updateVariables(catalogpos, curriculumpos, catalogsize, curriculumsize);
 }
