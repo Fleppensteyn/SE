@@ -44,6 +44,9 @@ public:
   wxArrayString* getFaculties();
   wxArrayString* getYears(wxString name);
   std::vector<Semester*> populateTree(wxString curname, wxString yearname);
+  int addCurriculum(wxString name, int semesters, int years);
+  int addYear(wxString curname, int year);
+  int addYear(int cid, int year);
 
 private:
   bool connect();

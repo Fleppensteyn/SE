@@ -114,7 +114,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   wxMenu *menuNew = new wxMenu;
   menuNew->Append(ID_NEW_COURSE, wxT("New course"));
-  menuNew->Append(ID_NEW_CURRICULUM, wxT("New curriculum"));
+  menuNew->Append(ID_NEW_CURRICULUM, wxT("New study program"));
 
   menubar_overview = new wxMenuBar();
   menubar_overview->Append(menuFile_overview, "&File");
@@ -217,12 +217,12 @@ void Frame::OnNewCourse(wxCommandEvent& event){
 }//OnNewCourse
 
 void Frame::OnNewCurriculum(wxCommandEvent& event){
-	CurriculumCreator cc(this);
-	while(cc.ShowModal() == wxID_OK){
-		std::vector<wxString> data = cc.getData();
-		int ret = panel_overview->addNewCurriculum(data);
-    if(ret == 1){
-      SetStatusText("Succesfully added new curriculum");
+  CurriculumCreator cc(this);
+  while(cc.ShowModal() == wxID_OK){
+    std::vector<wxString> data = cc.getData();
+    int ret = panel_overview->addNewCurriculum(data);
+    if(ret >= 0){
+      SetStatusText("Succesfully added new study program");
       return;
     }
     else if(ret == -1){

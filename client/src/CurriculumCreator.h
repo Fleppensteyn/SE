@@ -19,8 +19,7 @@ enum{
   ID_CURRICULUM_NAME,
   ID_CURYEARS,
   ID_CURSEMESTERS,
-	ID_CURAFFILIATION,
-	ID_SUBMIT_CURRICULUM
+  ID_SUBMIT_CURRICULUM
 };
 
 enum{
@@ -33,9 +32,9 @@ enum{
 class CurriculumCreator : public wxDialog
 {
 public:
-	CurriculumCreator(wxFrame *frame);
-	
-	//Delete all error messages
+  CurriculumCreator(wxFrame *frame);
+
+  //Delete all error messages
   virtual ~CurriculumCreator();
 
   //If enter is pressed in a textctrl switches focus to next element
@@ -50,18 +49,19 @@ public:
   //Delete all error messages
   void ClearErrors();
   
-	std::vector<wxString> getData();
-	
-	private:
-	wxTextCtrl *curriculum_name;  //Input box for the name of the new curriculum
-	wxTextCtrl *years;  //Input box for the number of years in the curriculum
-	wxTextCtrl *semesters;  //Input box for the number of semesters per years
-	wxComboBox *affiliation;  //Drop-down list box for all possible affiliations
-	std::vector<wxStaticText*> errors; //Error messages that apply at any given time
+  std::vector<wxString> getData();
+
+private:
+  wxTextCtrl *curriculum_name;  //Input box for the name of the new curriculum
+  wxTextCtrl *years;  //Input box for the number of years in the curriculum
+  wxTextCtrl *semesters;  //Input box for the number of semesters per years
+  wxComboBox *affiliation;  //Drop-down list box for all possible affiliations
+  std::vector<wxStaticText*> errors; //Error messages that apply at any given time
   wxStaticBox *box1;
-  
+
   Curriculum *curriculum;
-  
+
   wxDECLARE_EVENT_TABLE();
 };
+
 #endif /* CURRICULUMCREATOR_H_ */

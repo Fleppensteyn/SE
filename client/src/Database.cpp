@@ -197,33 +197,7 @@ wxArrayString* Database::getYears(wxString name){
 
   return retarray;
 }//getYears
-/*
-std::vector<Semester*> Database::populateTree(wxString curname, wxString yearname){
-  std::vector<Semester*> ret;
 
-  sqlite3_stmt *stmt;
-  const char *pzt;
-  wxString query = wxString("SELECT years.id FROM years WHERE years.name='") << yearname <<
-                   wxString("' AND years.cid IN (SELECT curriculum.id FROM curriculum ") <<
-                   wxString("WHERE curriculum.name='") << curname << wxString("');");
-  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
-  if (rc){
-    error("preparing statement1");
-    sqlite3_finalize(stmt);
-    return ret;
-  }
-  rc = sqlite3_step(stmt);
-  while (rc == SQLITE_ROW){
-    ret = populateTree(sqlite3_column_int(stmt, 0));
-    rc = sqlite3_step(stmt);
-  }
-  if (rc != SQLITE_DONE)
-    error("evaluating statement");
-  sqlite3_finalize(stmt);
-
-  return ret;
-}
-*/
 std::vector<Semester*> Database::populateTree(wxString curname, wxString yearname){
   std::vector<Semester*> ret;
   Semester *sem;
@@ -414,3 +388,70 @@ void Database::populateSplit(int fid, Node *splitnode, Semester *sem){
   sqlite3_finalize(stmt);
 
 }//getPopulation
+
+int Database::addCurriculum(wxString name, int semesters, int years){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("INSERT INTO curriculum(name) VALUES ('") << name << wxString("');");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statement");
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+  rc = sqlite3_step(stmt);
+  if(rc == SQLITE_ERROR)
+    ret = -1;
+  else
+    ret = sqlite3_last_insert_rowid(this->db);
+  sqlite3_finalize(stmt);
+  for(int i = 1; i <= years; i++){
+    if(addYear(ret, i) < 0)
+      ret = -1;
+  }
+  return ret;
+}
+
+int Database::addYear(wxString curname, int year){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("SELECT id FROM curriculum WHERE name='") << curname << wxString("';");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statement");
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+  rc = sqlite3_step(stmt);
+  while (rc == SQLITE_ROW){
+    ret = addYear(sqlite3_column_int(stmt, 0), year);
+    rc = sqlite3_step(stmt);
+  }
+  if (rc != SQLITE_DONE)
+    error("evaluating statement");
+  sqlite3_finalize(stmt);
+  return ret;
+}
+
+int Database::addYear(int cid, int year){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("INSERT INTO years(cid, ind, name) VALUES ('") << cid <<
+                   wxString("' ,'") << year << wxString("' ,'Year ") << year << wxString("');");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statement");
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+  rc = sqlite3_step(stmt);
+  if(rc == SQLITE_ERROR)
+    ret = -1;
+  else
+    ret = sqlite3_last_insert_rowid(this->db);
+  sqlite3_finalize(stmt);
+  return ret;
+}

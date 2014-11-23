@@ -14,6 +14,7 @@ Semester::Semester(Course *croot){
 Semester::Semester(){
   total_height = y_start;
   root = NULL;
+  total_width = 240;
 }
 
 Semester::~Semester(){
@@ -29,12 +30,10 @@ void Semester::SetRoot(Course *course){
     temp = new Node(NODE_SPLIT);
   }
   if(root == NULL){
-    if(temp->GetNodeType() == NODE_NORMAL){
-      total_width = 240;
+    if(temp->GetNodeType() == NODE_NORMAL)
       total_height += 60;
-    }
     else if(temp->GetNodeType() == NODE_SPLIT)
-      total_width = 490;
+      total_width += 250;
   }
   else
     temp->SetChild(root);

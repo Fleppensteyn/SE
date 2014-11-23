@@ -44,7 +44,7 @@ public:
 
   int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
   
-  int addNewCurriculum(std::vector<wxString> data){return curriculum->addNewCurriculum(data);}
+  int addNewCurriculum(std::vector<wxString> data);
 
   Courses* getCourses(){return courses;}
 

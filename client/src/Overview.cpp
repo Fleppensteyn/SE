@@ -30,8 +30,6 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   curriculum = new Curriculum(this, dragdrop);
   curriculum->SetBackgroundColour(wxColour(200,200,200));
 
-  const wxString t[] = {wxT("Computer Science"), wxT("Economics")};
-  wxArrayString *temp = new wxArrayString(2, t);
   wxArrayString *facs = database->getFaculties();
   faculties = new wxComboBox(this, ID_FACULTY, wxT(""), wxPoint(0,0), wxSize(200,25),
                              *facs, wxCB_READONLY);
@@ -75,6 +73,25 @@ Overview::~Overview(){
   delete database;
   delete dragdrop;
 }
+
+int Overview::addNewCurriculum(std::vector<wxString> data){
+  unsigned int semesters = wxAtoi(data[1]);
+  unsigned int years = wxAtoi(data[2]);
+  int ret = database->addCurriculum(data[0], semesters, years);
+  if(ret >= 0){
+    wxString sel = faculties->GetValue();
+    faculties->Clear();
+    wxArrayString *facs = database->getFaculties();
+    faculties->Append(*facs);
+    for(int i = 0; i < faculties->GetCount(); i++){
+      if(faculties->GetString(i) == sel){
+        faculties->SetSelection(i);
+        break;
+      }
+    }
+  }
+  return ret;
+}//addCourse
 
 void Overview::OnUpdateFaculty(wxCommandEvent& event){
   years->Clear();
