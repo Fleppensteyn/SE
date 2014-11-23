@@ -93,6 +93,24 @@ int Overview::addNewCurriculum(std::vector<wxString> data){
   return ret;
 }//addCourse
 
+int Overview::addNewYear(wxFrame *frame){
+  YearCreator yc(frame, database);
+  while(yc.ShowModal() == wxID_OK){
+    std::vector<wxString> data = yc.getData();
+    int ret = database->addYear(data[0], wxAtoi(data[1]));
+    if(ret >= 0){
+      if(data[0] == faculties->GetValue()){
+        wxCommandEvent event(wxEVT_TEXT, ID_FACULTY);
+        wxPostEvent(this, event);
+      }
+      return 1;
+    }
+    else if(ret == -1)
+      yc.DisplayError(ERROR_YEAR_ALREADY_EXISTS);
+  } 
+  return -1;
+}
+
 void Overview::OnUpdateFaculty(wxCommandEvent& event){
   years->Clear();
   wxArrayString *temp = database->getYears(faculties->GetValue());

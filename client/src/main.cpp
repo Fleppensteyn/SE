@@ -32,7 +32,8 @@ public:
 enum{
   ID_LOGOUT,
   ID_NEW_COURSE,
-  ID_NEW_CURRICULUM
+  ID_NEW_CURRICULUM,
+  ID_NEW_YEAR
 };
 
 //The frame within which the entire program is run.
@@ -62,6 +63,8 @@ public:
   //If in overview, opens 'Create new curriculum' dialog
   void OnNewCurriculum(wxCommandEvent& event);
 
+  void OnNewYear(wxCommandEvent& event);
+
   //Switches between the Login and Overview panel
   void SwitchPanels();
 
@@ -83,6 +86,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
   EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_MENU    (ID_NEW_CURRICULUM, Frame::OnNewCurriculum)
+  EVT_MENU    (ID_NEW_YEAR, Frame::OnNewYear)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
 wxEND_EVENT_TABLE()
 
@@ -115,6 +119,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   wxMenu *menuNew = new wxMenu;
   menuNew->Append(ID_NEW_COURSE, wxT("New course"));
   menuNew->Append(ID_NEW_CURRICULUM, wxT("New study program"));
+  menuNew->Append(ID_NEW_YEAR, wxT("New year"));
 
   menubar_overview = new wxMenuBar();
   menubar_overview->Append(menuFile_overview, "&File");
@@ -230,6 +235,10 @@ void Frame::OnNewCurriculum(wxCommandEvent& event){
     }
   } 
   SetStatusText("");
+}
+
+void Frame::OnNewYear(wxCommandEvent& event){
+  panel_overview->addNewYear(this);
 }
 
 void Frame::SwitchPanels(){
