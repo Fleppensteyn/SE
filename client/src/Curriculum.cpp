@@ -70,12 +70,17 @@ void Curriculum::OnDraw(wxDC& dc){
   wxSize rsize = GetSize();
   int width = dc.GetTextExtent(curName).GetWidth();
   dc.DrawText(curName, vpoint.x + ((rsize.GetWidth() - width) / 2), vpoint.y + 10);
-  for(int i = 0; i < semesters.size(); i++)
-    semesters[i]->show(dc);
 
   wxPoint dragpos;
-  if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM))
+  if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM)){
+    for(int i = 0; i < semesters.size(); i++)
+      semesters[i]->show(dc, dragpos);
     dc.DrawBitmap(dragdrop->getCourse()->bitmap, dragpos);
+  }
+  else{
+    for(int i = 0; i < semesters.size(); i++)
+      semesters[i]->show(dc);
+  }
 }//showCurriculum
 
 void Curriculum::dragDraw(){

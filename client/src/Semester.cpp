@@ -9,12 +9,16 @@ Semester::Semester(Course *croot){
   root = new Node(croot);
   total_width = 240;
   total_height = y_start + 60;
+  drageffect = false;
+  dragging = false;
 }
 
 Semester::Semester(){
   total_height = y_start;
   root = NULL;
   total_width = 240;
+  drageffect = false;
+  dragging = false;
 }
 
 Semester::~Semester(){
@@ -76,9 +80,27 @@ void Semester::setPositions(unsigned int x_start){
   setLine(x, y_start, root, x_start);
 }//setPositions
 
+void Semester::show(wxDC& dc, wxPoint dragpos){
+  this->dragpos = dragpos;
+  dragging = true;
+  showLine(dc, root);
+  dragging = false;
+}//show
+
 void Semester::show(wxDC& dc){
   showLine(dc, root);
 }//show
+
+void Semester::checkDragEffect(Node *node){
+  int x = node->GetX(),
+      y = node->GetY(),
+      x_drag = dragpos.x,
+      y_drag = dragpos.y;
+  if(x - 50 < x_drag && x_drag < x + 120){
+    if(y - 20 < y_drag && y_drag < y + 30)
+      drageffect = true;
+  }
+}
 
 void Semester::setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned int x_start){
   Node *temp = snode;
@@ -106,20 +128,28 @@ void Semester::setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned i
 
 void Semester::showLine(wxDC& dc, Node *snode){
   Node *temp = snode;
+  bool dragtemp;
+  int x, y;
   while(temp != NULL){
+    if(dragging && !drageffect)
+      checkDragEffect(temp);
     switch(temp->GetNodeType()){
       case NODE_NORMAL:
-        dc.DrawBitmap(temp->GetCourse()->bitmap, temp->GetX(), temp->GetY());
+        y = (drageffect)?temp->GetY()+70:temp->GetY();
+        dc.DrawBitmap(temp->GetCourse()->bitmap, temp->GetX(), y);
         temp = temp->GetChild();
         break;
       case NODE_SPLIT:
+        dragtemp = drageffect;
         showLine(dc, temp->GetChild(1));
+        drageffect = dragtemp;
         temp = temp->GetChild();
         break;
       case NODE_CHOICE:
       default: break;
     }
   }
+  drageffect = false;
 }//showLine
 
 unsigned int Semester::determineStartX(Node *snode, unsigned int s){
