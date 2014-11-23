@@ -30,7 +30,21 @@ void Curriculum::setCurriculum(std::vector<Semester*> vec, wxString name){//Cour
   Refresh();
 }
 
+void Curriculum::addCurriculum(wxString name, wxString affiliation, unsigned int semesters, unsigned int years){
+	OneCurriculum newCurriculum = {name, affiliation, semesters, years};
+	//curriculum->curName = name;
+	all_curricula.push_back(newCurriculum);
+}
 
+int Curriculum::addNewCurriculum(std::vector<wxString> data){
+  //check if curriculum already exists!
+  //if not add it to database!
+  unsigned int semesters = wxAtoi(data[2]);
+  unsigned int years = wxAtoi(data[3]);
+  addCurriculum(data[0], data[1], semesters, years);
+  return 1;
+  //TODO: Check if curriculum already exists
+}//addCourse
 
 void Curriculum::updateCurriculum(){
   /*  TODO:

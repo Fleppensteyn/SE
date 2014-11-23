@@ -220,13 +220,13 @@ void Frame::OnNewCurriculum(wxCommandEvent& event){
 	CurriculumCreator cc(this);
 	while(cc.ShowModal() == wxID_OK){
 		std::vector<wxString> data = cc.getData();
-		int ret = 1;//Moet zijn: panel_overview->addNewCurriculum(data);
+		int ret = panel_overview->addNewCurriculum(data);
     if(ret == 1){
       SetStatusText("Succesfully added new curriculum");
       return;
     }
     else if(ret == -1){
-      //cc.DisplayError(ERROR_CURRICULUM_ALREADY_EXISTS);
+      cc.DisplayError(ERROR_CURRICULUM_ALREADY_EXISTS);
     }
   } 
   SetStatusText("");

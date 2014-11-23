@@ -138,7 +138,7 @@ void CurriculumCreator::OnSubmitCurriculum(wxCommandEvent& event){
 void CurriculumCreator::DisplayError(int error){
   switch(error){
     case ERROR_NO_CURNAME:
-      errors.push_back(new wxStaticText(box1, wxID_ANY, "Course name can't be empty!",
+      errors.push_back(new wxStaticText(box1, wxID_ANY, "Curriculum name can't be empty!",
                                         wxPoint(150,10), wxSize(300,17)));
       break;
     case ERROR_NO_CURSEMESTERS:
@@ -163,7 +163,11 @@ void CurriculumCreator::ClearErrors(){
   errors.clear();
 }//ClearErrors
 
-
 std::vector<wxString> CurriculumCreator::getData(){
-	
+	std::vector<wxString> data;
+  data.push_back(curriculum_name->GetValue());
+  data.push_back(affiliation->GetValue());
+  data.push_back(semesters->GetValue());
+  data.push_back(years->GetValue());
+  return data;
 }
