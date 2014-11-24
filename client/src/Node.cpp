@@ -7,6 +7,7 @@
 
 Node::Node(NodeType nt){
   SetNodeType(nt);
+  parent = NULL;
 }
 
 Node::~Node(){
@@ -31,6 +32,16 @@ void Node::SetNodeType(NodeType nodetype){
       expected_children = 0; break;
   }
 }//SetNodeType
+
+void Node::SetParent(Node *node){
+  if(parent != NULL){
+    for(int i = 0; i < parent->GetChildCount(); i++){
+      if(parent->GetChild(i) == this)
+        parent->SetChild(NULL, i);
+    }
+  }
+  parent = node;
+}
 
 void Node::SetChild(Node *node){
   SetChild(node, 0);

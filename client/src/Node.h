@@ -17,7 +17,7 @@ typedef enum __nodetype {
 
 class Node{
 public:
-  Node(Course *c) : course(c), nodetype(NODE_NORMAL), expected_children(1) {} //Normal node
+  Node(Course *c) : course(c), nodetype(NODE_NORMAL), parent(NULL), expected_children(1) {} //Normal node
   Node(NodeType nt); //only specify nodetype
 
   ~Node();
@@ -34,6 +34,7 @@ public:
 
   void SetCourse(Course *course);
   void SetNodeType(NodeType nodetype);
+  void SetParent(Node * node);
   void SetChild(Node *node);
   void SetChild(Node *node, unsigned int index);
   void SetChoices(std::vector<Node*> nodes);
@@ -42,6 +43,7 @@ public:
 private:
   Course *course;
   NodeType nodetype;
+  Node *parent;
   std::vector<Node*> children;
   std::vector<Node*> choices;
   unsigned int expected_children;

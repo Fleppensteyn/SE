@@ -45,6 +45,7 @@ public:
 
   unsigned int getWidth(){return total_width;}
   unsigned int getHeight(){determineHeight(); return total_height;}
+  void getNodes(std::vector<Node*> &nodes, Node *node);
 
 private:
   Node *root;

@@ -47,18 +47,21 @@ void Semester::SetRoot(Course *course){
 Node* Semester::AddChild(Node *parent, Course *child, unsigned int index){
   Node *retnode = new Node(child);
   parent->SetChild(retnode, index);
+  retnode->SetParent(parent);
   return retnode;
 }//AddChild
 
 Node* Semester::AddChild(Node *parent, Course *child){
   Node *retnode = new Node(child);
   parent->SetChild(retnode);
+  retnode->SetParent(parent);
   return retnode;
 }//AddChild
 
 Node* Semester::CreateSplit(Node *parent){
   Node *retnode = new Node(NODE_SPLIT);
   parent->SetChild(retnode);
+  retnode->SetParent(parent);
   total_width += 250;
   return retnode;
 }//createSplit
@@ -69,6 +72,7 @@ Node* Semester::CreateChoice(Node *parent, std::vector<Course*> options){
   for(int i = 0; i < options.size(); i++)
     choices.push_back(new Node(options[i]));
   retnode->SetChoices(choices);
+  retnode->SetParent(parent);
   return retnode;
 }//CreateChoice
 
@@ -176,5 +180,23 @@ void Semester::determineHeight(){
   while(temp != NULL){
     total_height += 70;
     temp = temp->GetChild();
+  }
+}
+
+void Semester::getNodes(std::vector<Node*> &nodes, Node *node){
+  Node *temp = node;
+  while(temp != NULL){
+    nodes.push_back(temp);
+    switch(temp->GetNodeType()){
+      case NODE_NORMAL:
+        temp = temp->GetChild();
+        break;
+      case NODE_SPLIT:
+        getNodes(nodes, temp->GetChild(1));
+        temp = temp->GetChild(0);
+        break;
+      case NODE_CHOICE:
+      default: break;
+    }
   }
 }

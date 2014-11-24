@@ -34,7 +34,8 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   wxArrayString *facs = database->getFaculties();
   faculties = new wxComboBox(this, ID_FACULTY, wxT(""), wxPoint(0,0), wxSize(200,25),
                              *facs, wxCB_READONLY);
-  years = new wxComboBox(this, ID_YEARS);
+  years = new wxComboBox(this, ID_YEARS, wxT(""), wxPoint(0,0), wxSize(120, 25), 0, NULL,
+                         wxCB_READONLY);
 
   show = new wxButton(this, ID_SHOW, wxT("Show"));
   show->Enable(false);
@@ -139,6 +140,7 @@ void Overview::OnShow(wxCommandEvent& event){
 }
 
 void Overview::OnResize(wxSizeEvent& event){
+  curriculum->drawCurriculum();
   Layout();
   wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
        curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();

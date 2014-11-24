@@ -17,6 +17,7 @@
 #include "DragDropHelp.h"
 
 class Catalogue;
+class Curriculum;
 
 class MouseManager : public wxMouseEventsManager
 {
@@ -55,6 +56,27 @@ private:
 
 };
 
+class CurriculumMouseManager : public MouseManager
+{
+public:
+  CurriculumMouseManager(Curriculum * curriculum, DragDropHelp * dragdrop);
+  virtual ~CurriculumMouseManager();
+
+protected:
+  virtual int MouseHitTest(const wxPoint& pos);
+  virtual bool MouseClicked(int item);
+  virtual bool MouseDragBegin(int item, const wxPoint& pos);
+  virtual void MouseDragging(int item, const wxPoint& pos);
+  // virtual void MouseDragEnd(int item, const wxPoint& pos);
+  // virtual void MouseDragCancelled(int item);
+  // virtual void MouseClickCancelled(int item);
+
+private:
+  Curriculum * curriculum;
+
+};
+
 #include "Catalogue.h"
+#include "Curriculum.h"
 
 #endif /* MOUSEMANAGER_H_ */
