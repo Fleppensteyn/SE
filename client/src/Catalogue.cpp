@@ -47,6 +47,21 @@ void Catalogue::select(int index){
   Refresh();
 }
 
+void Catalogue::editCourse(int index) {
+	Course *course = bmaps[index];
+	CourseEditor *editor = new CourseEditor(course);
+  while (editor->ShowModal() == wxID_OK){
+    std::vector<wxString> data = editor->getData();
+    int ret = 1;//courses->editCourse(data);
+    if(ret >= 0){
+      return;
+    }
+    else if(ret == -1){
+      editor->DisplayError(ERROR_EDIT_COURSE_ALREADY_EXISTS);
+    }
+  } 
+}
+
 void Catalogue::OnDraw(wxDC& dc){
   unsigned int wincap = (GetClientSize().GetHeight()/65) + 2,
                curind = ((GetViewStart().y*yscroll)/65);

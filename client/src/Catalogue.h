@@ -15,6 +15,7 @@
 #include "Courses.h"
 #include "MouseManager.h"
 #include "DragDropHelp.h"
+#include "CourseEditor.h"
 
 const int catalogue_width = 265; //Width of the catalogue panel
 
@@ -27,6 +28,7 @@ public:
   virtual ~Catalogue();
   int hitTest(const wxPoint& pos);
   void select(int index);
+  void editCourse(int index);
   // void drawSomething(int item, const wxPoint& pos);
   void startDrag(int item, const wxPoint& pos);
 
@@ -39,6 +41,7 @@ private:
   int yscroll;
   wxPanel *overview;
   Courses *courses;
+  CourseEditor *editor;
   DragDropHelp * dragdrop;
   CatalogueMouseManager * mousemanager;
   std::vector<Course *> bmaps;

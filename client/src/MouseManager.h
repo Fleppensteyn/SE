@@ -46,6 +46,7 @@ protected:
   virtual bool MouseClicked(int item);
   virtual bool MouseDragBegin(int item, const wxPoint& pos);
   virtual void MouseDragging(int item, const wxPoint& pos);
+  int previouslyClickedItem;
   // virtual void MouseDragEnd(int item, const wxPoint& pos);
   // virtual void MouseDragCancelled(int item);
   // virtual void MouseClickCancelled(int item);

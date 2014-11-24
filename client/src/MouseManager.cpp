@@ -50,6 +50,7 @@ CatalogueMouseManager::CatalogueMouseManager(Catalogue * catalogue, DragDropHelp
       :MouseManager(catalogue, dragdrop)
 {
   this->catalogue = catalogue;
+  previouslyClickedItem = -1;
 }
 
 int CatalogueMouseManager::MouseHitTest(const wxPoint& pos){
@@ -57,10 +58,18 @@ int CatalogueMouseManager::MouseHitTest(const wxPoint& pos){
 }
 
 bool CatalogueMouseManager::MouseClicked(int item){
-  printf("Clicked: %2d\n",item);
-  catalogue->select(item);
+  if(item==previouslyClickedItem){
+  	previouslyClickedItem = -1;
+  	catalogue->editCourse(item);
+  }
+  else{
+  	previouslyClickedItem = item;
+  	printf("Clicked: %2d\n",item);
+  	catalogue->select(item);
+  }	
   return true;
 }
+
 void CatalogueMouseManager::MouseDragging(int item, const wxPoint& pos){
   dragdrop->updateDragging(pos, DRAGDROP_CATALOG);
   catalogue->Refresh();
