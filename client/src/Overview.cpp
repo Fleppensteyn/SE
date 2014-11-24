@@ -20,6 +20,7 @@ wxEND_EVENT_TABLE()
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
+  SetDoubleBuffered(true);
   this->database = new Database("client.db");
   this->courses = new Courses(this->database);
   this->dragdrop = new DragDropHelp();
@@ -107,7 +108,7 @@ int Overview::addNewYear(wxFrame *frame){
     }
     else if(ret == -1)
       yc.DisplayError(ERROR_YEAR_ALREADY_EXISTS);
-  } 
+  }
   return -1;
 }
 

@@ -14,6 +14,7 @@ Database::Database(const char* filename){
 Database::~Database(){
   sqlite3_close(this->db);
   // delete filename;
+  pop.clear();
 }
 
 bool Database::connect(){
@@ -323,7 +324,7 @@ void Database::populateLine(int ind, Node *parent, Semester *sem){
         par = sem->GetRoot();
         break;
       case 2: //split node as root
-        sem->SetRoot(NULL); 
+        sem->SetRoot(NULL);
         par = sem->GetRoot();
         populateSplit(pop[ind][0][4], par, sem);
         break;

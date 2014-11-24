@@ -8,6 +8,7 @@
 Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
       :wxScrolledCanvas(overview, wxID_ANY, wxPoint(100,100), wxSize(curriculum_width, 100))
 {
+  SetDoubleBuffered(true);
   this->dragdrop = dragdrop;
   wxFont font = GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
