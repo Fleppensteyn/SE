@@ -84,3 +84,34 @@ bool CatalogueMouseManager::MouseDragBegin(int item, const wxPoint& pos){
 CatalogueMouseManager::~CatalogueMouseManager(){
 
 }
+
+CurriculumMouseManager::CurriculumMouseManager(Curriculum * curriculum,
+                                               DragDropHelp * dragdrop)
+      :MouseManager(curriculum, dragdrop)
+{
+  this->curriculum = curriculum;
+}
+
+int CurriculumMouseManager::MouseHitTest(const wxPoint& pos){
+  return curriculum->hitTest(pos);
+}
+
+bool CurriculumMouseManager::MouseClicked(int item){
+  printf("Clicked: %2d\n",item);
+  curriculum->select(item);
+  return true;
+}
+void CurriculumMouseManager::MouseDragging(int item, const wxPoint& pos){
+  dragdrop->updateDragging(pos, DRAGDROP_CURRICULUM);
+  curriculum->Refresh();
+  printf("Dragging: %2d, %4d, %4d\n", item, pos.x, pos.y);
+}
+
+bool CurriculumMouseManager::MouseDragBegin(int item, const wxPoint& pos){
+  curriculum->startDrag(item, pos);
+  return true;
+}
+
+CurriculumMouseManager::~CurriculumMouseManager(){
+
+}

@@ -18,6 +18,7 @@
 #include "Node.h"
 #include "DrawingHelper.h"
 #include "DragDropHelp.h"
+#include "MouseManager.h"
 
 const int curriculum_width = 500;
 const unsigned int spacing = 50;
@@ -37,19 +38,26 @@ public:
   //Updates the curriculum after a drag and drop action
   void updateCurriculum();
 
+  void drawCurriculum();
+
   void dragDraw();
+
+  int hitTest(const wxPoint& pos);
+  void select(int index);
+  void startDrag(int item, const wxPoint& pos);
 
 private:
   wxString curName;   //Name of the curriculum
   std::vector<Semester*> semesters; //Vector of all courses
-  std::vector<wxBitmap> bmaps;
+  std::vector<Node*> nodes;
+  int selected;
   DrawingHelper dh;
   DragDropHelp * dragdrop;
+  CurriculumMouseManager *mm;
   
   //Prints this curriculum in the overview box
-  void drawCurriculum();
-
   void OnDraw(wxDC& dc);
+  void collectAllNodes();
 
   unsigned int determineWidth();
   unsigned int determineHeight();

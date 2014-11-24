@@ -13,11 +13,11 @@ wxEND_EVENT_TABLE()
 CurriculumCreator::CurriculumCreator(wxFrame *frame)
       :wxDialog(frame, wxID_ANY, wxT("Study Program creation"), wxPoint(100,100), wxSize(500, 230),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP){
-	
-	box1 = new wxStaticBox(this, wxID_ANY, "Study Program specifics", wxPoint(20, 10),
+
+  box1 = new wxStaticBox(this, wxID_ANY, "Study Program specifics", wxPoint(20, 10),
                          wxSize(460, 160));
-	
-	wxFont font = box1->GetFont();
+
+  wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   wxStaticText *name_text = new wxStaticText(box1, -1, "Study Program Name:");
   name_text->SetFont(font);
@@ -42,7 +42,7 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   semesters = new wxTextCtrl(box1, ID_CURSEMESTERS, wxT("2"), wxPoint(120, 67), wxSize(40, 25),
                         wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
   semesters->SetMaxLength(2);
-  
+
   //Create button
   wxButton *create = new wxButton(this, ID_SUBMIT_CURRICULUM, wxT("Create"));
 
@@ -54,7 +54,7 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   box1_flex->Add(semesters, 0, wxALIGN_LEFT);
   box1_flex->Add(years_text, 0, wxALIGN_RIGHT | wxTOP, 3);
   box1_flex->Add(years, 0, wxALIGN_LEFT);
-  
+
   wxBoxSizer *box1_row = new wxBoxSizer(wxHORIZONTAL);
   box1_row->AddStretchSpacer(1);
   box1_row->Add(box1_flex, 0, wxALIGN_CENTER);
@@ -66,7 +66,7 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   box1_column->AddStretchSpacer(1);
 
   box1->SetSizer(box1_column);
-  
+
   //Positioning of elements in dialog
   wxBoxSizer *button_row = new wxBoxSizer(wxHORIZONTAL);
   button_row->Add(CreateButtonSizer(wxCANCEL), 0, wxALIGN_LEFT);

@@ -20,6 +20,7 @@ wxEND_EVENT_TABLE()
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
+  SetDoubleBuffered(true);
   this->database = new Database("client.db");
   this->courses = new Courses(this->database);
   this->dragdrop = new DragDropHelp();
@@ -33,7 +34,8 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   wxArrayString *facs = database->getFaculties();
   faculties = new wxComboBox(this, ID_FACULTY, wxT(""), wxPoint(0,0), wxSize(200,25),
                              *facs, wxCB_READONLY);
-  years = new wxComboBox(this, ID_YEARS);
+  years = new wxComboBox(this, ID_YEARS, wxT(""), wxPoint(0,0), wxSize(120, 25), 0, NULL,
+                         wxCB_READONLY);
 
   show = new wxButton(this, ID_SHOW, wxT("Show"));
   show->Enable(false);
@@ -93,6 +95,24 @@ int Overview::addNewCurriculum(std::vector<wxString> data){
   return ret;
 }//addCourse
 
+int Overview::addNewYear(wxFrame *frame){
+  YearCreator yc(frame, database);
+  while(yc.ShowModal() == wxID_OK){
+    std::vector<wxString> data = yc.getData();
+    int ret = database->addYear(data[0], wxAtoi(data[1]));
+    if(ret >= 0){
+      if(data[0] == faculties->GetValue()){
+        wxCommandEvent event(wxEVT_TEXT, ID_FACULTY);
+        wxPostEvent(this, event);
+      }
+      return 1;
+    }
+    else if(ret == -1)
+      yc.DisplayError(ERROR_YEAR_ALREADY_EXISTS);
+  }
+  return -1;
+}
+
 void Overview::OnUpdateFaculty(wxCommandEvent& event){
   years->Clear();
   wxArrayString *temp = database->getYears(faculties->GetValue());
@@ -120,6 +140,7 @@ void Overview::OnShow(wxCommandEvent& event){
 }
 
 void Overview::OnResize(wxSizeEvent& event){
+  curriculum->drawCurriculum();
   Layout();
   wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
        curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();

@@ -19,6 +19,7 @@
 #include "DragDropHelp.h"
 #include <vector>
 #include "Database.h"
+#include "YearCreator.h"
 
 enum{
   ID_CURRICULA,
@@ -45,6 +46,8 @@ public:
   int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
   
   int addNewCurriculum(std::vector<wxString> data);
+
+  int addNewYear(wxFrame *frame);
 
   Courses* getCourses(){return courses;}
 

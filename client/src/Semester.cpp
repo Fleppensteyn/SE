@@ -9,12 +9,16 @@ Semester::Semester(Course *croot){
   root = new Node(croot);
   total_width = 240;
   total_height = y_start + 60;
+  drageffect = false;
+  dragging = false;
 }
 
 Semester::Semester(){
   total_height = y_start;
   root = NULL;
   total_width = 240;
+  drageffect = false;
+  dragging = false;
 }
 
 Semester::~Semester(){
@@ -43,18 +47,21 @@ void Semester::SetRoot(Course *course){
 Node* Semester::AddChild(Node *parent, Course *child, unsigned int index){
   Node *retnode = new Node(child);
   parent->SetChild(retnode, index);
+  retnode->SetParent(parent);
   return retnode;
 }//AddChild
 
 Node* Semester::AddChild(Node *parent, Course *child){
   Node *retnode = new Node(child);
   parent->SetChild(retnode);
+  retnode->SetParent(parent);
   return retnode;
 }//AddChild
 
 Node* Semester::CreateSplit(Node *parent){
   Node *retnode = new Node(NODE_SPLIT);
   parent->SetChild(retnode);
+  retnode->SetParent(parent);
   total_width += 250;
   return retnode;
 }//createSplit
@@ -65,6 +72,7 @@ Node* Semester::CreateChoice(Node *parent, std::vector<Course*> options){
   for(int i = 0; i < options.size(); i++)
     choices.push_back(new Node(options[i]));
   retnode->SetChoices(choices);
+  retnode->SetParent(parent);
   return retnode;
 }//CreateChoice
 
@@ -76,9 +84,27 @@ void Semester::setPositions(unsigned int x_start){
   setLine(x, y_start, root, x_start);
 }//setPositions
 
+void Semester::show(wxDC& dc, wxPoint dragpos){
+  this->dragpos = dragpos;
+  dragging = true;
+  showLine(dc, root);
+  dragging = false;
+}//show
+
 void Semester::show(wxDC& dc){
   showLine(dc, root);
 }//show
+
+void Semester::checkDragEffect(Node *node){
+  int x = node->GetX(),
+      y = node->GetY(),
+      x_drag = dragpos.x,
+      y_drag = dragpos.y;
+  if(x - 50 < x_drag && x_drag < x + 120){
+    if(y - 20 < y_drag && y_drag < y + 30)
+      drageffect = true;
+  }
+}
 
 void Semester::setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned int x_start){
   Node *temp = snode;
@@ -106,20 +132,28 @@ void Semester::setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned i
 
 void Semester::showLine(wxDC& dc, Node *snode){
   Node *temp = snode;
+  bool dragtemp;
+  int x, y;
   while(temp != NULL){
+    if(dragging && !drageffect)
+      checkDragEffect(temp);
     switch(temp->GetNodeType()){
       case NODE_NORMAL:
-        dc.DrawBitmap(temp->GetCourse()->bitmap, temp->GetX(), temp->GetY());
+        y = (drageffect)?temp->GetY()+70:temp->GetY();
+        dc.DrawBitmap(temp->GetCourse()->bitmap, temp->GetX(), y);
         temp = temp->GetChild();
         break;
       case NODE_SPLIT:
+        dragtemp = drageffect;
         showLine(dc, temp->GetChild(1));
+        drageffect = dragtemp;
         temp = temp->GetChild();
         break;
       case NODE_CHOICE:
       default: break;
     }
   }
+  drageffect = false;
 }//showLine
 
 unsigned int Semester::determineStartX(Node *snode, unsigned int s){
@@ -146,5 +180,23 @@ void Semester::determineHeight(){
   while(temp != NULL){
     total_height += 70;
     temp = temp->GetChild();
+  }
+}
+
+void Semester::getNodes(std::vector<Node*> &nodes, Node *node){
+  Node *temp = node;
+  while(temp != NULL){
+    nodes.push_back(temp);
+    switch(temp->GetNodeType()){
+      case NODE_NORMAL:
+        temp = temp->GetChild();
+        break;
+      case NODE_SPLIT:
+        getNodes(nodes, temp->GetChild(1));
+        temp = temp->GetChild(0);
+        break;
+      case NODE_CHOICE:
+      default: break;
+    }
   }
 }
