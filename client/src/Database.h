@@ -47,6 +47,9 @@ public:
   int addCurriculum(wxString name, int semesters, int years);
   int addYear(wxString curname, int year);
   int addYear(int cid, int year);
+  int deleteCourse(unsigned int ID);
+  int editCourse(unsigned int ID, wxString name, wxString line, wxString number, int ects,
+                 unsigned int affiliation, unsigned int type);
 
 private:
   bool connect();

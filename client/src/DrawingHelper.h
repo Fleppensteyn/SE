@@ -29,7 +29,7 @@ class DrawingHelper
 public:
 
   DrawingHelper();
-  static wxBitmap drawCourse(Course course);
+  static wxBitmap drawCourse(Course *ccourse);
 private:
   static void drawTextAligned(wxDC& dc, wxString txt, int x, int y, int align);
 

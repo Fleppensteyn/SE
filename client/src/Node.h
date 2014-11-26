@@ -27,7 +27,7 @@ public:
   unsigned int GetChildCount(){return children.size();}
   unsigned int GetExpectedChildren(){return expected_children;}
   Node* GetChild(){return (children.size() > 0)?children[0]:NULL;}
-  Node* GetChild(unsigned int i){return children[i];}
+  Node* GetChild(unsigned int i){return (children.size() > i)?children[i]:NULL;}
   std::vector<Node*> GetChoices(){return choices;}
   unsigned int GetX(){return x;}
   unsigned int GetY(){return y;}

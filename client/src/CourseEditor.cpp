@@ -18,27 +18,21 @@ wxBEGIN_EVENT_TABLE(CourseEditor, wxDialog)
 
 //TODO: Iets met copyvariabelen doen, preview werkend krijgen
 
-CourseEditor::CourseEditor(Course *course)
+CourseEditor::CourseEditor(Course *course, Courses *courses)
       :wxDialog(NULL, wxID_ANY, wxT("Course Editing"), wxPoint(100,100), wxSize(500, 450),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
+  this->courses = courses;
  //Static boxes and static text elements
   box1 = new wxStaticBox(this, wxID_ANY, "Course specifics", wxPoint(20, 10),
                          wxSize(460, 120));
   box2 = new wxStaticBox(this, wxID_ANY, "Course affiliations", wxPoint(20, 140),
                          wxSize(460, 150));
-	
-	//Copy values of course
-	wxString copyName = course->name;
-  int copyEcts = course->ects;
+
   //TODO: Zet affiliaton en course_type op de juiste waarden
   //wxString copyAffiliation = ....
   //wxString copyCourse_type = ....;
-  wxString copyCourse_number = course->number;
-	
-	wxString stringEcts = wxString::Format(wxT("%i"),copyEcts);
-	//ItoA(copyEcts);
-	
+
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   wxStaticText *name_text = new wxStaticText(box1, -1, "Course Name:");
@@ -53,13 +47,14 @@ CourseEditor::CourseEditor(Course *course)
   number_text->SetFont(font);
 
   //Course name input box
-  course_name = new wxTextCtrl(box1, ID_EDIT_COURSE_NAME, copyName, wxPoint(120, 27), wxSize(300, 25),
-                              wxTE_PROCESS_ENTER);
+  course_name = new wxTextCtrl(box1, ID_EDIT_COURSE_NAME, course->name, wxPoint(120, 27),
+                               wxSize(300, 25), wxTE_PROCESS_ENTER);
   course_name->SetHint("course name");
   course_name->SetFocus();
   course_name->SetMaxLength(50);
 
   //ECTS input box
+  wxString stringEcts = wxString::Format(wxT("%i"),course->ects);
   ects = new wxTextCtrl(box1, ID_EDIT_ECTS, stringEcts, wxPoint(120, 67), wxSize(40, 25),
                         wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
   ects->SetMaxLength(2);
@@ -79,7 +74,8 @@ CourseEditor::CourseEditor(Course *course)
   wxArrayString *affiliations = new wxArrayString(10,temp1);
   affiliation = new wxComboBox(box2, ID_EDIT_AFFILIATION, wxT("Affiliated to CS"), wxPoint(120,27),
                                wxSize(300,25), *affiliations, wxCB_READONLY | wxTE_PROCESS_ENTER);
-  
+  setAffiliation(course->affiliation);
+
   //Course type selection
   const wxString temp2[] = {wxT("Academic Skills"), //REPLACE THIS WITH LIST FROM DATABASE
                       wxT("Mathematics"),
@@ -91,14 +87,15 @@ CourseEditor::CourseEditor(Course *course)
   wxArrayString *course_types = new wxArrayString(7,temp2);
   course_type = new wxComboBox(box2, ID_EDIT_COURSE_TYPE, wxT("Academic Skills"), wxPoint(120,67),
                                wxSize(300,25), *course_types, wxCB_READONLY | wxTE_PROCESS_ENTER);
+  setType(course->type);
 
   //Course number input box
-  course_number = new wxTextCtrl(box2, ID_EDIT_COURSE_NUMBER, copyCourse_number, wxPoint(120, 67), wxSize(40, 25),
+  course_number = new wxTextCtrl(box2, ID_EDIT_COURSE_NUMBER, course->number, wxPoint(120, 67), wxSize(40, 25),
                         wxTE_PROCESS_ENTER | wxTE_RIGHT);
   course_number->SetMaxLength(2);
 
   //Create accept button
-  wxButton *create = new wxButton(this, ID_EDIT_SUBMIT_COURSE, wxT("Create"));// this course"));
+  wxButton *create = new wxButton(this, ID_EDIT_SUBMIT_COURSE, wxT("Edit"));// this course"));
   
   //Create delete button
 	wxButton *deleteCourse = new wxButton(this, ID_DELETE_COURSE, wxT("Delete course"));
@@ -158,6 +155,8 @@ CourseEditor::CourseEditor(Course *course)
   column->Add(button_row, 0, wxRIGHT | wxLEFT | wxEXPAND, 10);
 
   SetSizer(column);
+
+  delete_course = false;
 }//CourseEditor
 
 CourseEditor::~CourseEditor(){
@@ -165,7 +164,12 @@ CourseEditor::~CourseEditor(){
 }//~CourseEditor
 
 void CourseEditor::OnDeleteCourse(wxCommandEvent& event){
-	
+  delete_course = true;
+  EndModal(wxID_OK);
+}
+
+bool CourseEditor::isDelete(){
+  return delete_course;
 }
 
 void CourseEditor::OnTextEnter(wxCommandEvent& event){
@@ -214,11 +218,6 @@ void CourseEditor::DisplayError(int error){
       errors.push_back(new wxStaticText(box2, wxID_ANY, "Must specify a course number!",
                                         wxPoint(150,85), wxSize(300, 17)));
       break;
-    case ERROR_EDIT_COURSE_ALREADY_EXISTS:
-      errors.push_back(new wxStaticText(this, wxID_ANY, "The specified course already exists!",
-                                        wxPoint(120, 380), wxSize(250, 17)));
-      errors[0]->SetForegroundColour(wxColour(wxT("RED")));
-      break;
   }
 }//DisplayError
 
@@ -234,6 +233,7 @@ std::vector<wxString> CourseEditor::getData(){
   data.push_back(ects->GetValue());
   data.push_back(affiliation->GetValue());
   data.push_back(course_type->GetValue());
+  data.push_back(determineLine());
   data.push_back(course_number->GetValue());
   return data;
 }//getData
@@ -243,16 +243,16 @@ void CourseEditor::updatePreview(wxCommandEvent& event){
 }
 
 void CourseEditor::drawPreview(wxPaintEvent& event){
-  /*Course course = Course();
+  Course course = Course();
   course.name = course_name->GetValue();
   course.line = determineLine();
   course.number = course_number->GetValue();
   course.ects = wxAtoi(ects->GetValue());
   course.affiliation = courses->getAffiliationColour(affiliation->GetValue());
   course.type = courses->getTypeColour(course_type->GetValue());
-  preview = DrawingHelper::drawCourse(course);
+  preview = DrawingHelper::drawCourse(&course);
   wxPaintDC dc(this);
-  dc.DrawBitmap(preview, 130, 310);*/
+  dc.DrawBitmap(preview, 130, 310);
 }//updatePreview
 
 wxString CourseEditor::determineLine(){
@@ -295,3 +295,20 @@ wxString CourseEditor::determineLine(){
   return line;
 }//determineLine
 
+void CourseEditor::setAffiliation(wxColour colour){
+  wxString name = courses->getAffiliationName(colour);
+  for(int i = 0; i < affiliation->GetCount(); i++){
+    if(affiliation->GetString(i) == name){
+      affiliation->SetSelection(i);
+    }
+  }
+}
+
+void CourseEditor::setType(wxColour colour){
+  wxString name = courses->getTypeName(colour);
+    for(int i = 0; i < course_type->GetCount(); i++){
+    if(course_type->GetString(i) == name){
+      course_type->SetSelection(i);
+    }
+  }
+}

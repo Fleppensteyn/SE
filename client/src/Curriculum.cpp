@@ -26,11 +26,14 @@ Curriculum::~Curriculum(){
 
 void Curriculum::setCurriculum(std::vector<Semester*> vec, wxString name){//Courses *courses){
   //database to tree things first
+  if(vec.size() == 0){
+    Refresh();
+    return;
+  }
   semesters.clear();
   semesters = vec;
 
   curName = name;
-
   drawCurriculum();
   collectAllNodes();
   Refresh();
@@ -76,8 +79,6 @@ void Curriculum::OnDraw(wxDC& dc){
   wxSize rsize = GetSize();
   int width = dc.GetTextExtent(curName).GetWidth();
   dc.DrawText(curName, vpoint.x + ((rsize.GetWidth() - width) / 2), vpoint.y + 10);
-
-  
 
   wxPoint dragpos;
   if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM)){

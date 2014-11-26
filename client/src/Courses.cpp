@@ -18,16 +18,23 @@ Courses::~Courses(){
 void Courses::addCourse(unsigned int ID, wxString name, wxString line, wxString number,
                        unsigned int ects, unsigned int affiliation, unsigned int type){
   int i;
-  Course course = {ID, name, line, number, ects, wxColour(wxT("RED")), wxColour(wxT("RED"))};
+  Course * course = new Course();
+  course->ID = ID;
+  course->name = name;
+  course->line = line;
+  course->number = number;
+  course->ects = ects;
+  course->affiliation = wxColour(wxT("RED"));
+  course->type = wxColour(wxT("RED"));
   for(i = 0; i < affiliations.size(); i++){
     if(affiliations[i].ID == affiliation)
-      course.affiliation = affiliations[i].colour;
+      course->affiliation = affiliations[i].colour;
   }
   for(i = 0; i < course_types.size(); i++){
     if(course_types[i].ID == type)
-      course.type = course_types[i].colour;
+      course->type = course_types[i].colour;
   }
-  course.bitmap = DrawingHelper::drawCourse(course);
+  course->bitmap = DrawingHelper::drawCourse(course);
   all_courses.push_back(course);
 }//addCourse
 
@@ -67,7 +74,7 @@ Course * Courses::getCourse(unsigned int ID){
   Course * course = NULL;
   int index = search(ID);
   if(index != -1)
-    course = &all_courses[index];
+    course = all_courses[index];
   return course;
 }//getCourse
 
@@ -85,15 +92,29 @@ wxColour Courses::getTypeColour(wxString name){
   }
 }
 
+wxString Courses::getAffiliationName(wxColour colour){
+  for(int i = 0; i < affiliations.size(); i++){
+    if(affiliations[i].colour == colour)
+      return affiliations[i].name;
+  }
+}
+
+wxString Courses::getTypeName(wxColour colour){
+  for(int i = 0; i < course_types.size(); i++){
+    if(course_types[i].colour == colour)
+      return course_types[i].name;
+  }
+}
+
 int Courses::search(unsigned int ID){
   int min = 0,
       max = all_courses.size()-1,
       mid;
   while(max >= min){
     mid = min + ((max - min) / 2);
-    if(all_courses[mid].ID == ID)
+    if(all_courses[mid]->ID == ID)
       return mid;
-    else if(all_courses[mid].ID < ID)
+    else if(all_courses[mid]->ID < ID)
       min = mid + 1;
     else
       max = mid - 1;
@@ -109,7 +130,50 @@ std::vector<Course *> Courses::filter(SearchPars pars){
   for (unsigned i = 0; i < ids.size(); i++){
     index = search(ids[i]);
     if (index > -1)
-      ret.push_back(&all_courses[index]);
+      ret.push_back(all_courses[index]);
+  }
+  return ret;
+}
+
+int Courses::deleteCourse(unsigned int ID){
+  for(int i = 0; i < all_courses.size(); i++){
+    if(all_courses[i]->ID == ID){
+      all_courses.erase(all_courses.begin() + i);
+    }
+  }
+  return database->deleteCourse(ID);
+}
+
+int Courses::editCourse(unsigned int ID, std::vector<wxString> data){
+  int ects = wxAtoi(data[1]);
+  int i, j;
+  unsigned int affiliation = 1, course_type = 1;
+  for(i = 0; i < affiliations.size(); i++){
+    if(affiliations[i].name == data[2]){
+      affiliation = affiliations[i].ID;
+      break;
+    }
+  }
+  for(j = 0; j < course_types.size(); j++){
+    if(course_types[j].name == data[3]){
+      course_type = course_types[j].ID;
+      break;
+    }
+  }
+
+  int ret = database->editCourse(ID, data[0], data[4], data[5], ects, affiliation, course_type);
+  if(ret >= 0){
+    for(int k = 0; k < all_courses.size(); k++){
+      if(all_courses[k]->ID == ID){
+        all_courses[k]->name = data[0];
+        all_courses[k]->line = data[4];
+        all_courses[k]->number = data[5];
+        all_courses[k]->ects = ects;
+        all_courses[k]->affiliation = affiliations[i].colour;
+        all_courses[k]->type = course_types[j].colour;
+        all_courses[k]->bitmap = DrawingHelper::drawCourse(all_courses[k]);
+      }
+    }
   }
   return ret;
 }

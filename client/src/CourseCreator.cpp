@@ -225,7 +225,7 @@ void CourseCreator::drawPreview(wxPaintEvent& event){
   course.ects = wxAtoi(ects->GetValue());
   course.affiliation = courses->getAffiliationColour(affiliation->GetValue());
   course.type = courses->getTypeColour(course_type->GetValue());
-  preview = DrawingHelper::drawCourse(course);
+  preview = DrawingHelper::drawCourse(&course);
   wxPaintDC dc(this);
   dc.DrawBitmap(preview, 130, 310);
 }//updatePreview

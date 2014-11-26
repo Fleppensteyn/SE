@@ -5,6 +5,14 @@
 
 #include "Catalogue.h"
 
+wxDEFINE_EVENT(EVT_EDIT_NOW, wxCommandEvent);
+wxDEFINE_EVENT(EVT_DELETED_COURSE, wxCommandEvent);
+
+wxBEGIN_EVENT_TABLE(Catalogue, wxScrolledCanvas)
+  EVT_COMMAND  (wxID_ANY, EVT_EDIT_NOW, Catalogue::editCourse)
+  EVT_COMMAND  (wxID_ANY, EVT_DELETED_COURSE, Catalogue::OnDeletedCourse)
+wxEND_EVENT_TABLE()
+
 Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
       :wxScrolledCanvas(panel, wxID_ANY, wxPoint(100,100), wxSize(catalogue_width, 100))
 {
@@ -15,6 +23,7 @@ Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
   this->dragdrop = dragdrop;
   yscroll = 20;
   selected = -1;
+  doubleclick = false;
 
   SearchPars sp;
   filter(sp);
@@ -48,19 +57,39 @@ void Catalogue::select(int index){
   Refresh();
 }
 
-void Catalogue::editCourse(int index) {
-	Course *course = bmaps[index];
-	CourseEditor *editor = new CourseEditor(course);
-  while (editor->ShowModal() == wxID_OK){
-    std::vector<wxString> data = editor->getData();
-    int ret = 1;//courses->editCourse(data);
+void Catalogue::setDoubleClick(){
+  doubleclick = true;
+  wxCommandEvent event(EVT_EDIT_NOW);
+  wxPostEvent(this, event);
+}
+
+void Catalogue::editCourse(wxCommandEvent& event) {
+  Course *course = bmaps[selected];
+  int ret;
+  CourseEditor editor(course, courses);
+  while (editor.ShowModal() == wxID_OK){
+    if(editor.isDelete()){
+      ret = courses->deleteCourse(course->ID);
+      wxCommandEvent event(EVT_DELETED_COURSE);
+      wxPostEvent(this, event);
+    }
+    else{
+      std::vector<wxString> data = editor.getData();
+      ret = courses->editCourse(course->ID, data);
+      wxCommandEvent event(EVT_DELETED_COURSE);
+      wxPostEvent(this, event);
+    }
     if(ret >= 0){
+      SearchPars sp;
+      filter(sp);
+      Refresh();
       return;
     }
-    else if(ret == -1){
-      editor->DisplayError(ERROR_EDIT_COURSE_ALREADY_EXISTS);
-    }
   } 
+}
+
+void Catalogue::OnDeletedCourse(wxCommandEvent& event){
+  event.Skip();
 }
 
 void Catalogue::OnDraw(wxDC& dc){

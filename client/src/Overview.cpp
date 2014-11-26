@@ -15,6 +15,7 @@ wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   EVT_BUTTON            (ID_SHOW, Overview::OnShow)
   EVT_PAINT             (Overview::drawStuff)
   EVT_SIZE              (Overview::OnResize)
+  EVT_COMMAND           (wxID_ANY, EVT_DELETED_COURSE, Overview::OnDeletedCourse)
 wxEND_EVENT_TABLE()
 
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
@@ -147,4 +148,11 @@ void Overview::OnResize(wxSizeEvent& event){
   wxSize catalogsize = catalogue->GetClientSize(),
       curriculumsize = curriculum->GetClientSize();
   dragdrop->updateVariables(catalogpos, curriculumpos, catalogsize, curriculumsize);
+}
+
+void Overview::OnDeletedCourse(wxCommandEvent& event){
+  if(show->IsEnabled()){
+    wxCommandEvent event(wxEVT_BUTTON, ID_SHOW);
+    wxPostEvent(this, event);
+  }
 }

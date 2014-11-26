@@ -9,7 +9,8 @@ DrawingHelper::DrawingHelper(){
 
 }
 
-wxBitmap DrawingHelper::drawCourse(Course course){
+wxBitmap DrawingHelper::drawCourse(Course *ccourse){
+  Course course = *ccourse;
   int width = coursewidth, height = courseheight;
   wxBitmap ret(width,height);
   wxMemoryDC dc(ret);

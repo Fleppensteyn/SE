@@ -57,6 +57,8 @@ public:
 
   void OnShow(wxCommandEvent& event);
 
+  void OnDeletedCourse(wxCommandEvent& event);
+
 private:
   Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue

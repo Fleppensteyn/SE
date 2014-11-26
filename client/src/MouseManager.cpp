@@ -59,14 +59,14 @@ int CatalogueMouseManager::MouseHitTest(const wxPoint& pos){
 
 bool CatalogueMouseManager::MouseClicked(int item){
   if(item==previouslyClickedItem){
-  	previouslyClickedItem = -1;
-  	catalogue->editCourse(item);
+    previouslyClickedItem = -1;
+    catalogue->setDoubleClick();
   }
   else{
-  	previouslyClickedItem = item;
-  	printf("Clicked: %2d\n",item);
-  	catalogue->select(item);
-  }	
+    previouslyClickedItem = item;
+    printf("Clicked: %2d\n",item);
+    catalogue->select(item);
+  }
   return true;
 }
 

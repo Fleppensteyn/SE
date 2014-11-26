@@ -24,7 +24,7 @@ enum{
   ID_EDIT_COURSE_TYPE,
   ID_EDIT_COURSE_NUMBER,
   ID_EDIT_SUBMIT_COURSE,
-  ID_DELETE_COURSE
+  ID_DELETE_COURSE,
 };
 
 //Errors
@@ -41,13 +41,15 @@ class CourseEditor : public wxDialog
 public:
   //Sets up the course creation dialog
   // frame - The parent frame
-  CourseEditor(Course *course);
+  CourseEditor(Course *course, Courses *courses);
 
   //Delete all error messages
   virtual ~CourseEditor();
 
-	//If delete button is pressed, this function will ask for confirmation and then delete the course
-	void OnDeleteCourse(wxCommandEvent& event);
+  //If delete button is pressed, this function will ask for confirmation and then delete the course
+  void OnDeleteCourse(wxCommandEvent& event);
+
+  bool isDelete();
 
   //If enter is pressed in a textctrl switches focus to next element
   void OnTextEnter(wxCommandEvent& event);
@@ -72,6 +74,10 @@ public:
   //Determine through hardcoded association what the line for this course would be
   wxString determineLine();
 
+  void setAffiliation(wxColour colour);
+
+  void setType(wxColour colour);
+
 private:
 	wxTextCtrl *course_name;  //Input box for the name of the new course
   wxTextCtrl *ects;         //Input box for the amount of ECTS awarded for the new course
@@ -83,6 +89,7 @@ private:
 
   wxStaticBox *box1;
   wxStaticBox *box2;
+  bool delete_course;
 
   Courses *courses;  
 

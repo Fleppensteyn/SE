@@ -222,7 +222,10 @@ std::vector<Semester*> Database::populateTree(wxString curname, wxString yearnam
       if(pop[i][0][0] != -1){
         sem = new Semester();
         populateLine(i, NULL, sem);
-        ret.push_back(sem);
+        if(sem->GetRoot() != NULL)
+          ret.push_back(sem);
+        else
+          delete sem;
       }
     }
     rc = sqlite3_step(stmt);
@@ -315,18 +318,22 @@ void Database::populateLine(int ind, Node *parent, Semester *sem){
   Course *course;
   Node *par = parent;
   int i = 0;
-  if (par == NULL){
+  while (par == NULL){
+    if(i >= pop[ind].size())
+      return;
     //create new semester
-    switch(pop[ind][0][3]){
+    switch(pop[ind][i][3]){
       case 1: //normal root
-        course = courses->getCourse(pop[ind][0][4]);
-        sem->SetRoot(course);
-        par = sem->GetRoot();
+        course = courses->getCourse(pop[ind][i][4]);
+        if(course != NULL){
+          sem->SetRoot(course);
+          par = sem->GetRoot();
+        }
         break;
       case 2: //split node as root
         sem->SetRoot(NULL);
         par = sem->GetRoot();
-        populateSplit(pop[ind][0][4], par, sem);
+        populateSplit(pop[ind][i][4], par, sem);
         break;
       default: break;
     }
@@ -336,7 +343,8 @@ void Database::populateLine(int ind, Node *parent, Semester *sem){
     switch(pop[ind][i][3]){
       case 1: //normal node
         course = courses->getCourse(pop[ind][i][4]);
-        par = sem->AddChild(par, course);
+        if(course != NULL)
+          par = sem->AddChild(par, course);
         break;
       case 2: //split node
         par = sem->CreateSplit(par);
@@ -360,7 +368,7 @@ void Database::populateSplit(int fid, Node *splitnode, Semester *sem){
   }
   rc = sqlite3_step(stmt);
   while (rc == SQLITE_ROW){
-    int i, j, k,
+    int i, j = -1, k = -1,
         left = sqlite3_column_int(stmt, 0),
         right = sqlite3_column_int(stmt, 1);
     bool b = false;
@@ -380,8 +388,10 @@ void Database::populateSplit(int fid, Node *splitnode, Semester *sem){
           b = true;
       }
     }
-    populateLine(k, splitnode, sem);
-    populateLine(j, splitnode, sem);
+    if(k != -1)
+      populateLine(k, splitnode, sem);
+    if(j != -1)
+      populateLine(j, splitnode, sem);
     rc = sqlite3_step(stmt);
   }
   if (rc != SQLITE_DONE)
@@ -455,4 +465,52 @@ int Database::addYear(int cid, int year){
     ret = sqlite3_last_insert_rowid(this->db);
   sqlite3_finalize(stmt);
   return ret;
+}
+
+int Database::deleteCourse(unsigned int ID){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("DELETE FROM courses WHERE id=") << ID << wxString(";");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statement");
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+  rc = sqlite3_step(stmt);
+  if(rc == SQLITE_ERROR)
+    ret = -1;
+  else
+    ret = 1;
+  sqlite3_finalize(stmt);
+  return ret;
+}
+
+int Database::editCourse(unsigned int ID, wxString name, wxString line, wxString number,
+                         int ects, unsigned int affiliation, unsigned int type){
+  int ret;
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("UPDATE courses SET name = '") << name <<
+                   wxString("', line = '") << line <<
+                   wxString("', number = '") << number <<
+                   wxString("', ects = ") << ects <<
+                   wxString(", affilid = ") << affiliation <<
+                   wxString(", typeid = ") << type <<
+                   wxString(" WHERE id = ") << ID << wxString(";");
+  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  if (rc){
+    error("Preparing statement");
+    sqlite3_finalize(stmt);
+    return -1;
+  }
+  rc = sqlite3_step(stmt);
+  if(rc == SQLITE_ERROR)
+    ret = -1;
+  else
+    ret = 1;
+  sqlite3_finalize(stmt);
+  return ret;
+  return  ret;
 }

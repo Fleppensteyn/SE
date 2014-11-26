@@ -56,15 +56,23 @@ public:
 
   wxColour getTypeColour(wxString name);
 
+  wxString getAffiliationName(wxColour colour);
+
+  wxString getTypeName(wxColour colour);
+
   int search(unsigned int ID);
 
   std::vector<Course *> filter(SearchPars pars);
+
+  int deleteCourse(unsigned int ID);
+
+  int editCourse(unsigned int ID, std::vector<wxString> data);
 
 
 private:
   std::vector<ColourAttribute> affiliations;
   std::vector<ColourAttribute> course_types;
-  std::vector<Course> all_courses;
+  std::vector<Course*> all_courses;
 
   Database *database;
 };
