@@ -30,7 +30,7 @@ public:
   //Sets up the view of a single curriculum
   // curricula - The parent tab control
   Curriculum(wxPanel *overview, DragDropHelp * dragdrop);
-  
+
   virtual ~Curriculum();
 
   void setCurriculum(std::vector<Semester*> vec, wxString name);//Courses *courses);
@@ -54,7 +54,8 @@ private:
   DrawingHelper dh;
   DragDropHelp * dragdrop;
   CurriculumMouseManager *mm;
-  
+  wxPanel * overview;
+
   //Prints this curriculum in the overview box
   void OnDraw(wxDC& dc);
   void collectAllNodes();

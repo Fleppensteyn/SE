@@ -11,6 +11,7 @@ Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
   SetDoubleBuffered(true);
   this->dragdrop = dragdrop;
   this->mm = new CurriculumMouseManager(this, dragdrop);
+  this->overview = overview;
   wxFont font = GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   font.SetPointSize(30);
@@ -80,6 +81,7 @@ void Curriculum::OnDraw(wxDC& dc){
   int width = dc.GetTextExtent(curName).GetWidth();
   dc.DrawText(curName, vpoint.x + ((rsize.GetWidth() - width) / 2), vpoint.y + 10);
 
+
   wxPoint dragpos;
   if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM)){
     for(int i = 0; i < semesters.size(); i++)
@@ -99,6 +101,8 @@ void Curriculum::OnDraw(wxDC& dc){
       dc.DrawRectangle(p.x - 1, p.y - 1, 242, 62);
     }
   }
+  if (dragdrop->getCourse() != NULL)
+    this->overview->Refresh();
 }//showCurriculum
 
 void Curriculum::dragDraw(){

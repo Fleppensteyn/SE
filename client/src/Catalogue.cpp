@@ -85,7 +85,7 @@ void Catalogue::editCourse(wxCommandEvent& event) {
       Refresh();
       return;
     }
-  } 
+  }
 }
 
 void Catalogue::OnDeletedCourse(wxCommandEvent& event){
@@ -100,7 +100,7 @@ void Catalogue::OnDraw(wxDC& dc){
     dc.DrawBitmap(bmaps[i]->bitmap, 2, 5 + 65 * i);
 
   dc.SetBrush(wxBrush(wxColour("#008888"), wxBRUSHSTYLE_TRANSPARENT));
-  dc.SetPen(wxPen(wxColour("#FF0000"), 3));
+  dc.SetPen(wxPen(wxColour("#000000"), 3));
   if (selected >= curind && selected < curind + wincap)
     dc.DrawRectangle(1, 4 + 65 * selected, coursewidth + 2, courseheight + 2);
   wxPoint drawpos;
