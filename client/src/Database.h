@@ -32,6 +32,20 @@ struct SearchPars
   char * pattern;
 };
 
+struct InsertData
+{
+  int yid;
+  int cid;
+  int columncount;
+  int splitcount;
+  int columnoffset;
+  int splitsoffset;
+  std::vector<std::vector<int> > lines;
+  std::vector<std::vector<int> > columns;
+  std::vector<std::vector<int> > splits;
+  std::vector<int> ids;
+};
+
 class Database
 {
 public:
@@ -50,6 +64,8 @@ public:
   int deleteCourse(unsigned int ID);
   int editCourse(unsigned int ID, wxString name, wxString line, wxString number, int ects,
                  unsigned int affiliation, unsigned int type);
+  bool deleteYear(wxString curname, wxString yearname);
+  void saveYear(wxString curname, wxString yearname, std::vector<Semester*>& tree);
 
 private:
   bool connect();
@@ -60,6 +76,12 @@ private:
   void orderPopulation(std::vector<std::vector<std::vector<int> > > pop);
   void populateLine(int ind, Node *parent, Semester *sem);
   void populateSplit(int fid, Node *splitnode, Semester *sem);
+
+  bool deleteYear(int yid);
+  int simpleQuery(wxString query, const char * errormsg);
+  int selectSingleInt(wxString query, int& rc, const char * errormsg);
+  std::vector<std::vector<int> > selectIntVector(wxString query, int& rc, const char * errormsg);
+  void processLine(Node * root, InsertData& idat, int column);
 
   std::vector<std::vector<std::vector<int> > > pop;
   Courses *courses;

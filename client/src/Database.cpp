@@ -238,6 +238,7 @@ std::vector<Semester*> Database::populateTree(wxString curname, wxString yearnam
 }
 
 void Database::getPopulation(int fid){
+  // printf("getpop\n");
   pop.clear();
   int curind = -1, indind,
       curline = -1, lineind;
@@ -248,6 +249,7 @@ void Database::getPopulation(int fid){
   wxString query = wxString("SELECT columns.ind, lines.id, lines.ind,lines.type,lines.fid") <<
                    wxString(" FROM columns LEFT JOIN lines ON columns.lid=lines.id WHERE") <<
                    wxString(" columns.yid = ") << fid << wxString(";");
+  // printf("%s\n", (const char *) query.ToAscii());
   int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
   if (rc){
     error("preparing statement");
@@ -265,16 +267,18 @@ void Database::getPopulation(int fid){
       i1++;
       i2 = -1;
     }
-    if (curind != indind){
+    if (curind != indind || i2 == -1){
       std::vector<int> temp;
       pop[i1].push_back(temp);
       curind = indind;
       i2++;
     }
+    // printf("ROWS AND STUFF %d %d %d %d %d %d\n", indind, lineind, curind, curline, i1, i2);
     for(int i = 0; i < 5; i++)
       pop[i1][i2].push_back(sqlite3_column_int(stmt, i));
     rc = sqlite3_step(stmt);
   }
+  // printf("What the stuff\n");
   if (rc != SQLITE_DONE)
     error("evaluating statement");
   sqlite3_finalize(stmt);
@@ -282,6 +286,7 @@ void Database::getPopulation(int fid){
 }//getPopulation
 
 void Database::orderPopulation(std::vector<std::vector<std::vector<int> > > pop){
+  // printf("Ordering\n");
   std::vector<std::vector<int> > tempcur;
   std::vector<int> templine;
   //Order on semester
@@ -315,6 +320,7 @@ void Database::orderPopulation(std::vector<std::vector<std::vector<int> > > pop)
 }//orderPopulation
 
 void Database::populateLine(int ind, Node *parent, Semester *sem){
+  // printf("Populating line\n");
   Course *course;
   Node *par = parent;
   int i = 0;
@@ -513,4 +519,242 @@ int Database::editCourse(unsigned int ID, wxString name, wxString line, wxString
   sqlite3_finalize(stmt);
   return ret;
   return  ret;
+}
+
+bool Database::deleteYear(wxString curname, wxString yearname){
+  int yid, rc;
+
+  wxString query;
+  query.Printf("SELECT years.id FROM years, curriculum WHERE years.cid = curriculum.id"
+               " AND years.name = '%s' AND curriculum.name = '%s';", yearname, curname);
+  yid = selectSingleInt(query, rc, "selecting year to delete");
+  if (rc != SQLITE_ROW)
+    return false;
+  else
+    return deleteYear(yid);
+}
+
+bool Database::deleteYear(int yid){
+  int rc;
+  wxString query;
+
+  query.Printf("SELECT ind, lid FROM columns WHERE yid = %d;", yid);
+  std::vector<std::vector<int> > colres = selectIntVector(query, rc, "selecting columns to delete");
+  if (rc != SQLITE_DONE)
+    return false;
+
+  wxString splitcols("("), colstr("(");
+
+  for (int i = 0; i < colres.size(); i++){
+    if (colres[i][0] == -1)
+      splitcols << colres[i][1] << ",";
+    colstr << colres[i][1] << ",";
+  }
+  splitcols.RemoveLast();
+  colstr.RemoveLast();
+
+  if (splitcols.Len() > 0){
+    splitcols << ")";
+    query.Printf("DELETE FROM splits WHERE left IN %s OR right IN %s;", splitcols, splitcols);
+    if (simpleQuery(query, "deleting splits") == SQLITE_ERROR)
+      return false;
+  }
+
+  if (colstr.Len() > 0){
+    colstr << ")";
+    query.Printf("DELETE FROM lines WHERE id IN %s;", colstr);
+    if (simpleQuery(query, "deleting lines") == SQLITE_ERROR)
+      return false;
+  }
+
+  query.Printf("DELETE FROM columns WHERE yid = %d;", yid);
+  if (simpleQuery(query, "deleting columns") == SQLITE_ERROR)
+    return false;
+
+  query.Printf("DELETE FROM years WHERE id = %d;", yid);
+  if (simpleQuery(query, "deleting year") == SQLITE_ERROR)
+    return false;
+  return true;
+}
+
+int Database::simpleQuery(wxString query, const char * errormsg){
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  printf("simpleQuery: %s\n", (const char *)query.ToAscii());
+  int rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
+  if (rc){
+    error(errormsg);
+    sqlite3_finalize(stmt);
+    return SQLITE_ERROR;
+  }
+  rc = sqlite3_step(stmt);
+  if (rc != SQLITE_DONE){
+    error(errormsg);
+    sqlite3_finalize(stmt);
+    return SQLITE_ERROR;
+  }
+  sqlite3_finalize(stmt);
+  return rc;
+}
+
+int Database::selectSingleInt(wxString query, int& rc, const char * errormsg){
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  int ret = -1;
+
+  printf("selectSingleInt: %s\n", (const char *)query.ToAscii());
+  rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
+  if (rc){
+    error(errormsg);
+    sqlite3_finalize(stmt);
+    return ret;
+  }
+  rc = sqlite3_step(stmt);
+  if (rc == SQLITE_ROW)
+    ret = sqlite3_column_int(stmt, 0);
+  else
+    error(errormsg);
+  sqlite3_finalize(stmt);
+  return ret;
+}
+
+std::vector<std::vector<int> > Database::selectIntVector(wxString query, int& rc, const char * errormsg){
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  std::vector<std::vector<int> > ret;
+
+  printf("selectIntVector: %s\n", (const char *)query.ToAscii());
+
+  rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
+  if (rc){
+    error(errormsg);
+    sqlite3_finalize(stmt);
+    return ret;
+  }
+  rc = sqlite3_step(stmt);
+  int cols = sqlite3_data_count(stmt);
+  while (rc == SQLITE_ROW){
+    std::vector<int> temp;
+    for (int i = 0; i < cols; i++)
+      temp.push_back(sqlite3_column_int(stmt, i));
+    ret.push_back(temp);
+    rc = sqlite3_step(stmt);
+  }
+  if (rc != SQLITE_DONE)
+    error(errormsg);
+  sqlite3_finalize(stmt);
+  return ret;
+}
+
+void Database::saveYear(wxString curname, wxString yearname, std::vector<Semester*>& tree){
+  int yid, rc;
+
+  wxString query;
+  query.Printf("SELECT years.cid, years.id FROM years, curriculum WHERE years.cid = curriculum.id"
+               " AND years.name = '%s' AND curriculum.name = '%s';", yearname, curname);
+  std::vector<std::vector<int> > idsel = selectIntVector(query, rc, "checking if year exists");
+  std::vector<int> ids;
+  if (rc == SQLITE_DONE && idsel.size() > 0){
+    // printf("Year exists cid: %d yid: %d\n", idsel[0][0], idsel[0][1]);
+    ids = idsel[0];
+    query.Printf("SELECT ind FROM years WHERE id = %d;",ids[1]);
+    int oldind = selectSingleInt(query, rc, "figuring out the index of the current year");
+    deleteYear(ids[1]);
+    query.Printf("INSERT INTO years (id, cid, ind, name) VALUES (%d, %d, %d, '%s');", ids[1], ids[0], oldind, yearname);
+    rc = simpleQuery(query, "re-inserting a deleted year into the database");
+    if (rc != SQLITE_DONE) return;
+  } else {
+    // printf("Year not in db yet\n");
+    int newind = 1;
+    query.Printf("SELECT id FROM curriculum WHERE name = '%s';", curname);
+    ids.push_back(selectSingleInt(query, rc, "getting the curriculum id"));
+    if (rc != SQLITE_ROW){
+      ids[0] = addCurriculum(curname, 0, 0);
+      newind = 1;
+    } else {
+      query.Printf("SELECT max(ind) FROM years WHERE cid = %d;", ids[0]);
+      newind = 1 + selectSingleInt(query, rc, "figuring out the highest year index");
+      if (rc != SQLITE_ROW)
+        newind = 1;
+    }
+    query.Printf("INSERT INTO years (cid, ind, name) VALUES (%d, %d, '%s');", ids[0], newind, yearname);
+    rc = simpleQuery(query, "inserting a new year into the database");
+    if (rc != SQLITE_DONE) return;
+    ids.push_back(sqlite3_last_insert_rowid(this->db));
+    // return;
+  }
+  InsertData idat;
+  idat.yid = ids[1];
+  idat.cid = ids[0];
+  idat.columncount = tree.size();
+  idat.splitcount = 0;
+  for (int i = 0; i < idat.columncount; i++){
+    int temp[] = {ids[1], i+1, i};
+    std::vector<int> tmpvec(temp, temp + 3);
+    idat.columns.push_back(tmpvec);
+  }
+  for (int i = 0; i < idat.columncount; i++)
+    processLine(tree[i]->GetRoot(), idat, i);
+
+  query.Printf("SELECT max(id) FROM lines;");
+  idat.columnoffset = 1 + selectSingleInt(query, rc, "figuring out the highest line id");
+  if (rc != SQLITE_ROW)
+    idat.columnoffset = 1;
+
+  if (idat.splitcount > 0){
+    for (int i = 0; i < idat.splitcount; i++){
+      query.Printf("INSERT INTO splits(left, right) VALUES (%d, %d);",
+                    idat.splits[i][1] + idat.columnoffset, idat.splits[i][2] + idat.columnoffset);
+      rc = simpleQuery(query, "inserting splits");
+      if (rc != SQLITE_DONE) break;
+      else if (i == 0) idat.splitsoffset = sqlite3_last_insert_rowid(this->db);
+    }
+  }
+  for (int i = 0; i < idat.columns.size(); i++){
+    query.Printf("INSERT INTO columns(yid, ind, lid) VALUES (%d, %d, %d);",
+                  idat.yid, idat.columns[i][1], idat.columns[i][2] + idat.columnoffset);
+    rc = simpleQuery(query, "inserting columns");
+    if (rc != SQLITE_DONE) continue;
+  }
+  for (int i = 0; i < idat.lines.size(); i++){
+    if (idat.lines[i][2] == 2) idat.lines[i][3] += idat.splitsoffset;
+    query.Printf("INSERT INTO lines(id, ind, type, fid) VALUES (%d, %d, %d, %d);",
+                  idat.lines[i][0] + idat.columnoffset, idat.lines[i][1], idat.lines[i][2], idat.lines[i][3]);
+    rc = simpleQuery(query, "inserting lines");
+    if (rc != SQLITE_DONE) continue;
+  }
+}
+
+void Database::processLine(Node * root, InsertData& idat, int column){
+  if (root == NULL) return;
+  Node * cur = root;
+  int type, id, ind = 1;
+  std::vector<int> tmpvec;
+  while (cur != NULL){
+    // printf("col: %d, vec: %d\n", column, ind);
+    switch (cur->GetNodeType()){
+      case NODE_NORMAL: type = 1; id = cur->GetCourse()->ID; break;
+      case NODE_SPLIT:  type = 2; id = idat.splitcount; break;
+      case NODE_CHOICE: type = 3; id = -1; break;
+    }
+    int temp[] = {column, ind++, type, id};
+    tmpvec = std::vector<int>(temp, temp+4);
+    idat.lines.push_back(tmpvec);
+    if (type == 2){
+      // printf("Let's process splits\n");
+      int lcolid = idat.columncount + idat.splitcount * 2;
+      idat.splitcount++;
+      for (int i = 0; i < 2; i++){
+        int temp[] = {idat.yid, -1, lcolid + i};
+        // printf("Splits pls\n");
+        tmpvec = std::vector<int>(temp, temp + 3);
+        idat.columns.push_back(tmpvec);
+        processLine(cur->GetChild(i), idat, lcolid + i);
+      }
+      int temp[] = {id, lcolid, lcolid + 1};
+      tmpvec = std::vector<int>(temp, temp + 3);
+      idat.splits.push_back(tmpvec);
+      cur = NULL;
+    } else cur = cur->GetChild();
+  }
 }

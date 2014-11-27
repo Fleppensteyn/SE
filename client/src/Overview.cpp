@@ -19,6 +19,7 @@ wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   EVT_COMMAND           (wxID_ANY, EVT_DELETED_COURSE, Overview::OnDeletedCourse)
   EVT_COMMAND           (wxID_ANY, EVT_SELECTED, Overview::OnSelected)
   EVT_COMMAND           (wxID_ANY, EVT_NO_SELECT, Overview::OnNoSelect)
+  EVT_COMMAND           (wxID_ANY, EVT_SAVE_DB, Overview::OnSaveDB)
 wxEND_EVENT_TABLE()
 
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
@@ -145,6 +146,8 @@ void Overview::OnShow(wxCommandEvent& event){
   wxString ys = years->GetValue();
   wxString name = faculties->GetValue() << wxString(" ") << ys;
   curriculum->setCurriculum(database->populateTree(fac, ys), name);
+  curfac = fac;
+  curyr = ys;
 }
 
 void Overview::OnResize(wxSizeEvent& event){
@@ -176,4 +179,9 @@ void Overview::OnSelected(wxCommandEvent& event){
 
 void Overview::OnNoSelect(wxCommandEvent& event){
   split->Enable(false);
+}
+
+void Overview::OnSaveDB(wxCommandEvent& event){
+  std::vector<Semester *> tree = this->curriculum->getCurriculum();
+  this->database->saveYear(curfac, curyr, tree);
 }

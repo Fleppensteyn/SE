@@ -22,6 +22,7 @@
 
 wxDECLARE_EVENT(EVT_SELECTED, wxCommandEvent);
 wxDECLARE_EVENT(EVT_NO_SELECT, wxCommandEvent);
+wxDECLARE_EVENT(EVT_SAVE_DB, wxCommandEvent);
 
 const int curriculum_width = 500;
 const unsigned int spacing = 50;
@@ -52,6 +53,8 @@ public:
   void resetNode();
   void removeEmptySplits();
   void insertSplit();
+
+  std::vector<Semester*> getCurriculum();
 
 private:
   wxString curName;   //Name of the curriculum

@@ -7,6 +7,7 @@
 
 wxDEFINE_EVENT(EVT_SELECTED, wxCommandEvent);
 wxDEFINE_EVENT(EVT_NO_SELECT, wxCommandEvent);
+wxDEFINE_EVENT(EVT_SAVE_DB, wxCommandEvent);
 
 
 Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
@@ -218,6 +219,8 @@ void Curriculum::endDrag(int item){
       wxCommandEvent event(EVT_NO_SELECT);
       wxPostEvent(this, event);
       //make sure the database updates!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      wxCommandEvent save_event(EVT_SAVE_DB);
+      wxPostEvent(this, save_event);
     }
   }
   else{
@@ -236,10 +239,12 @@ void Curriculum::endDrag(int item){
       }
       collectAllNodes();
       //update database!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      wxCommandEvent save_event(EVT_SAVE_DB);
+      wxPostEvent(this, save_event);
     }
     else if(item != -1) //else reset it to it's previous position
       resetNode();
-    
+
   }
   removeEmptySplits();
   drawCurriculum();
@@ -343,6 +348,13 @@ void Curriculum::insertSplit(){
   //or not, this change can also be propagated to database next time something is moved
   //saving for just an added split seems kind of futile
 
+  // wxCommandEvent save_event(EVT_SAVE_DB);
+  // wxPostEvent(this, save_event);
+
   drawCurriculum();
   Refresh();
+}
+
+std::vector<Semester *> Curriculum::getCurriculum(){
+  return semesters;
 }

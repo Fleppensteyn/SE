@@ -45,7 +45,7 @@ public:
   virtual ~Overview();
 
   int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
-  
+
   int addNewCurriculum(std::vector<wxString> data);
 
   int addNewYear(wxFrame *frame);
@@ -66,6 +66,8 @@ public:
 
   void OnNoSelect(wxCommandEvent& event);
 
+  void OnSaveDB(wxCommandEvent& event);
+
 private:
   Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue
@@ -78,6 +80,8 @@ private:
   wxComboBox *years;
   wxButton *show;
   wxButton *split;
+
+  wxString curfac, curyr;
 
   void drawStuff(wxPaintEvent& event);
 
