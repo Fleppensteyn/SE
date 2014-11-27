@@ -144,8 +144,9 @@ void Overview::drawStuff(wxPaintEvent& event){
 }
 
 void Overview::OnResize(wxSizeEvent& event){
-  curriculum->drawCurriculum();
   Layout();
+  curriculum->drawCurriculum();
+  curriculum->Layout();
   wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
        curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();
   wxSize catalogsize = catalogue->GetClientSize(),
