@@ -4,6 +4,7 @@
 */
 
 #include "DragDropHelp.h"
+#include "Curriculum.h"
 
 DragDropHelp::DragDropHelp(){
   course = NULL;
@@ -22,7 +23,7 @@ void DragDropHelp::updateVariables(wxPoint catalogpos, wxPoint curriculumpos,
 }
 
 void DragDropHelp::updateDragging(const wxPoint pos, int source){
-  printf("drag update %4d %4d %d %4d %4d\n", pos.x, pos.y, source, catpos.x, catpos.y);
+  //printf("drag update %4d %4d %d %4d %4d\n", pos.x, pos.y, source, catpos.x, catpos.y);
   if (course == NULL) return;
   switch (source){
     case DRAGDROP_CATALOG:    drawpos = pos + catpos - dragpoint; break;
@@ -78,8 +79,13 @@ void DragDropHelp::startDrag(const wxPoint start, const wxPoint dragpoint, Cours
   updateDragging(start, source);
 }
 
-void DragDropHelp::stopDrag(){
+void DragDropHelp::stopDrag(int source){
   printf("drag stop\n");
+  switch(source){
+    case DRAGDROP_CATALOG:
+      curriculum->endDrag(-1);
+    default: break;
+  }
   course = NULL;
   drawpos = wxPoint(-1, -1);
   dragpoint = wxPoint(coursewidth, courseheight);
@@ -87,4 +93,8 @@ void DragDropHelp::stopDrag(){
 
 Course * DragDropHelp::getCourse(){
   return course;
+}
+
+void DragDropHelp::setCurriculum(Curriculum * cur){
+  curriculum = cur;
 }

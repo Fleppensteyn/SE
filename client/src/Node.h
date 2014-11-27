@@ -31,6 +31,7 @@ public:
   std::vector<Node*> GetChoices(){return choices;}
   unsigned int GetX(){return x;}
   unsigned int GetY(){return y;}
+  Node* GetParent();
 
   void SetCourse(Course *course);
   void SetNodeType(NodeType nodetype);

@@ -20,6 +20,9 @@
 #include "DragDropHelp.h"
 #include "MouseManager.h"
 
+wxDECLARE_EVENT(EVT_SELECTED, wxCommandEvent);
+wxDECLARE_EVENT(EVT_NO_SELECT, wxCommandEvent);
+
 const int curriculum_width = 500;
 const unsigned int spacing = 50;
 
@@ -45,6 +48,10 @@ public:
   int hitTest(const wxPoint& pos);
   void select(int index);
   void startDrag(int item, const wxPoint& pos);
+  void endDrag(int item);
+  void resetNode();
+  void removeEmptySplits();
+  void insertSplit();
 
 private:
   wxString curName;   //Name of the curriculum

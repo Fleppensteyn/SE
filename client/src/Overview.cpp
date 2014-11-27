@@ -13,9 +13,12 @@ wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
   EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
   EVT_BUTTON            (ID_SHOW, Overview::OnShow)
+  EVT_BUTTON            (ID_SPLIT, Overview::OnSplit)
   EVT_PAINT             (Overview::drawStuff)
   EVT_SIZE              (Overview::OnResize)
   EVT_COMMAND           (wxID_ANY, EVT_DELETED_COURSE, Overview::OnDeletedCourse)
+  EVT_COMMAND           (wxID_ANY, EVT_SELECTED, Overview::OnSelected)
+  EVT_COMMAND           (wxID_ANY, EVT_NO_SELECT, Overview::OnNoSelect)
 wxEND_EVENT_TABLE()
 
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
@@ -41,6 +44,9 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   show = new wxButton(this, ID_SHOW, wxT("Show"));
   show->Enable(false);
 
+  split = new wxButton(this, ID_SPLIT, wxT("Insert split"));
+  split->Enable(false);
+
   //Setup the catalogue
   catalogue = new Catalogue(this, this->courses, this->dragdrop);
   catalogue->SetBackgroundColour(wxColour("#FFFFFF"));
@@ -50,6 +56,7 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   cbrow->Add(faculties, 0, wxALIGN_LEFT | wxALL, 10);
   cbrow->Add(years, 0, wxALIGN_LEFT | wxALL, 10);
   cbrow->Add(show, 0, wxALIGN_LEFT | wxALL, 10);
+  cbrow->Add(split, 0, wxALIGN_LEFT | wxALL, 10);
 
   wxBoxSizer *curcolumn = new wxBoxSizer(wxVERTICAL);
   curcolumn->Add(cbrow);
@@ -155,4 +162,18 @@ void Overview::OnDeletedCourse(wxCommandEvent& event){
     wxCommandEvent event(wxEVT_BUTTON, ID_SHOW);
     wxPostEvent(this, event);
   }
+}
+
+void Overview::OnSplit(wxCommandEvent& event){
+  if(split->IsEnabled()){
+    curriculum->insertSplit();
+  }
+}
+
+void Overview::OnSelected(wxCommandEvent& event){
+  split->Enable(true);
+}
+
+void Overview::OnNoSelect(wxCommandEvent& event){
+  split->Enable(false);
 }

@@ -14,6 +14,8 @@
 
 #include "Courses.h"
 
+class Curriculum;
+
 enum
 {
   DRAGDROP_CATALOG,
@@ -33,14 +35,17 @@ public:
   bool needsDrawing(wxPoint& pos, int place);
 
   void startDrag(const wxPoint start, const wxPoint dragpoint, Course * course, int source);
-  void stopDrag();
+  void stopDrag(int source);
   Course * getCourse();
+
+  void setCurriculum(Curriculum * cur);
 
 
 private:
   Course * course;
   wxPoint currpos, catpos, dragpoint, drawpos;
   wxSize  currsize, catsize;
+  Curriculum * curriculum;
 };
 
 #endif /* DRAGDROPHELP_H_ */

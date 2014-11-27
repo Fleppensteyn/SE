@@ -25,7 +25,8 @@ enum{
   ID_CURRICULA,
   ID_FACULTY,
   ID_YEARS,
-  ID_SHOW
+  ID_SHOW,
+  ID_SPLIT
 };
 
 //Contains all gui elements and functionality of the Curriculum and Catalogue overview
@@ -59,6 +60,12 @@ public:
 
   void OnDeletedCourse(wxCommandEvent& event);
 
+  void OnSplit(wxCommandEvent& event);
+
+  void OnSelected(wxCommandEvent& event);
+
+  void OnNoSelect(wxCommandEvent& event);
+
 private:
   Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue
@@ -70,6 +77,7 @@ private:
   wxComboBox *faculties;
   wxComboBox *years;
   wxButton *show;
+  wxButton *split;
 
   void drawStuff(wxPaintEvent& event);
 

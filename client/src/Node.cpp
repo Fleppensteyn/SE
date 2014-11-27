@@ -34,12 +34,12 @@ void Node::SetNodeType(NodeType nodetype){
 }//SetNodeType
 
 void Node::SetParent(Node *node){
-  if(parent != NULL){
+  /*if(parent != NULL && node != NULL){
     for(int i = 0; i < parent->GetChildCount(); i++){
       if(parent->GetChild(i) == this)
         parent->SetChild(NULL, i);
     }
-  }
+  }*/
   parent = node;
 }
 
@@ -51,14 +51,22 @@ void Node::SetChild(Node *node, unsigned int index){
   switch(nodetype){
     case NODE_NORMAL:
     case NODE_CHOICE:
-      if(children.size() > 0){
-        node->SetChild(children[1]);
+      if(node == NULL)
         children.clear();
+      else{
+        if(children.size() > 0){
+          node->SetChild(children[0]);
+          children.clear();
+        }
+        children.push_back(node);
       }
-      children.push_back(node);
       break;
     case NODE_SPLIT:
-      if(children.size() == expected_children){
+      if(node == NULL){
+        if(children.size() > index)
+          children.erase(children.begin()+index);
+      }
+      else if(children.size() == expected_children){
         //nothing at this time, but in future move to larger split
       }
       else if(index < children.size()){
@@ -80,4 +88,8 @@ void Node::SetChoices(std::vector<Node*> nodes){
 void Node::SetPosition(unsigned int x, unsigned int y){
   this->x = x;
   this->y = y;
+}
+
+Node* Node::GetParent(){
+  return parent;
 }

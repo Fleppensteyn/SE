@@ -36,7 +36,7 @@ void MouseManager::MouseDragging(int item, const wxPoint& pos){
 }
 void MouseManager::MouseDragEnd(int item, const wxPoint& pos){
   printf("End: %2d, %4d, %4d\n", item, pos.x, pos.y);
-  dragdrop->stopDrag();
+  dragdrop->stopDrag(DRAGDROP_OVERVIEW);
 }
 void MouseManager::MouseDragCancelled(int item){
   printf("DragCancel: %2d\n",item);
@@ -73,12 +73,18 @@ bool CatalogueMouseManager::MouseClicked(int item){
 void CatalogueMouseManager::MouseDragging(int item, const wxPoint& pos){
   dragdrop->updateDragging(pos, DRAGDROP_CATALOG);
   catalogue->Refresh();
-  printf("Dragging: %2d, %4d, %4d\n", item, pos.x, pos.y);
+  //printf("Dragging: %2d, %4d, %4d\n", item, pos.x, pos.y);
 }
 
 bool CatalogueMouseManager::MouseDragBegin(int item, const wxPoint& pos){
   catalogue->startDrag(item, pos);
   return true;
+}
+
+void CatalogueMouseManager::MouseDragEnd(int item, const wxPoint& pos){
+  printf("End: %2d, %4d, %4d\n", item, pos.x, pos.y);
+  //catalogue->endDrag();
+  dragdrop->stopDrag(DRAGDROP_CATALOG);
 }
 
 CatalogueMouseManager::~CatalogueMouseManager(){
@@ -104,12 +110,18 @@ bool CurriculumMouseManager::MouseClicked(int item){
 void CurriculumMouseManager::MouseDragging(int item, const wxPoint& pos){
   dragdrop->updateDragging(pos, DRAGDROP_CURRICULUM);
   curriculum->Refresh();
-  printf("Dragging: %2d, %4d, %4d\n", item, pos.x, pos.y);
+  //printf("Dragging: %2d, %4d, %4d\n", item, pos.x, pos.y);
 }
 
 bool CurriculumMouseManager::MouseDragBegin(int item, const wxPoint& pos){
   curriculum->startDrag(item, pos);
   return true;
+}
+
+void CurriculumMouseManager::MouseDragEnd(int item, const wxPoint& pos){
+  printf("End: %2d, %4d, %4d\n", item, pos.x, pos.y);
+  curriculum->endDrag(item);
+  dragdrop->stopDrag(DRAGDROP_CURRICULUM);
 }
 
 CurriculumMouseManager::~CurriculumMouseManager(){

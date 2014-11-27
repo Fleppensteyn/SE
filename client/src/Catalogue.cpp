@@ -43,7 +43,6 @@ void Catalogue::updateSizes(){
 
 int Catalogue::hitTest(const wxPoint& pos){
   wxPoint upos = CalcUnscrolledPosition(pos);
-  printf("%4d %4d\n", upos.x, upos.y);
   if (upos.x < 2 || upos.x > coursewidth + 2 ||
       upos.y % (courseheight + 5) < 5 || upos.y > bmaps.size() * 65){
     select(-1);
