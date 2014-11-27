@@ -43,6 +43,7 @@ public:
   void updateCurriculum();
 
   void drawCurriculum();
+  void drawCurriculum(bool scroll);
 
   void dragDraw();
 
@@ -53,6 +54,7 @@ public:
   void resetNode();
   void removeEmptySplits();
   void insertSplit();
+  void OnScroll(wxScrollWinEvent& event);
 
   std::vector<Semester*> getCurriculum();
 
@@ -73,7 +75,7 @@ private:
   unsigned int determineWidth();
   unsigned int determineHeight();
 
-  //wxDECLARE_EVENT_TABLE();
+  wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* CURRICULUM_H_ */

@@ -9,6 +9,10 @@ wxDEFINE_EVENT(EVT_SELECTED, wxCommandEvent);
 wxDEFINE_EVENT(EVT_NO_SELECT, wxCommandEvent);
 wxDEFINE_EVENT(EVT_SAVE_DB, wxCommandEvent);
 
+wxBEGIN_EVENT_TABLE(Curriculum, wxScrolledCanvas)
+  EVT_SCROLLWIN (Curriculum::OnScroll)
+wxEND_EVENT_TABLE()
+
 
 Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
       :wxScrolledCanvas(overview, wxID_ANY, wxPoint(100,100), wxSize(curriculum_width, 100))
@@ -57,6 +61,10 @@ void Curriculum::updateCurriculum(){
 }
 
 void Curriculum::drawCurriculum(){
+  drawCurriculum(true);
+}
+
+void Curriculum::drawCurriculum(bool scroll){
   unsigned int curwidth = determineWidth(),
                curheight = determineHeight(),
                viswidth = GetSize().GetWidth(),
@@ -69,7 +77,7 @@ void Curriculum::drawCurriculum(){
       semesters[i]->setPositions(startwidth);
       startwidth += semesters[i]->getWidth() + spacing;
     }
-    if(curheight > visheight)
+    if(curheight > visheight && scroll)
       SetScrollbars(0, 30, 1, curheight/30);
   }
   else{
@@ -78,10 +86,12 @@ void Curriculum::drawCurriculum(){
       semesters[i]->setPositions(startwidth);
       startwidth += semesters[i]->getWidth() + spacing;
     }
-    if(curheight > visheight)
-      SetScrollbars(30, 30, curwidth/30, curheight/30);
-    else
-      SetScrollbars(30, 0, curwidth/30, 1);
+    if(scroll){
+      if(curheight > visheight)
+        SetScrollbars(30, 30, curwidth/30, curheight/30);
+      else
+        SetScrollbars(30, 0, curwidth/30, 1);
+    }
   }
 }//drawCurriculum
 
@@ -94,9 +104,9 @@ void Curriculum::OnDraw(wxDC& dc){
 
   wxPoint dragpos;
   if (dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM)){
+    dragpos = CalcScrolledPosition(dragpos);
     for(int i = 0; i < semesters.size(); i++)
       semesters[i]->show(dc, dragpos);
-    dragpos = CalcUnscrolledPosition(dragpos);
     dc.DrawBitmap(dragdrop->getCourse()->bitmap, dragpos);
   }
   else{
@@ -204,8 +214,8 @@ void Curriculum::startDrag(int item, const wxPoint& pos){
       default: break;
     }
   }
-  drawCurriculum();
-  wxPoint unscpos = CalcUnscrolledPosition(pos);
+  drawCurriculum(false);
+  wxPoint unscpos = CalcScrolledPosition(pos);
   wxPoint dragpoint(unscpos.x - nodes[item]->GetX(), unscpos.y - nodes[item]->GetY());
   this->dragdrop->startDrag(pos, dragpoint, nodes[item]->GetCourse(), DRAGDROP_CURRICULUM);
 }
@@ -224,6 +234,7 @@ void Curriculum::endDrag(int item){
     }
   }
   else{
+    dragpos = CalcScrolledPosition(dragpos);
     //see if it is to be placed somewhere
     bool changed = false;
     for(int i = 0; i < semesters.size(); i++){
@@ -357,4 +368,8 @@ void Curriculum::insertSplit(){
 
 std::vector<Semester *> Curriculum::getCurriculum(){
   return semesters;
+}
+
+void Curriculum::OnScroll(wxScrollWinEvent& event){
+
 }
