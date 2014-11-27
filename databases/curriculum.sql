@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS curriculum;
 CREATE TABLE curriculum (
   id INTEGER PRIMARY KEY,
-  name VARCHAR(60)
+  name VARCHAR(60),
+  semesters INTEGER
 );
 
 DROP TABLE IF EXISTS years;
@@ -48,9 +49,9 @@ CREATE TABLE options (
   ind INTEGER
 );
 
-INSERT INTO curriculum (name) VALUES ("Informatica");
-INSERT INTO curriculum (name) VALUES ("I&E");
-INSERT INTO curriculum (name) VALUES ("I&B");
+INSERT INTO curriculum (name, semesters) VALUES ("Informatica", 2);
+INSERT INTO curriculum (name, semesters) VALUES ("I&E", 2);
+INSERT INTO curriculum (name, semesters) VALUES ("I&B", 2);
 
 INSERT INTO years (cid, ind, name) VALUES (1, 1, "Year 1");
 INSERT INTO years (cid, ind, name) VALUES (1, 2, "Year 2");
