@@ -12,7 +12,6 @@ wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   EVT_TEXT              (ID_FACULTY, Overview::OnUpdateFaculty)
   //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
   EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
-  EVT_BUTTON            (ID_SHOW, Overview::OnShow)
   EVT_BUTTON            (ID_SPLIT, Overview::OnSplit)
   EVT_PAINT             (Overview::drawStuff)
   EVT_SIZE              (Overview::OnResize)
@@ -42,9 +41,6 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   years = new wxComboBox(this, ID_YEARS, wxT(""), wxPoint(0,0), wxSize(120, 25), 0, NULL,
                          wxCB_READONLY);
 
-  show = new wxButton(this, ID_SHOW, wxT("Show"));
-  show->Enable(false);
-
   split = new wxButton(this, ID_SPLIT, wxT("Insert split"));
   split->Enable(false);
 
@@ -56,7 +52,6 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   wxBoxSizer *cbrow = new wxBoxSizer(wxHORIZONTAL);
   cbrow->Add(faculties, 0, wxALIGN_LEFT | wxALL, 10);
   cbrow->Add(years, 0, wxALIGN_LEFT | wxALL, 10);
-  cbrow->Add(show, 0, wxALIGN_LEFT | wxALL, 10);
   cbrow->Add(split, 0, wxALIGN_LEFT | wxALL, 10);
 
   wxBoxSizer *curcolumn = new wxBoxSizer(wxVERTICAL);
@@ -126,11 +121,18 @@ void Overview::OnUpdateFaculty(wxCommandEvent& event){
   years->Clear();
   wxArrayString *temp = database->getYears(faculties->GetValue());
   years->Append(*temp);
-  show->Enable(false);
+  years->SetSelection(0);
+  wxCommandEvent pevent(wxEVT_TEXT, ID_YEARS);
+  wxPostEvent(this, pevent);
 }//OnUpdateFaculty
 
 void Overview::OnUpdateYear(wxCommandEvent& event){
-  show->Enable(true);
+  wxString fac = faculties->GetValue();
+  wxString ys = years->GetValue();
+  wxString name = faculties->GetValue() << wxString(" ") << ys;
+  curriculum->setCurriculum(database->populateTree(fac, ys), name);
+  curfac = fac;
+  curyr = ys;
 }//OnUpdateYear
 
 void Overview::drawStuff(wxPaintEvent& event){
@@ -139,15 +141,6 @@ void Overview::drawStuff(wxPaintEvent& event){
   if (dragdrop->needsDrawing(pos, DRAGDROP_OVERVIEW))
     dc.DrawBitmap(dragdrop->getCourse()->bitmap, pos);
   curriculum->dragDraw();
-}
-
-void Overview::OnShow(wxCommandEvent& event){
-  wxString fac = faculties->GetValue();
-  wxString ys = years->GetValue();
-  wxString name = faculties->GetValue() << wxString(" ") << ys;
-  curriculum->setCurriculum(database->populateTree(fac, ys), name);
-  curfac = fac;
-  curyr = ys;
 }
 
 void Overview::OnResize(wxSizeEvent& event){
@@ -161,8 +154,8 @@ void Overview::OnResize(wxSizeEvent& event){
 }
 
 void Overview::OnDeletedCourse(wxCommandEvent& event){
-  if(show->IsEnabled()){
-    wxCommandEvent event(wxEVT_BUTTON, ID_SHOW);
+  if(years->GetValue() != ""){
+    wxCommandEvent event(wxEVT_TEXT, ID_YEARS);
     wxPostEvent(this, event);
   }
 }

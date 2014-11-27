@@ -56,8 +56,6 @@ public:
 
   void OnUpdateYear(wxCommandEvent& event);
 
-  void OnShow(wxCommandEvent& event);
-
   void OnDeletedCourse(wxCommandEvent& event);
 
   void OnSplit(wxCommandEvent& event);
@@ -78,7 +76,6 @@ private:
 
   wxComboBox *faculties;
   wxComboBox *years;
-  wxButton *show;
   wxButton *split;
 
   wxString curfac, curyr;
