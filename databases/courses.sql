@@ -45,7 +45,7 @@ INSERT INTO course_types (name, colour) VALUES ("Biology Essentials","c3d69b");
 ---Academic Skills
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Study Skills and Presenting","AS","1",3,1,1);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Orientation Computer Science & Economics","AS","2",3,4,1);
-INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Orientation Computer Science","AS","2", 3,1,1);
+INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Orientation Computer Science","AS","2", 3,2,1);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Orientation Computer Science & Biology","AS","2", 3,3,1);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Trends and Literature Research","AS","3", 3,1,1);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Economics and Society","AS","4", 3,4,1);
@@ -56,10 +56,10 @@ INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Empiric
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Bachelor Project","AS","7", 15,1,1);
 ---Mathematics
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Statistics","M","5",6, 1, 2);
-INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Logic","M","2",6, 1, 2);
+INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Logic","M","2",6, 2, 2);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Introduction Mathematics","M","1",6, 1, 2);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Advanced Mathematics 1","M","3",3, 1, 2);
-INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Advanced Mathematics 2","M","4α",3, 1, 2);
+INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Advanced Mathematics 2","M","4α",3, 2, 2);
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Advanced Mathematics 2 ","M","4β",3, 3, 2);
 ---Computer Science Essentials
 INSERT INTO courses (name, line, number, ects, affilid, typeid) VALUES ("Introduction to Programming","PR","1",6, 5, 3);
