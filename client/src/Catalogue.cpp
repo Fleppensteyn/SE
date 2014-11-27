@@ -68,9 +68,14 @@ void Catalogue::editCourse(wxCommandEvent& event) {
   CourseEditor editor(course, courses);
   while (editor.ShowModal() == wxID_OK){
     if(editor.isDelete()){
-      ret = courses->deleteCourse(course->ID);
-      wxCommandEvent event(EVT_DELETED_COURSE);
-      wxPostEvent(this, event);
+      wxString msg = wxString("Do you want to permanently delete this course?\n") <<
+                     wxString("Beware this also deletes it from any curricula!");
+      wxMessageDialog md(this, msg, wxT("Confirmation of deletion"), wxYES_NO);
+      if(md.ShowModal() == wxID_YES){
+        ret = courses->deleteCourse(course->ID);
+        wxCommandEvent event(EVT_DELETED_COURSE);
+        wxPostEvent(this, event);
+      }
     }
     else{
       std::vector<wxString> data = editor.getData();
