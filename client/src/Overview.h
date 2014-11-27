@@ -20,6 +20,8 @@
 #include <vector>
 #include "Database.h"
 #include "YearCreator.h"
+#include "CurriculumDeleter.h"
+#include "YearDeleter.h"
 
 enum{
   ID_CURRICULA,
@@ -66,6 +68,12 @@ public:
 
   void OnSaveDB(wxCommandEvent& event);
 
+  void OnDeleteYear(wxFrame *frame);
+
+  void OnDeleteCurriculum(wxFrame *frame);
+
+  void OnDeleteAll();
+
 private:
   Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue
@@ -83,6 +91,10 @@ private:
   void drawStuff(wxPaintEvent& event);
 
   void OnResize(wxSizeEvent& event);
+
+  void clearFaculties();
+
+  void clearYears();
 
   wxDECLARE_EVENT_TABLE();
 };

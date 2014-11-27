@@ -373,3 +373,11 @@ std::vector<Semester *> Curriculum::getCurriculum(){
 void Curriculum::OnScroll(wxScrollWinEvent& event){
 
 }
+
+void Curriculum::clear(){
+  semesters.clear();
+  nodes.clear();
+  selected = -1;
+  curName = "";
+  Refresh();
+}

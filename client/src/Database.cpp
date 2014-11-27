@@ -772,12 +772,70 @@ void Database::processLine(Node * root, InsertData& idat, int column){
 int Database::getSemesters(wxString name){
   int ret = -1;
 
-  sqlite3_stmt *stmt;
-  const char *pzt;
   wxString query = wxString("SELECT semesters FROM curriculum WHERE name='") << name <<
                    wxString("';");
   int rc;
   ret = selectSingleInt(query, rc, "Getting the semesters for a study program");
 
   return ret;
+}
+
+void Database::deleteCurriculum(wxString curname, bool complete){
+  wxString query = wxString("SELECT years.id FROM years WHERE years.cid IN (SELECT ") <<
+                   wxString("curriculum.id FROM curriculum WHERE curriculum.name='") <<
+                   curname << wxString("');");
+  int rc;
+  std::vector<std::vector<int> > ret = selectIntVector(query, rc, "Selecting years from curriculum");
+
+  for(int i = 0; i < ret.size(); i++)
+    deleteYear(ret[i][0]);
+
+  if(complete){
+    query = wxString("DELETE FROM curriculum WHERE name='") << curname << wxString("';");
+    simpleQuery(query, "Deleting curriculum");
+  }
+}
+
+void Database::deleteAll(){
+  wxString query = wxString("DROP TABLE IF EXISTS curriculum;");
+  simpleQuery(query, "Deleting curriculum table");
+  query = wxString("CREATE TABLE curriculum (\n  id INTEGER PRIMARY KEY,\n  name VARCHAR(60),\n") <<
+          wxString("  semesters INTEGER\n);");
+  simpleQuery(query, "Creating curriculum table");
+
+  query = wxString("DROP TABLE IF EXISTS years;");
+  simpleQuery(query, "Deleting years table");
+  query = wxString("CREATE TABLE years (\n  id INTEGER PRIMARY KEY,\n  cid INTEGER REFERENCES ") <<
+          wxString("curriculum(id),\n  ind INTEGER,\n  name VARCHAR(60)\n);");
+  simpleQuery(query, "Creating years table");
+
+  query = wxString("DROP TABLE IF EXISTS columns;");
+  simpleQuery(query, "Deleting columns table");
+  query = wxString("CREATE TABLE columns (\n  yid INTEGER REFERENCES years(id),\n") <<
+          wxString("  ind INTEGER,\n  lid INTEGER REFERENCES lines(id)\n);");
+  simpleQuery(query, "Creating columns table");
+
+  query = wxString("DROP TABLE IF EXISTS lines;");
+  simpleQuery(query, "Deleting lines table");
+  query = wxString("CREATE TABLE lines (\n  id INTEGER,\n  ind INTEGER,\n  type TINYINT,\n") <<
+          wxString("  fid INTEGER\n);");
+          simpleQuery(query, "Creating lines table");
+
+  query = wxString("DROP TABLE IF EXISTS splits;");
+  simpleQuery(query, "Deleting splits table");
+  query = wxString("CREATE TABLE splits (\n  id INTEGER PRIMARY KEY,\n  left INTEGER") <<
+          wxString(" REFERENCES lines(id),\n  right INTEGER REFERENCES lines(id)\n);");
+  simpleQuery(query, "Create splits table");
+
+  query = wxString("DROP TABLE IF EXISTS choices;");
+  simpleQuery(query, "Deleting choices table");
+  query = wxString("CREATE TABLE choices (\n  id INTEGER PRIMARY KEY,\n  count INTEGER,\n") <<
+          wxString("  pick INTEGER\n);");
+  simpleQuery(query, "Creating choices table");
+
+  query = wxString("DROP TABLE IF EXISTS options;");
+  simpleQuery(query, "Deleting options table");
+  query = wxString("CREATE TABLE options (\n  cid INTEGER REFERENCES choices(id),\n  course ") <<
+          wxString("INTEGER REFERENCES courses(id),\n  ind INTEGER\n);");
+  simpleQuery(query, "Creating options table");
 }

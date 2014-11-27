@@ -179,3 +179,86 @@ void Overview::OnSaveDB(wxCommandEvent& event){
   std::vector<Semester *> tree = this->curriculum->getCurriculum();
   this->database->saveYear(curfac, curyr, tree);
 }
+
+void Overview::OnDeleteYear(wxFrame *frame){
+  YearDeleter yd(frame, database);
+  if(yd.ShowModal() == wxID_OK){
+    std::vector<wxString> data = yd.getData();
+    database->deleteYear(data[0], data[1]);
+    if(data[0] == faculties->GetValue() && data[1] == years->GetValue()){
+      clearYears();
+      wxArrayString *temp = database->getYears(data[0]);
+      years->Append(*temp);
+
+      curriculum->clear();
+    }
+    else if(data[0] == faculties->GetValue()){
+      wxString text = years->GetValue();
+      years->Clear();
+      wxArrayString *temp = database->getYears(data[0]);
+      years->Append(*temp);
+      for(int i = 0; i < years->GetCount(); i++){
+        if(years->GetString(i) == text)
+          years->SetSelection(i);
+      }
+    }
+  }
+}
+
+void Overview::OnDeleteCurriculum(wxFrame *frame){
+  CurriculumDeleter cd(frame, database);
+  if(cd.ShowModal() == wxID_OK){
+    std::vector<wxString> data = cd.getData();
+    database->deleteCurriculum(data[0], true);
+    if(data[0] == faculties->GetValue()){
+      clearFaculties();
+      clearYears();
+      wxArrayString *temp = database->getFaculties();
+      faculties->Append(*temp);
+
+      curriculum->clear();
+    }
+    else{
+      wxString text = faculties->GetValue();
+      faculties->Clear();
+      wxArrayString *temp = database->getFaculties();
+      faculties->Append(*temp);
+      for(int i = 0; i < faculties->GetCount(); i++){
+        if(faculties->GetString(i) == text)
+          faculties->SetSelection(i);
+      }
+    }
+  }
+}
+
+void Overview::OnDeleteAll(){
+  wxString msg = wxString("Do you want to permanently delete all curricula?\n") <<
+                 wxString("Beware this can not be undone!");
+  wxMessageDialog md(this, msg, wxT("Confirmation of deletion"), wxYES_NO);
+  if(md.ShowModal() == wxID_YES){
+    database->deleteAll();
+    clearFaculties();
+    clearYears();
+    curriculum->clear();
+  }
+}
+
+void Overview::clearFaculties(){
+  wxArrayString *temp = new wxArrayString();
+  temp->Add(wxT(""));
+
+  faculties->Clear();
+  faculties->Append(*temp);
+  faculties->SetSelection(0);
+  faculties->Clear();
+}
+
+void Overview::clearYears(){
+  wxArrayString *temp = new wxArrayString();
+  temp->Add(wxT(""));
+
+  years->Clear();
+  years->Append(*temp);
+  years->SetSelection(0);
+  years->Clear();
+}

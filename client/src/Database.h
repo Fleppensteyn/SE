@@ -66,6 +66,8 @@ public:
                  unsigned int affiliation, unsigned int type);
   bool deleteYear(wxString curname, wxString yearname);
   void saveYear(wxString curname, wxString yearname, std::vector<Semester*>& tree);
+  void deleteCurriculum(wxString curname, bool complete);
+  void deleteAll();
 
 private:
   bool connect();

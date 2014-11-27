@@ -33,7 +33,10 @@ enum{
   ID_LOGOUT,
   ID_NEW_COURSE,
   ID_NEW_CURRICULUM,
-  ID_NEW_YEAR
+  ID_NEW_YEAR,
+  ID_DELETE_YEAR,
+  ID_DELETE_CURRICULUM,
+  ID_RESET
 };
 
 //The frame within which the entire program is run.
@@ -65,6 +68,12 @@ public:
 
   void OnNewYear(wxCommandEvent& event);
 
+  void OnDeleteYear(wxCommandEvent& event);
+
+  void OnDeleteCurriculum(wxCommandEvent& event);
+
+  void OnDeleteAll(wxCommandEvent& event);
+
   //Switches between the Login and Overview panel
   void SwitchPanels();
 
@@ -87,6 +96,9 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_MENU    (ID_NEW_CURRICULUM, Frame::OnNewCurriculum)
   EVT_MENU    (ID_NEW_YEAR, Frame::OnNewYear)
+  EVT_MENU    (ID_DELETE_YEAR, Frame::OnDeleteYear)
+  EVT_MENU    (ID_DELETE_CURRICULUM, Frame::OnDeleteCurriculum)
+  EVT_MENU    (ID_RESET, Frame::OnDeleteAll)
   EVT_BUTTON  (ID_SUBMIT, Frame::OnSubmit)
 wxEND_EVENT_TABLE()
 
@@ -122,9 +134,15 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   menuNew->Append(ID_NEW_CURRICULUM, wxT("New study program"));
   menuNew->Append(ID_NEW_YEAR, wxT("New year"));
 
+  wxMenu *menuDelete = new wxMenu;
+  menuDelete->Append(ID_DELETE_YEAR, wxT("Delete year"));
+  menuDelete->Append(ID_DELETE_CURRICULUM, wxT("Delete study program"));
+  menuDelete->Append(ID_RESET, wxT("Delete all"));
+
   menubar_overview = new wxMenuBar();
   menubar_overview->Append(menuFile_overview, "&File");
   menubar_overview->Append(menuNew, "&New");
+  menubar_overview->Append(menuDelete, "&Delete");
 
   CreateStatusBar(1);
   SetStatusText("");
@@ -241,6 +259,18 @@ void Frame::OnNewCurriculum(wxCommandEvent& event){
 
 void Frame::OnNewYear(wxCommandEvent& event){
   panel_overview->addNewYear(this);
+}
+
+void Frame::OnDeleteYear(wxCommandEvent& event){
+  panel_overview->OnDeleteYear(this);
+}
+
+void Frame::OnDeleteCurriculum(wxCommandEvent& event){
+  panel_overview->OnDeleteCurriculum(this);
+}
+
+void Frame::OnDeleteAll(wxCommandEvent& event){
+  panel_overview->OnDeleteAll();
 }
 
 void Frame::SwitchPanels(){

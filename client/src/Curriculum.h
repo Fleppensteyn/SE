@@ -55,6 +55,7 @@ public:
   void removeEmptySplits();
   void insertSplit();
   void OnScroll(wxScrollWinEvent& event);
+  void clear();
 
   std::vector<Semester*> getCurriculum();
 
