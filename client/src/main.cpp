@@ -93,7 +93,8 @@ wxEND_EVENT_TABLE()
 wxIMPLEMENT_APP(App);
 
 bool App::OnInit(){
-  Frame *frame = new Frame("SE-2014", wxPoint(50,50), wxSize(700, 500));
+  Frame *frame = new Frame("Curriculum Builder by Genius@Work", wxPoint(50,50),
+                           wxSize(700, 500));
   frame->Show(true);
   return true;
 }
@@ -137,7 +138,8 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Create the program title bar at the top of the screen
   wxPanel *title_panel = new wxPanel(this);
   title_panel->SetBackgroundColour(wxColour(0xFF,0x55,0x33));
-  wxStaticText *program_title_text = new wxStaticText(title_panel, wxID_ANY, "Curriculum Viewer", wxPoint(10,10), wxSize(100,60) );
+  wxStaticText *program_title_text = new wxStaticText(title_panel, wxID_ANY,
+                                  "Curriculum Builder", wxPoint(10,10), wxSize(100,60) );
   wxFont font = program_title_text->GetFont();
   font.Scale(4);
   program_title_text->SetFont(font);

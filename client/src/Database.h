@@ -82,6 +82,7 @@ private:
   int selectSingleInt(wxString query, int& rc, const char * errormsg);
   std::vector<std::vector<int> > selectIntVector(wxString query, int& rc, const char * errormsg);
   void processLine(Node * root, InsertData& idat, int column);
+  int getSemesters(wxString name);
 
   std::vector<std::vector<std::vector<int> > > pop;
   Courses *courses;

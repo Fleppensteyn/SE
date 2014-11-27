@@ -204,6 +204,12 @@ std::vector<Semester*> Database::populateTree(wxString curname, wxString yearnam
   Semester *sem;
   int i;
 
+  int sem_count = getSemesters(curname);
+  for(i = 0; i < sem_count; i++){
+    sem = new Semester();
+    ret.push_back(sem);
+  }
+
   sqlite3_stmt *stmt;
   const char *pzt;
   wxString query = wxString("SELECT years.id FROM years WHERE years.name='") << yearname <<
@@ -220,12 +226,12 @@ std::vector<Semester*> Database::populateTree(wxString curname, wxString yearnam
     getPopulation(sqlite3_column_int(stmt, 0));
     for(i = 0; i < pop.size(); i++){
       if(pop[i][0][0] != -1){
-        sem = new Semester();
+        sem = ret[i];
         populateLine(i, NULL, sem);
-        if(sem->GetRoot() != NULL)
-          ret.push_back(sem);
-        else
-          delete sem;
+        // if(sem->GetRoot() != NULL)
+        //   ret.push_back(sem);
+        // else
+        //   delete sem;
       }
     }
     rc = sqlite3_step(stmt);
@@ -410,7 +416,8 @@ int Database::addCurriculum(wxString name, int semesters, int years){
   int ret;
   sqlite3_stmt *stmt;
   const char *pzt;
-  wxString query = wxString("INSERT INTO curriculum(name) VALUES ('") << name << wxString("');");
+  wxString query = wxString("INSERT INTO curriculum(name, semesters) VALUES ('") << name <<
+                   wxString("', '") << semesters << wxString("');");
   int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
   if (rc){
     error("Preparing statement");
@@ -434,7 +441,8 @@ int Database::addYear(wxString curname, int year){
   int ret;
   sqlite3_stmt *stmt;
   const char *pzt;
-  wxString query = wxString("SELECT id FROM curriculum WHERE name='") << curname << wxString("';");
+  wxString query = wxString("SELECT id FROM curriculum WHERE name='") << curname <<
+                   wxString("';");
   int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
   if (rc){
     error("Preparing statement");
@@ -580,7 +588,7 @@ bool Database::deleteYear(int yid){
 int Database::simpleQuery(wxString query, const char * errormsg){
   sqlite3_stmt *stmt;
   const char *pzt;
-  printf("simpleQuery: %s\n", (const char *)query.ToAscii());
+  //printf("simpleQuery: %s\n", (const char *)query.ToAscii());
   int rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
   if (rc){
     error(errormsg);
@@ -602,7 +610,7 @@ int Database::selectSingleInt(wxString query, int& rc, const char * errormsg){
   const char *pzt;
   int ret = -1;
 
-  printf("selectSingleInt: %s\n", (const char *)query.ToAscii());
+  //printf("selectSingleInt: %s\n", (const char *)query.ToAscii());
   rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
   if (rc){
     error(errormsg);
@@ -623,7 +631,7 @@ std::vector<std::vector<int> > Database::selectIntVector(wxString query, int& rc
   const char *pzt;
   std::vector<std::vector<int> > ret;
 
-  printf("selectIntVector: %s\n", (const char *)query.ToAscii());
+  //printf("selectIntVector: %s\n", (const char *)query.ToAscii());
 
   rc = sqlite3_prepare_v2(this->db, query.utf8_str(), -1, &stmt, &pzt);
   if (rc){
@@ -660,7 +668,8 @@ void Database::saveYear(wxString curname, wxString yearname, std::vector<Semeste
     query.Printf("SELECT ind FROM years WHERE id = %d;",ids[1]);
     int oldind = selectSingleInt(query, rc, "figuring out the index of the current year");
     deleteYear(ids[1]);
-    query.Printf("INSERT INTO years (id, cid, ind, name) VALUES (%d, %d, %d, '%s');", ids[1], ids[0], oldind, yearname);
+    query.Printf("INSERT INTO years (id, cid, ind, name) VALUES (%d, %d, %d, '%s');", ids[1],
+                 ids[0], oldind, yearname);
     rc = simpleQuery(query, "re-inserting a deleted year into the database");
     if (rc != SQLITE_DONE) return;
   } else {
@@ -677,7 +686,8 @@ void Database::saveYear(wxString curname, wxString yearname, std::vector<Semeste
       if (rc != SQLITE_ROW)
         newind = 1;
     }
-    query.Printf("INSERT INTO years (cid, ind, name) VALUES (%d, %d, '%s');", ids[0], newind, yearname);
+    query.Printf("INSERT INTO years (cid, ind, name) VALUES (%d, %d, '%s');", ids[0],
+                 newind, yearname);
     rc = simpleQuery(query, "inserting a new year into the database");
     if (rc != SQLITE_DONE) return;
     ids.push_back(sqlite3_last_insert_rowid(this->db));
@@ -757,4 +767,17 @@ void Database::processLine(Node * root, InsertData& idat, int column){
       cur = NULL;
     } else cur = cur->GetChild();
   }
+}
+
+int Database::getSemesters(wxString name){
+  int ret = -1;
+
+  sqlite3_stmt *stmt;
+  const char *pzt;
+  wxString query = wxString("SELECT semesters FROM curriculum WHERE name='") << name <<
+                   wxString("';");
+  int rc;
+  ret = selectSingleInt(query, rc, "Getting the semesters for a study program");
+
+  return ret;
 }
