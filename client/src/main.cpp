@@ -30,13 +30,13 @@ public:
 };
 
 enum{
-  ID_LOGOUT,
-  ID_NEW_COURSE,
-  ID_NEW_CURRICULUM,
-  ID_NEW_YEAR,
-  ID_DELETE_YEAR,
-  ID_DELETE_CURRICULUM,
-  ID_RESET
+  ID_LOGOUT             = 1,
+  ID_NEW_COURSE         = 2,
+  ID_NEW_CURRICULUM     = 3,
+  ID_NEW_YEAR           = 4,
+  ID_DELETE_YEAR        = 5,
+  ID_DELETE_CURRICULUM  = 6,
+  ID_RESET              = 7
 };
 
 //The frame within which the entire program is run.
@@ -62,7 +62,7 @@ public:
 
   //If in overview, opens 'Create new course' dialog
   void OnNewCourse(wxCommandEvent& event);
-  
+
   //If in overview, opens 'Create new curriculum' dialog
   void OnNewCurriculum(wxCommandEvent& event);
 
@@ -237,7 +237,7 @@ void Frame::OnNewCourse(wxCommandEvent& event){
     else if(ret == -1){
       cc.DisplayError(ERROR_COURSE_ALREADY_EXISTS);
     }
-  } 
+  }
   SetStatusText("");
 }//OnNewCourse
 
@@ -253,7 +253,7 @@ void Frame::OnNewCurriculum(wxCommandEvent& event){
     else if(ret == -1){
       cc.DisplayError(ERROR_CURRICULUM_ALREADY_EXISTS);
     }
-  } 
+  }
   SetStatusText("");
 }
 

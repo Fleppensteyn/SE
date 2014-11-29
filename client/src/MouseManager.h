@@ -12,14 +12,14 @@
   #include "wx/wx.h"
 #endif
 
-#include "wx/mousemanager.h"
+#include "newmouseman/mousemanagermod.h"
 
 #include "DragDropHelp.h"
 
 class Catalogue;
 class Curriculum;
 
-class MouseManager : public wxMouseEventsManager
+class MouseManager : public wxMouseEventsManagerMod
 {
 public:
   MouseManager(wxWindow * window, DragDropHelp * dragdrop);

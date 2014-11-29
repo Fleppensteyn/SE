@@ -1,8 +1,8 @@
-CXX = $(shell wx-config --cxx)
+CXX = $(shell wx-config --cxx) -Wall -Wextra
 
 PROGRAM = main
 CCFLAGS =$(shell curl-config --cflags) $(shell curl-config --libs) $(shell wx-config --cxxflags) $(shell wx-config --libs) -lpthread -ldl
-OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(patsubst %.cpp,%.o,$(wildcard sha1/*.cpp))
+OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(patsubst %.cpp,%.o,$(wildcard sha1/*.cpp)) $(patsubst %.cpp,%.o,$(wildcard newmouseman/*.cpp))
 
 # implementation
 
@@ -25,4 +25,4 @@ sqlite/sqlite3.c:
 
 
 clean:
-	rm -f *.o sha1/*.o sqlite/*.o $(PROGRAM) $(PROGRAM).exe
+	rm -f *.o sha1/*.o sqlite/*.o newmouseman/*.o $(PROGRAM) $(PROGRAM).exe

@@ -6,7 +6,7 @@
 #include "MouseManager.h"
 
 MouseManager::MouseManager(wxWindow *window, DragDropHelp * dragdrop)
-      :wxMouseEventsManager(window)
+      :wxMouseEventsManagerMod(window)
 {
   this->dragdrop = dragdrop;
 }

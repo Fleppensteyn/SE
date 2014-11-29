@@ -17,7 +17,9 @@ wxEND_EVENT_TABLE()
 Curriculum::Curriculum(wxPanel *overview, DragDropHelp * dragdrop)
       :wxScrolledCanvas(overview, wxID_ANY, wxPoint(100,100), wxSize(curriculum_width, 100))
 {
+#ifndef __APPLE__
   SetDoubleBuffered(true);
+#endif
   this->dragdrop = dragdrop;
   this->dragdrop->setCurriculum(this);
   this->mm = new CurriculumMouseManager(this, dragdrop);

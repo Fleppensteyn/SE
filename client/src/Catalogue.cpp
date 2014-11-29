@@ -16,7 +16,9 @@ wxEND_EVENT_TABLE()
 Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
       :wxScrolledCanvas(panel, wxID_ANY, wxPoint(100,100), wxSize(catalogue_width, 100))
 {
+#ifndef __APPLE__
   SetDoubleBuffered(true);
+#endif
   this->mousemanager = new CatalogueMouseManager(this, dragdrop);
   this->overview =  panel;
   this->courses = courses;

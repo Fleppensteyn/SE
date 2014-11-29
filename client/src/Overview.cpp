@@ -8,10 +8,12 @@
 //A summary of all events of the class Login that need to be captured
 //and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(Overview, wxPanel)
+  EVT_COMBOBOX          (ID_FACULTY, Overview::OnUpdateFaculty)
   //EVT_COMBOBOX_CLOSEUP  (ID_FACULTY, Overview::OnUpdateFaculty)
-  EVT_TEXT              (ID_FACULTY, Overview::OnUpdateFaculty)
+  // EVT_TEXT              (ID_FACULTY, Overview::OnUpdateFaculty)
+  EVT_COMBOBOX          (ID_YEARS, Overview::OnUpdateYear)
   //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
-  EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
+  // EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
   EVT_BUTTON            (ID_SPLIT, Overview::OnSplit)
   EVT_PAINT             (Overview::drawStuff)
   EVT_SIZE              (Overview::OnResize)
@@ -24,7 +26,9 @@ wxEND_EVENT_TABLE()
 Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
       :wxPanel(frame, wxID_ANY, wxPoint(x,y), wxSize(w, h))
 {
+#ifndef __APPLE__
   SetDoubleBuffered(true);
+#endif
   this->database = new Database("client.db");
   this->courses = new Courses(this->database);
   this->dragdrop = new DragDropHelp();
@@ -71,6 +75,12 @@ Overview::Overview(wxFrame *frame, int x, int y, int w, int h)
   column->AddSpacer(5);
 
   SetSizer(column);
+#ifdef __APPLE__
+  if (faculties->GetCount() > 0){
+    wxCommandEvent event(wxEVT_COMBOBOX, ID_FACULTY);
+    wxPostEvent(this, event);
+  }
+#endif
 }
 
 Overview::~Overview(){
@@ -106,7 +116,7 @@ int Overview::addNewYear(wxFrame *frame){
     int ret = database->addYear(data[0], wxAtoi(data[1]));
     if(ret >= 0){
       if(data[0] == faculties->GetValue()){
-        wxCommandEvent event(wxEVT_TEXT, ID_FACULTY);
+        wxCommandEvent event(wxEVT_COMBOBOX, ID_FACULTY);
         wxPostEvent(this, event);
       }
       return 1;
@@ -122,7 +132,7 @@ void Overview::OnUpdateFaculty(wxCommandEvent& event){
   wxArrayString *temp = database->getYears(faculties->GetValue());
   years->Append(*temp);
   years->SetSelection(0);
-  wxCommandEvent pevent(wxEVT_TEXT, ID_YEARS);
+  wxCommandEvent pevent(wxEVT_COMBOBOX, ID_YEARS);
   wxPostEvent(this, pevent);
 }//OnUpdateFaculty
 
@@ -156,7 +166,7 @@ void Overview::OnResize(wxSizeEvent& event){
 
 void Overview::OnDeletedCourse(wxCommandEvent& event){
   if(years->GetValue() != ""){
-    wxCommandEvent event(wxEVT_TEXT, ID_YEARS);
+    wxCommandEvent event(wxEVT_COMBOBOX, ID_YEARS);
     wxPostEvent(this, event);
   }
 }
