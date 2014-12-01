@@ -77,6 +77,7 @@ void CatalogueMouseManager::MouseDragging(int, const wxPoint& pos){
 }
 
 bool CatalogueMouseManager::MouseDragBegin(int item, const wxPoint& pos){
+  if (MouseHitTest(pos) != item) return false;
   catalogue->startDrag(item, pos);
   return true;
 }
@@ -114,6 +115,7 @@ void CurriculumMouseManager::MouseDragging(int, const wxPoint& pos){
 }
 
 bool CurriculumMouseManager::MouseDragBegin(int item, const wxPoint& pos){
+  if (MouseHitTest(pos) != item) return false;
   curriculum->startDrag(item, pos);
   return true;
 }
