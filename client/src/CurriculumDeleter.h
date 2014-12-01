@@ -30,12 +30,12 @@ public:
   //Delete all error messages
   virtual ~CurriculumDeleter();
 
-  void OnDeleteCurriculum(wxCommandEvent& event);
-
   std::vector<wxString> getData();
 
 private:
   wxComboBox *study_program;  //Drop-down list box for all possible course types
+
+  void OnDeleteCurriculum(wxCommandEvent&);
 
   wxDECLARE_EVENT_TABLE();
 };

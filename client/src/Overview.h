@@ -46,27 +46,13 @@ public:
   //Delete all Curricula
   virtual ~Overview();
 
-  int addNewCourse(std::vector<wxString> data){return courses->addNewCourse(data);}
+  int addNewCourse(std::vector<wxString> data);
 
   int addNewCurriculum(std::vector<wxString> data);
 
   int addNewYear(wxFrame *frame);
 
-  Courses* getCourses(){return courses;}
-
-  void OnUpdateFaculty(wxCommandEvent& event);
-
-  void OnUpdateYear(wxCommandEvent& event);
-
-  void OnDeletedCourse(wxCommandEvent& event);
-
-  void OnSplit(wxCommandEvent& event);
-
-  void OnSelected(wxCommandEvent& event);
-
-  void OnNoSelect(wxCommandEvent& event);
-
-  void OnSaveDB(wxCommandEvent& event);
+  Courses* getCourses();
 
   void OnDeleteYear(wxFrame *frame);
 
@@ -88,9 +74,23 @@ private:
 
   wxString curfac, curyr;
 
-  void drawStuff(wxPaintEvent& event);
+  void OnUpdateFaculty(wxCommandEvent&);
 
-  void OnResize(wxSizeEvent& event);
+  void OnUpdateYear(wxCommandEvent&);
+
+  void OnDeletedCourse(wxCommandEvent&);
+
+  void OnSplit(wxCommandEvent&);
+
+  void OnSelected(wxCommandEvent&);
+
+  void OnNoSelect(wxCommandEvent&);
+
+  void OnSaveDB(wxCommandEvent&);
+
+  void drawStuff(wxPaintEvent&);
+
+  void OnResize(wxSizeEvent&);
 
   void clearFaculties();
 

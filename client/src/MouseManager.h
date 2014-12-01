@@ -26,13 +26,13 @@ public:
   virtual ~MouseManager();
 
 protected:
-  virtual int MouseHitTest(const wxPoint& pos);
-  virtual bool MouseClicked(int item);
-  virtual bool MouseDragBegin(int item, const wxPoint& pos);
-  virtual void MouseDragging(int item, const wxPoint& pos);
-  virtual void MouseDragEnd(int item, const wxPoint& pos);
-  virtual void MouseDragCancelled(int item);
-  virtual void MouseClickCancelled(int item);
+  virtual int MouseHitTest(const wxPoint&);
+  virtual bool MouseClicked(int);
+  virtual bool MouseDragBegin(int, const wxPoint&);
+  virtual void MouseDragging(int, const wxPoint&);
+  virtual void MouseDragEnd(int, const wxPoint&);
+  virtual void MouseDragCancelled(int);
+  virtual void MouseClickCancelled(int);
   DragDropHelp * dragdrop;
 };
 
@@ -42,17 +42,16 @@ public:
   CatalogueMouseManager(Catalogue * catalogue, DragDropHelp * dragdrop);
   virtual ~CatalogueMouseManager();
 
-protected:
+private:
   virtual int MouseHitTest(const wxPoint& pos);
   virtual bool MouseClicked(int item);
   virtual bool MouseDragBegin(int item, const wxPoint& pos);
-  virtual void MouseDragging(int item, const wxPoint& pos);
+  virtual void MouseDragging(int, const wxPoint& pos);
   int previouslyClickedItem;
-  virtual void MouseDragEnd(int item, const wxPoint& pos);
+  virtual void MouseDragEnd(int, const wxPoint&);
   // virtual void MouseDragCancelled(int item);
   // virtual void MouseClickCancelled(int item);
 
-private:
   Catalogue * catalogue;
 
 };
@@ -63,16 +62,15 @@ public:
   CurriculumMouseManager(Curriculum * curriculum, DragDropHelp * dragdrop);
   virtual ~CurriculumMouseManager();
 
-protected:
+private:
   virtual int MouseHitTest(const wxPoint& pos);
   virtual bool MouseClicked(int item);
   virtual bool MouseDragBegin(int item, const wxPoint& pos);
-  virtual void MouseDragging(int item, const wxPoint& pos);
-  virtual void MouseDragEnd(int item, const wxPoint& pos);
+  virtual void MouseDragging(int, const wxPoint& pos);
+  virtual void MouseDragEnd(int item, const wxPoint&);
   // virtual void MouseDragCancelled(int item);
   // virtual void MouseClickCancelled(int item);
 
-private:
   Curriculum * curriculum;
 
 };

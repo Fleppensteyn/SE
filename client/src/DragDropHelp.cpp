@@ -15,7 +15,7 @@ DragDropHelp::~DragDropHelp(){
 
 void DragDropHelp::updateVariables(wxPoint catalogpos, wxPoint curriculumpos,
                                    wxSize catalogsize, wxSize curriculumsize){
-  printf("var update\n");
+  //printf("var update\n");
   currpos = curriculumpos;
   catpos = catalogpos;
   currsize = curriculumsize;
@@ -73,14 +73,14 @@ bool DragDropHelp::needsDrawing(wxPoint& pos, int source){
 }
 
 void DragDropHelp::startDrag(const wxPoint start, const wxPoint dragpoint, Course * course, int source){
-  printf("drag start\n");
+  //printf("drag start\n");
   this->dragpoint = dragpoint;
   this->course = course;
   updateDragging(start, source);
 }
 
 void DragDropHelp::stopDrag(int source){
-  printf("drag stop\n");
+  //printf("drag stop\n");
   switch(source){
     case DRAGDROP_CATALOG:
       curriculum->endDrag(-1);

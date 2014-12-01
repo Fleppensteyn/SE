@@ -43,28 +43,10 @@ public:
   //Delete all error messages
   virtual ~CourseCreator();
 
-  //If enter is pressed in a textctrl switches focus to next element
-  void OnTextEnter(wxCommandEvent& event);
-
-  //Checks if the choises made lead to a valid new course, of not sets error messages
-  void OnSubmitCourse(wxCommandEvent& event);
+  std::vector<wxString> getData();
 
   //Creates an error message corresponding to the passed error
   void DisplayError(int error);
-
-  //Delete all error messages
-  void ClearErrors();
-
-  //Triggers the update of the preview
-  void updatePreview(wxCommandEvent& event);
-
-  //Updates the preview of the course
-  void drawPreview(wxPaintEvent& event);
-
-  //Determine through hardcoded association what the line for this course would be
-  wxString determineLine();
-
-  std::vector<wxString> getData();
 
 private:
   wxTextCtrl *course_name;  //Input box for the name of the new course
@@ -77,8 +59,25 @@ private:
 
   wxStaticBox *box1;
   wxStaticBox *box2;
-
   Courses *courses;
+
+  //If enter is pressed in a textctrl switches focus to next element
+  void OnTextEnter(wxCommandEvent& event);
+
+  //Checks if the choises made lead to a valid new course, of not sets error messages
+  void OnSubmitCourse(wxCommandEvent&);
+
+  //Delete all error messages
+  void ClearErrors();
+
+  //Triggers the update of the preview
+  void updatePreview(wxCommandEvent&);
+
+  //Updates the preview of the course
+  void drawPreview(wxPaintEvent&);
+
+  //Determine through hardcoded association what the line for this course would be
+  wxString determineLine();
 
   wxDECLARE_EVENT_TABLE();
 };

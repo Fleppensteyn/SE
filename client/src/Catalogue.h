@@ -31,16 +31,10 @@ public:
   int hitTest(const wxPoint& pos);
   void select(int index);
   void setDoubleClick();
-  void editCourse(wxCommandEvent& event);
-  // void drawSomething(int item, const wxPoint& pos);
   void startDrag(int item, const wxPoint& pos);
-  void OnDeletedCourse(wxCommandEvent& event);
+  void refreshList();
 
 private:
-  void OnDraw(wxDC& dc);
-  void filter(SearchPars pars);
-  void updateSizes();
-
   int selected;
   bool doubleclick;
   int yscroll;
@@ -49,6 +43,14 @@ private:
   DragDropHelp * dragdrop;
   CatalogueMouseManager * mousemanager;
   std::vector<Course *> bmaps;
+  SearchPars spars;
+
+  void OnDraw(wxDC& dc);
+  void filter(SearchPars pars);
+  void updateSizes();
+  void editCourse(wxCommandEvent&);
+
+
 
   wxDECLARE_EVENT_TABLE();
 };

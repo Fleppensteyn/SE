@@ -37,17 +37,8 @@ public:
   //Delete all error messages
   virtual ~YearCreator();
 
-  //If enter is pressed in a textctrl switches focus to next element
-  void OnTextEnter(wxCommandEvent& event);
-
-  //Checks if the choises made lead to a valid new course, of not sets error messages
-  void OnSubmitYear(wxCommandEvent& event);
-
   //Creates an error message corresponding to the passed error
   void DisplayError(int error);
-
-  //Delete all error messages
-  void ClearErrors();
 
   std::vector<wxString> getData();
 
@@ -57,6 +48,14 @@ private:
   std::vector<wxStaticText*> errors; //Error messages that apply at any given time
 
   wxStaticBox *box1;
+
+  void OnTextEnter(wxCommandEvent&);
+
+  //Checks if the choises made lead to a valid new year, of not sets error messages
+  void OnSubmitYear(wxCommandEvent&);
+
+  //Delete all error messages
+  void ClearErrors();
 
   wxDECLARE_EVENT_TABLE();
 };

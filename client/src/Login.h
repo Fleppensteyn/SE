@@ -31,14 +31,6 @@ public:
   Login(wxFrame *frame, int x, int y, int w, int h);
   virtual ~Login();
 
-  //Sends the login event through to the parent frame
-  // event - The event triggered by clicking the 'Login' button
-  void OnSubmit(wxCommandEvent& event);
-
-  //Handles the events of enter being pressed, either focus on next element or submit
-  // event - The event associated with pressing enter
-  void OnTextEnter(wxCommandEvent& event);
-
   //Get the username from the username input box
   //Returns a string of the text in the username input box
   wxString getUsername();
@@ -47,10 +39,14 @@ public:
   //Returns a string of the text in the password input box 
   wxString getPassword();
 
+private:
   wxTextCtrl *username; //The username input box
   wxTextCtrl *password; //The password input box
 
-private:
+  //Handles the events of enter being pressed, either focus on next element or submit
+  // event - The event associated with pressing enter
+  void OnTextEnter(wxCommandEvent& event);
+
   wxDECLARE_EVENT_TABLE();
 };
 

@@ -8,7 +8,6 @@
 //A summary of all events of the class Login that need to be captured
 //and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(Login, wxPanel)
-  EVT_BUTTON      (ID_SUBMIT, Login::OnSubmit)
   EVT_TEXT_ENTER  (wxID_ANY, Login::OnTextEnter)
 wxEND_EVENT_TABLE()
 
@@ -56,8 +55,12 @@ Login::~Login(){
   
 }
 
-void Login::OnSubmit(wxCommandEvent& event){
-  event.Skip();
+wxString Login::getUsername(){
+  return username->GetLineText(0);
+}
+
+wxString Login::getPassword(){
+  return password->GetLineText(0);
 }
 
 void Login::OnTextEnter(wxCommandEvent& event){
@@ -67,12 +70,4 @@ void Login::OnTextEnter(wxCommandEvent& event){
     wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT);
     wxPostEvent(this, event); //Fire a submit event
   }
-}
-
-wxString Login::getUsername(){
-  return username->GetLineText(0);
-}
-
-wxString Login::getPassword(){
-  return password->GetLineText(0);
 }

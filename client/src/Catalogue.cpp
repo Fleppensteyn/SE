@@ -10,7 +10,6 @@ wxDEFINE_EVENT(EVT_DELETED_COURSE, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(Catalogue, wxScrolledCanvas)
   EVT_COMMAND  (wxID_ANY, EVT_EDIT_NOW, Catalogue::editCourse)
-  EVT_COMMAND  (wxID_ANY, EVT_DELETED_COURSE, Catalogue::OnDeletedCourse)
 wxEND_EVENT_TABLE()
 
 Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
@@ -31,22 +30,15 @@ Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
   filter(sp);
 }
 
-void Catalogue::filter(SearchPars pars){
-  bmaps = courses->filter(pars);
-  updateSizes();
-}
-
-void Catalogue::updateSizes(){
-  SetVirtualSize(catalogue_width, (bmaps.size() * 65) + 5);
-  SetScrollbars(0, 65, 1, bmaps.size(), false);
-  SetScrollRate(0, yscroll);
-  Refresh();
+Catalogue::~Catalogue(){
+  bmaps.clear();
+  delete mousemanager;
 }
 
 int Catalogue::hitTest(const wxPoint& pos){
   wxPoint upos = CalcUnscrolledPosition(pos);
   if (upos.x < 2 || upos.x > coursewidth + 2 ||
-      upos.y % (courseheight + 5) < 5 || upos.y > bmaps.size() * 65){
+      upos.y % (courseheight + 5) < 5 || upos.y > (int)bmaps.size() * 65){
     select(-1);
     return wxNOT_FOUND;
   } else
@@ -64,7 +56,51 @@ void Catalogue::setDoubleClick(){
   wxPostEvent(this, event);
 }
 
-void Catalogue::editCourse(wxCommandEvent& event) {
+void Catalogue::startDrag(int item, const wxPoint& pos){
+  wxPoint unscpos = CalcUnscrolledPosition(pos);
+  wxPoint dragpoint(unscpos.x -2, (unscpos.y % 65) - 5);
+  this->dragdrop->startDrag(pos, dragpoint, bmaps[item], DRAGDROP_CATALOG);
+  Refresh();
+}
+
+void Catalogue::refreshList(){
+  filter(spars);
+}
+
+void Catalogue::OnDraw(wxDC& dc){
+  unsigned int wincap = (GetClientSize().GetHeight()/65) + 2,
+               curind = ((GetViewStart().y*yscroll)/65);
+
+  for (unsigned i = curind; i < curind+wincap && i < bmaps.size(); i++ )
+    dc.DrawBitmap(bmaps[i]->bitmap, 2, 5 + 65 * i);
+
+  dc.SetBrush(wxBrush(wxColour("#008888"), wxBRUSHSTYLE_TRANSPARENT));
+  dc.SetPen(wxPen(wxColour("#000000"), 3));
+  if (selected >= (int)curind && selected < (int)(curind + wincap))
+    dc.DrawRectangle(1, 4 + 65 * selected, coursewidth + 2, courseheight + 2);
+  wxPoint drawpos;
+  if (this->dragdrop->needsDrawing(drawpos, DRAGDROP_CATALOG)){
+    drawpos = CalcUnscrolledPosition(drawpos);
+    dc.DrawBitmap(this->dragdrop->getCourse()->bitmap, drawpos);
+  }
+  if (dragdrop->getCourse() != NULL)
+    this->overview->Refresh();
+}
+
+void Catalogue::filter(SearchPars pars){
+  this->spars = pars;
+  bmaps = courses->filter(pars);
+  updateSizes();
+}
+
+void Catalogue::updateSizes(){
+  SetVirtualSize(catalogue_width, (bmaps.size() * 65) + 5);
+  SetScrollbars(0, 65, 1, bmaps.size(), false);
+  SetScrollRate(0, yscroll);
+  Refresh();
+}
+
+void Catalogue::editCourse(wxCommandEvent&) {
   Course *course = bmaps[selected];
   int ret;
   CourseEditor editor(course, courses);
@@ -92,40 +128,4 @@ void Catalogue::editCourse(wxCommandEvent& event) {
       return;
     }
   }
-}
-
-void Catalogue::OnDeletedCourse(wxCommandEvent& event){
-  event.Skip();
-}
-
-void Catalogue::OnDraw(wxDC& dc){
-  unsigned int wincap = (GetClientSize().GetHeight()/65) + 2,
-               curind = ((GetViewStart().y*yscroll)/65);
-
-  for (unsigned i = curind; i < curind+wincap && i < bmaps.size(); i++ )
-    dc.DrawBitmap(bmaps[i]->bitmap, 2, 5 + 65 * i);
-
-  dc.SetBrush(wxBrush(wxColour("#008888"), wxBRUSHSTYLE_TRANSPARENT));
-  dc.SetPen(wxPen(wxColour("#000000"), 3));
-  if (selected >= curind && selected < curind + wincap)
-    dc.DrawRectangle(1, 4 + 65 * selected, coursewidth + 2, courseheight + 2);
-  wxPoint drawpos;
-  if (this->dragdrop->needsDrawing(drawpos, DRAGDROP_CATALOG)){
-    drawpos = CalcUnscrolledPosition(drawpos);
-    dc.DrawBitmap(this->dragdrop->getCourse()->bitmap, drawpos);
-  }
-  if (dragdrop->getCourse() != NULL)
-    this->overview->Refresh();
-}
-
-Catalogue::~Catalogue(){
-  bmaps.clear();
-  delete mousemanager;
-}
-
-void Catalogue::startDrag(int item, const wxPoint& pos){
-  wxPoint unscpos = CalcUnscrolledPosition(pos);
-  wxPoint dragpoint(unscpos.x -2, (unscpos.y % 65) - 5);
-  this->dragdrop->startDrag(pos, dragpoint, bmaps[item], DRAGDROP_CATALOG);
-  Refresh();
 }

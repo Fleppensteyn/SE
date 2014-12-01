@@ -17,20 +17,20 @@ typedef enum __nodetype {
 
 class Node{
 public:
-  Node(Course *c) : course(c), nodetype(NODE_NORMAL), parent(NULL), expected_children(1) {} //Normal node
+  Node(Course *c); //Normal node
   Node(NodeType nt); //only specify nodetype
 
   ~Node();
 
-  Course* GetCourse(){return course;}
-  NodeType GetNodeType(){return nodetype;}
-  unsigned int GetChildCount(){return children.size();}
-  unsigned int GetExpectedChildren(){return expected_children;}
-  Node* GetChild(){return (children.size() > 0)?children[0]:NULL;}
-  Node* GetChild(unsigned int i){return (children.size() > i)?children[i]:NULL;}
-  std::vector<Node*> GetChoices(){return choices;}
-  unsigned int GetX(){return x;}
-  unsigned int GetY(){return y;}
+  Course* GetCourse();
+  NodeType GetNodeType();
+  unsigned int GetChildCount();
+  unsigned int GetExpectedChildren();
+  Node* GetChild();
+  Node* GetChild(unsigned int i);
+  std::vector<Node*> GetChoices();
+  unsigned int GetX();
+  unsigned int GetY();
   Node* GetParent();
 
   void SetCourse(Course *course);

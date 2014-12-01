@@ -5,6 +5,13 @@
 
 #include "Node.h"
 
+Node::Node(Course *c){
+  course = c;
+  nodetype = NODE_NORMAL;
+  parent = NULL;
+  expected_children = 1;
+} //Normal node
+
 Node::Node(NodeType nt){
   SetNodeType(nt);
   parent = NULL;
@@ -12,6 +19,46 @@ Node::Node(NodeType nt){
 
 Node::~Node(){
   children.clear();
+}
+
+Course* Node::GetCourse(){
+  return course;
+}
+
+NodeType Node::GetNodeType(){
+  return nodetype;
+}
+
+unsigned int Node::GetChildCount(){
+  return children.size();
+}
+
+unsigned int Node::GetExpectedChildren(){
+  return expected_children;
+}
+
+Node* Node::GetChild(){
+  return (children.size() > 0)?children[0]:NULL;
+}
+
+Node* Node::GetChild(unsigned int i){
+  return (children.size() > i)?children[i]:NULL;
+}
+
+std::vector<Node*> Node::GetChoices(){
+  return choices;
+}
+
+unsigned int Node::GetX(){
+  return x;
+}
+
+unsigned int Node::GetY(){
+  return y;
+}
+
+Node* Node::GetParent(){
+  return parent;
 }
 
 void Node::SetCourse(Course *course){
@@ -88,8 +135,4 @@ void Node::SetChoices(std::vector<Node*> nodes){
 void Node::SetPosition(unsigned int x, unsigned int y){
   this->x = x;
   this->y = y;
-}
-
-Node* Node::GetParent(){
-  return parent;
 }

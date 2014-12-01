@@ -29,10 +29,6 @@ public:
   //Delete all error messages
   virtual ~YearDeleter();
 
-  void OnDeleteYear(wxCommandEvent& event);
-
-  void OnUpdateCurriculum(wxCommandEvent& event);
-
   std::vector<wxString> getData();
 
 private:
@@ -41,6 +37,10 @@ private:
   wxButton *create;
 
   Database *database;
+
+  void OnDeleteYear(wxCommandEvent&);
+
+  void OnUpdateCurriculum(wxCommandEvent&);
 
   wxDECLARE_EVENT_TABLE();
 };

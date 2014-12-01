@@ -13,7 +13,6 @@
 #endif
 
 #include <vector>
-#include "Curriculum.h"
 
 enum{
   ID_CURRICULUM_NAME,
@@ -37,18 +36,9 @@ public:
   //Delete all error messages
   virtual ~CurriculumCreator();
 
-  //If enter is pressed in a textctrl switches focus to next element
-  void OnTextEnter(wxCommandEvent& event);
-
-  //Checks if the choises made lead to a valid new course, of not sets error messages
-  void OnSubmitCurriculum(wxCommandEvent& event);
-
   //Creates an error message corresponding to the passed error
   void DisplayError(int error);
 
-  //Delete all error messages
-  void ClearErrors();
-  
   std::vector<wxString> getData();
 
 private:
@@ -59,7 +49,14 @@ private:
   std::vector<wxStaticText*> errors; //Error messages that apply at any given time
   wxStaticBox *box1;
 
-  Curriculum *curriculum;
+  //If enter is pressed in a textctrl switches focus to next element
+  void OnTextEnter(wxCommandEvent& event);
+
+  //Checks if the choices made lead to a valid new course, or sets error messages
+  void OnSubmitCurriculum(wxCommandEvent&);
+
+  //Delete all error messages
+  void ClearErrors();
 
   wxDECLARE_EVENT_TABLE();
 };

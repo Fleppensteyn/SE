@@ -62,11 +62,18 @@ YearDeleter::~YearDeleter(){
 
 }//~CourseCreator
 
-void YearDeleter::OnDeleteYear(wxCommandEvent& event){
+std::vector<wxString> YearDeleter::getData(){
+  std::vector<wxString> data;
+  data.push_back(study_program->GetValue());
+  data.push_back(year->GetValue());
+  return data;
+}//getData
+
+void YearDeleter::OnDeleteYear(wxCommandEvent&){
   EndModal(wxID_OK);
 }//OnSubmitCourse
 
-void YearDeleter::OnUpdateCurriculum(wxCommandEvent& event){
+void YearDeleter::OnUpdateCurriculum(wxCommandEvent&){
   wxArrayString *sy = database->getYears(study_program->GetValue());
   year->Clear();
   year->Append(*sy);
@@ -78,10 +85,3 @@ void YearDeleter::OnUpdateCurriculum(wxCommandEvent& event){
     create->Enable(true);
   }
 }
-
-std::vector<wxString> YearDeleter::getData(){
-  std::vector<wxString> data;
-  data.push_back(study_program->GetValue());
-  data.push_back(year->GetValue());
-  return data;
-}//getData

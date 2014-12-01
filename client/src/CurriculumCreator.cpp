@@ -78,42 +78,12 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   column->Add(button_row, 0, wxRIGHT | wxLEFT | wxEXPAND, 10);
 
   SetSizer(column);
-
-  this->curriculum = curriculum;
 }
 
 CurriculumCreator::~CurriculumCreator(){
   ClearErrors();
 }//~CurriculumCreator
 
-
-void CurriculumCreator::OnTextEnter(wxCommandEvent& event){
-  int id = event.GetId();
-  if(id == ID_CURRICULUM_NAME) //Enter was pressed in the course name box
-    years->SetFocus();
-  else if(id == ID_CURYEARS) //Enter was pressed in the ects box
-    semesters->SetFocus();
-  else{ //Enter was pressed in any other box that doesn't inherently handle these events
-    wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_CURRICULUM);
-    wxPostEvent(this, event);
-  }
-}//OnTextEnter
-
-void CurriculumCreator::OnSubmitCurriculum(wxCommandEvent& event){
-  ClearErrors(); //Clear the errors of the previous creation attempt
-  if(curriculum_name->GetValue() == "")
-    DisplayError(ERROR_NO_CURNAME); //No curriculum name was specified
-  if(years->GetValue() == "")
-    DisplayError(ERROR_NO_CURYEARS); //No years amount specified
-  if(semesters->GetValue() == "")
-    DisplayError(ERROR_NO_CURSEMESTERS);//No semesters amount specified
-
-  if(errors.size() == 0)
-    EndModal(wxID_OK);
-
-  for(int i = 0; i < errors.size(); i++)
-    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
-}//OnSubmitCourse
 
 void CurriculumCreator::DisplayError(int error){
   switch(error){
@@ -137,12 +107,6 @@ void CurriculumCreator::DisplayError(int error){
   }
 }//DisplayError
 
-void CurriculumCreator::ClearErrors(){
-  for(int i = 0; i < errors.size(); i++)
-    errors[i]->Destroy();
-  errors.clear();
-}//ClearErrors
-
 std::vector<wxString> CurriculumCreator::getData(){
   std::vector<wxString> data;
   data.push_back(curriculum_name->GetValue());
@@ -150,3 +114,37 @@ std::vector<wxString> CurriculumCreator::getData(){
   data.push_back(years->GetValue());
   return data;
 }
+
+void CurriculumCreator::OnTextEnter(wxCommandEvent& event){
+  int id = event.GetId();
+  if(id == ID_CURRICULUM_NAME) //Enter was pressed in the course name box
+    years->SetFocus();
+  else if(id == ID_CURYEARS) //Enter was pressed in the ects box
+    semesters->SetFocus();
+  else{ //Enter was pressed in any other box that doesn't inherently handle these events
+    wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_CURRICULUM);
+    wxPostEvent(this, event);
+  }
+}//OnTextEnter
+
+void CurriculumCreator::OnSubmitCurriculum(wxCommandEvent&){
+  ClearErrors(); //Clear the errors of the previous creation attempt
+  if(curriculum_name->GetValue() == "")
+    DisplayError(ERROR_NO_CURNAME); //No curriculum name was specified
+  if(years->GetValue() == "")
+    DisplayError(ERROR_NO_CURYEARS); //No years amount specified
+  if(semesters->GetValue() == "")
+    DisplayError(ERROR_NO_CURSEMESTERS);//No semesters amount specified
+
+  if(errors.size() == 0)
+    EndModal(wxID_OK);
+
+  for(unsigned int i = 0; i < errors.size(); i++)
+    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
+}//OnSubmitCourse
+
+void CurriculumCreator::ClearErrors(){
+  for(unsigned int i = 0; i < errors.size(); i++)
+    errors[i]->Destroy();
+  errors.clear();
+}//ClearErrors

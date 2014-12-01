@@ -16,8 +16,6 @@ wxBEGIN_EVENT_TABLE(CourseEditor, wxDialog)
   EVT_PAINT             (CourseEditor::drawPreview)
   wxEND_EVENT_TABLE()
 
-//TODO: Iets met copyvariabelen doen, preview werkend krijgen
-
 CourseEditor::CourseEditor(Course *course, Courses *courses)
       :wxDialog(NULL, wxID_ANY, wxT("Course Editing"), wxPoint(100,100), wxSize(500, 450),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
@@ -28,10 +26,6 @@ CourseEditor::CourseEditor(Course *course, Courses *courses)
                          wxSize(460, 120));
   box2 = new wxStaticBox(this, wxID_ANY, "Course affiliations", wxPoint(20, 140),
                          wxSize(460, 150));
-
-  //TODO: Zet affiliaton en course_type op de juiste waarden
-  //wxString copyAffiliation = ....
-  //wxString copyCourse_type = ....;
 
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -163,13 +157,24 @@ CourseEditor::~CourseEditor(){
   ClearErrors();
 }//~CourseEditor
 
-void CourseEditor::OnDeleteCourse(wxCommandEvent& event){
-  delete_course = true;
-  EndModal(wxID_OK);
-}
-
 bool CourseEditor::isDelete(){
   return delete_course;
+}
+
+std::vector<wxString> CourseEditor::getData(){
+  std::vector<wxString> data;
+  data.push_back(course_name->GetValue());
+  data.push_back(ects->GetValue());
+  data.push_back(affiliation->GetValue());
+  data.push_back(course_type->GetValue());
+  data.push_back(determineLine());
+  data.push_back(course_number->GetValue());
+  return data;
+}//getData
+
+void CourseEditor::OnDeleteCourse(wxCommandEvent&){
+  delete_course = true;
+  EndModal(wxID_OK);
 }
 
 void CourseEditor::OnTextEnter(wxCommandEvent& event){
@@ -188,7 +193,7 @@ void CourseEditor::OnTextEnter(wxCommandEvent& event){
   }
 }//OnTextEnter
 
-void CourseEditor::OnSubmitCourse(wxCommandEvent& event){
+void CourseEditor::OnSubmitCourse(wxCommandEvent&){
   ClearErrors(); //Clear the errors of the previous creation attempt
   if(course_name->GetValue() == "")
     DisplayError(ERROR_EDIT_NO_NAME); //No course name was specified
@@ -200,7 +205,7 @@ void CourseEditor::OnSubmitCourse(wxCommandEvent& event){
   if(errors.size() == 0)
     EndModal(wxID_OK);
 
-  for(int i = 0; i < errors.size(); i++)
+  for(unsigned int i = 0; i < errors.size(); i++)
     errors[i]->SetForegroundColour(wxColour(wxT("RED")));
 }//OnSubmitCourse
 
@@ -222,27 +227,16 @@ void CourseEditor::DisplayError(int error){
 }//DisplayError
 
 void CourseEditor::ClearErrors(){
-  for(int i = 0; i < errors.size(); i++)
+  for(unsigned int i = 0; i < errors.size(); i++)
     errors[i]->Destroy();
   errors.clear();
 }//ClearErrors
 
-std::vector<wxString> CourseEditor::getData(){
-  std::vector<wxString> data;
-  data.push_back(course_name->GetValue());
-  data.push_back(ects->GetValue());
-  data.push_back(affiliation->GetValue());
-  data.push_back(course_type->GetValue());
-  data.push_back(determineLine());
-  data.push_back(course_number->GetValue());
-  return data;
-}//getData
-
-void CourseEditor::updatePreview(wxCommandEvent& event){
+void CourseEditor::updatePreview(wxCommandEvent&){
   Refresh();
 }
 
-void CourseEditor::drawPreview(wxPaintEvent& event){
+void CourseEditor::drawPreview(wxPaintEvent&){
   Course course = Course();
   course.name = course_name->GetValue();
   course.line = determineLine();
@@ -297,7 +291,7 @@ wxString CourseEditor::determineLine(){
 
 void CourseEditor::setAffiliation(wxColour colour){
   wxString name = courses->getAffiliationName(colour);
-  for(int i = 0; i < affiliation->GetCount(); i++){
+  for(unsigned int i = 0; i < affiliation->GetCount(); i++){
     if(affiliation->GetString(i) == name){
       affiliation->SetSelection(i);
     }
@@ -306,7 +300,7 @@ void CourseEditor::setAffiliation(wxColour colour){
 
 void CourseEditor::setType(wxColour colour){
   wxString name = courses->getTypeName(colour);
-    for(int i = 0; i < course_type->GetCount(); i++){
+    for(unsigned int i = 0; i < course_type->GetCount(); i++){
     if(course_type->GetString(i) == name){
       course_type->SetSelection(i);
     }

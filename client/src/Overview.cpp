@@ -90,6 +90,12 @@ Overview::~Overview(){
   delete dragdrop;
 }
 
+int Overview::addNewCourse(std::vector<wxString> data){
+  int ret = courses->addNewCourse(data);
+  catalogue->refreshList();
+  return ret;
+}
+
 int Overview::addNewCurriculum(std::vector<wxString> data){
   unsigned int semesters = wxAtoi(data[1]);
   unsigned int years = wxAtoi(data[2]);
@@ -99,7 +105,7 @@ int Overview::addNewCurriculum(std::vector<wxString> data){
     faculties->Clear();
     wxArrayString *facs = database->getFaculties();
     faculties->Append(*facs);
-    for(int i = 0; i < faculties->GetCount(); i++){
+    for(unsigned int i = 0; i < faculties->GetCount(); i++){
       if(faculties->GetString(i) == sel){
         faculties->SetSelection(i);
         break;
@@ -127,67 +133,8 @@ int Overview::addNewYear(wxFrame *frame){
   return -1;
 }
 
-void Overview::OnUpdateFaculty(wxCommandEvent& event){
-  years->Clear();
-  wxArrayString *temp = database->getYears(faculties->GetValue());
-  years->Append(*temp);
-  years->SetSelection(0);
-  wxCommandEvent pevent(wxEVT_COMBOBOX, ID_YEARS);
-  wxPostEvent(this, pevent);
-}//OnUpdateFaculty
-
-void Overview::OnUpdateYear(wxCommandEvent& event){
-  wxString fac = faculties->GetValue();
-  wxString ys = years->GetValue();
-  wxString name = faculties->GetValue() << wxString(" ") << ys;
-  curriculum->setCurriculum(database->populateTree(fac, ys), name);
-  curfac = fac;
-  curyr = ys;
-}//OnUpdateYear
-
-void Overview::drawStuff(wxPaintEvent& event){
-  wxPaintDC dc(this);
-  wxPoint pos;
-  if (dragdrop->needsDrawing(pos, DRAGDROP_OVERVIEW))
-    dc.DrawBitmap(dragdrop->getCourse()->bitmap, pos);
-  curriculum->dragDraw();
-}
-
-void Overview::OnResize(wxSizeEvent& event){
-  Layout();
-  curriculum->drawCurriculum();
-  curriculum->Layout();
-  wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
-       curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();
-  wxSize catalogsize = catalogue->GetClientSize(),
-      curriculumsize = curriculum->GetClientSize();
-  dragdrop->updateVariables(catalogpos, curriculumpos, catalogsize, curriculumsize);
-}
-
-void Overview::OnDeletedCourse(wxCommandEvent& event){
-  if(years->GetValue() != ""){
-    wxCommandEvent event(wxEVT_COMBOBOX, ID_YEARS);
-    wxPostEvent(this, event);
-  }
-}
-
-void Overview::OnSplit(wxCommandEvent& event){
-  if(split->IsEnabled()){
-    curriculum->insertSplit();
-  }
-}
-
-void Overview::OnSelected(wxCommandEvent& event){
-  split->Enable(true);
-}
-
-void Overview::OnNoSelect(wxCommandEvent& event){
-  split->Enable(false);
-}
-
-void Overview::OnSaveDB(wxCommandEvent& event){
-  std::vector<Semester *> tree = this->curriculum->getCurriculum();
-  this->database->saveYear(curfac, curyr, tree);
+Courses* Overview::getCourses(){
+  return courses;
 }
 
 void Overview::OnDeleteYear(wxFrame *frame){
@@ -207,7 +154,7 @@ void Overview::OnDeleteYear(wxFrame *frame){
       years->Clear();
       wxArrayString *temp = database->getYears(data[0]);
       years->Append(*temp);
-      for(int i = 0; i < years->GetCount(); i++){
+      for(unsigned int i = 0; i < years->GetCount(); i++){
         if(years->GetString(i) == text)
           years->SetSelection(i);
       }
@@ -233,7 +180,7 @@ void Overview::OnDeleteCurriculum(wxFrame *frame){
       faculties->Clear();
       wxArrayString *temp = database->getFaculties();
       faculties->Append(*temp);
-      for(int i = 0; i < faculties->GetCount(); i++){
+      for(unsigned int i = 0; i < faculties->GetCount(); i++){
         if(faculties->GetString(i) == text)
           faculties->SetSelection(i);
       }
@@ -251,6 +198,69 @@ void Overview::OnDeleteAll(){
     clearYears();
     curriculum->clear();
   }
+}
+
+void Overview::OnUpdateFaculty(wxCommandEvent&){
+  years->Clear();
+  wxArrayString *temp = database->getYears(faculties->GetValue());
+  years->Append(*temp);
+  years->SetSelection(0);
+  wxCommandEvent pevent(wxEVT_COMBOBOX, ID_YEARS);
+  wxPostEvent(this, pevent);
+}//OnUpdateFaculty
+
+void Overview::OnUpdateYear(wxCommandEvent&){
+  wxString fac = faculties->GetValue();
+  wxString ys = years->GetValue();
+  wxString name = faculties->GetValue() << wxString(" ") << ys;
+  curriculum->setCurriculum(database->populateTree(fac, ys), name);
+  curfac = fac;
+  curyr = ys;
+}//OnUpdateYear
+
+void Overview::OnDeletedCourse(wxCommandEvent&){
+  if(years->GetValue() != ""){
+    wxCommandEvent event(wxEVT_COMBOBOX, ID_YEARS);
+    wxPostEvent(this, event);
+  }
+}
+
+void Overview::OnSplit(wxCommandEvent&){
+  if(split->IsEnabled()){
+    curriculum->insertSplit();
+  }
+}
+
+void Overview::OnSelected(wxCommandEvent&){
+  split->Enable(true);
+}
+
+void Overview::OnNoSelect(wxCommandEvent&){
+  split->Enable(false);
+}
+
+void Overview::OnSaveDB(wxCommandEvent&){
+  std::vector<Semester *> tree = this->curriculum->getCurriculum();
+  this->database->saveYear(curfac, curyr, tree);
+}
+
+void Overview::drawStuff(wxPaintEvent&){
+  wxPaintDC dc(this);
+  wxPoint pos;
+  if (dragdrop->needsDrawing(pos, DRAGDROP_OVERVIEW))
+    dc.DrawBitmap(dragdrop->getCourse()->bitmap, pos);
+  curriculum->dragDraw();
+}
+
+void Overview::OnResize(wxSizeEvent&){
+  Layout();
+  curriculum->drawCurriculum();
+  curriculum->Layout();
+  wxPoint catalogpos = GetSizer()->GetItem(catalogue, true)->GetPosition(),
+       curriculumpos = GetSizer()->GetItem(curriculum, true)->GetPosition();
+  wxSize catalogsize = catalogue->GetClientSize(),
+      curriculumsize = curriculum->GetClientSize();
+  dragdrop->updateVariables(catalogpos, curriculumpos, catalogsize, curriculumsize);
 }
 
 void Overview::clearFaculties(){

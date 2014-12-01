@@ -202,10 +202,10 @@ wxArrayString* Database::getYears(wxString name){
 std::vector<Semester*> Database::populateTree(wxString curname, wxString yearname){
   std::vector<Semester*> ret;
   Semester *sem;
-  int i;
+  unsigned int i;
 
   int sem_count = getSemesters(curname);
-  for(i = 0; i < sem_count; i++){
+  for(int j = 0; j < sem_count; j++){
     sem = new Semester();
     ret.push_back(sem);
   }
@@ -296,7 +296,7 @@ void Database::orderPopulation(std::vector<std::vector<std::vector<int> > > pop)
   std::vector<std::vector<int> > tempcur;
   std::vector<int> templine;
   //Order on semester
-  int i, j, k, l;
+  unsigned int i, j, k, l;
   for(i = 0; i < pop.size(); i++){
     k = i;
     for(j = i+1; j < pop.size(); j++){
@@ -329,7 +329,7 @@ void Database::populateLine(int ind, Node *parent, Semester *sem){
   // printf("Populating line\n");
   Course *course;
   Node *par = parent;
-  int i = 0;
+  unsigned int i = 0;
   while (par == NULL){
     if(i >= pop[ind].size())
       return;
@@ -380,11 +380,11 @@ void Database::populateSplit(int fid, Node *splitnode, Semester *sem){
   }
   rc = sqlite3_step(stmt);
   while (rc == SQLITE_ROW){
-    int i, j = -1, k = -1,
+    int j = -1, k = -1,
         left = sqlite3_column_int(stmt, 0),
         right = sqlite3_column_int(stmt, 1);
     bool b = false;
-    for(i = 0; i < pop.size(); i++){
+    for(unsigned int i = 0; i < pop.size(); i++){
       if (left == pop[i][0][1]){
         j = i;
         if(b)
@@ -553,7 +553,7 @@ bool Database::deleteYear(int yid){
 
   wxString splitcols("("), colstr("(");
 
-  for (int i = 0; i < colres.size(); i++){
+  for (unsigned int i = 0; i < colres.size(); i++){
     if (colres[i][0] == -1)
       splitcols << colres[i][1] << ",";
     colstr << colres[i][1] << ",";
@@ -655,7 +655,7 @@ std::vector<std::vector<int> > Database::selectIntVector(wxString query, int& rc
 }
 
 void Database::saveYear(wxString curname, wxString yearname, std::vector<Semester*>& tree){
-  int yid, rc;
+  int /*yid,*/ rc;
 
   wxString query;
   query.Printf("SELECT years.cid, years.id FROM years, curriculum WHERE years.cid = curriculum.id"
@@ -720,13 +720,13 @@ void Database::saveYear(wxString curname, wxString yearname, std::vector<Semeste
       else if (i == 0) idat.splitsoffset = sqlite3_last_insert_rowid(this->db);
     }
   }
-  for (int i = 0; i < idat.columns.size(); i++){
+  for (unsigned int i = 0; i < idat.columns.size(); i++){
     query.Printf("INSERT INTO columns(yid, ind, lid) VALUES (%d, %d, %d);",
                   idat.yid, idat.columns[i][1], idat.columns[i][2] + idat.columnoffset);
     rc = simpleQuery(query, "inserting columns");
     if (rc != SQLITE_DONE) continue;
   }
-  for (int i = 0; i < idat.lines.size(); i++){
+  for (unsigned int i = 0; i < idat.lines.size(); i++){
     if (idat.lines[i][2] == 2) idat.lines[i][3] += idat.splitsoffset;
     query.Printf("INSERT INTO lines(id, ind, type, fid) VALUES (%d, %d, %d, %d);",
                   idat.lines[i][0] + idat.columnoffset, idat.lines[i][1], idat.lines[i][2], idat.lines[i][3]);
@@ -787,7 +787,7 @@ void Database::deleteCurriculum(wxString curname, bool complete){
   int rc;
   std::vector<std::vector<int> > ret = selectIntVector(query, rc, "Selecting years from curriculum");
 
-  for(int i = 0; i < ret.size(); i++)
+  for(unsigned int i = 0; i < ret.size(); i++)
     deleteYear(ret[i][0]);
 
   if(complete){

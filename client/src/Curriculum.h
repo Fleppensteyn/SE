@@ -37,13 +37,8 @@ public:
 
   virtual ~Curriculum();
 
-  void setCurriculum(std::vector<Semester*> vec, wxString name);//Courses *courses);
-
-  //Updates the curriculum after a drag and drop action
-  void updateCurriculum();
-
+  void setCurriculum(std::vector<Semester*> vec, wxString name);
   void drawCurriculum();
-  void drawCurriculum(bool scroll);
 
   void dragDraw();
 
@@ -51,10 +46,8 @@ public:
   void select(int index);
   void startDrag(int item, const wxPoint& pos);
   void endDrag(int item);
-  void resetNode();
-  void removeEmptySplits();
+
   void insertSplit();
-  void OnScroll(wxScrollWinEvent& event);
   void clear();
 
   std::vector<Semester*> getCurriculum();
@@ -68,15 +61,20 @@ private:
   DragDropHelp * dragdrop;
   CurriculumMouseManager *mm;
   wxPanel * overview;
+  bool dragging;
 
-  //Prints this curriculum in the overview box
+  void drawCurriculum(bool scroll);
   void OnDraw(wxDC& dc);
   void collectAllNodes();
+  void resetNode();
+  void removeEmptySplits();
 
   unsigned int determineWidth();
   unsigned int determineHeight();
 
-  wxDECLARE_EVENT_TABLE();
+  virtual bool SendAutoScrollEvents(wxScrollWinEvent&) const;
+
+  // wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* CURRICULUM_H_ */

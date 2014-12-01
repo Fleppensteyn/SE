@@ -60,8 +60,6 @@ public:
 
   wxString getTypeName(wxColour colour);
 
-  int search(unsigned int ID);
-
   std::vector<Course *> filter(SearchPars pars);
 
   int deleteCourse(unsigned int ID);
@@ -75,6 +73,8 @@ private:
   std::vector<Course*> all_courses;
 
   Database *database;
+
+  int search(unsigned int ID);
 };
 
 #endif /* COURSES_H_ */

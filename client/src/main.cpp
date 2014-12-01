@@ -49,34 +49,6 @@ public:
   // size - The size at the start of the program
   Frame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
-  //Exits the program when an wxID_EXIT event occurs
-  // event - The wxID_EXIT event
-  void OnExit(wxCommandEvent& event);
-
-  //Attempts to log in and on succes switches the program to the Overview panel
-  // event - The event thrown by the 'Login' button
-  void OnSubmit(wxCommandEvent& event);
-
-  //If logged in, logs the user out and returns to login screen
-  void OnLogout(wxCommandEvent& event);
-
-  //If in overview, opens 'Create new course' dialog
-  void OnNewCourse(wxCommandEvent& event);
-
-  //If in overview, opens 'Create new curriculum' dialog
-  void OnNewCurriculum(wxCommandEvent& event);
-
-  void OnNewYear(wxCommandEvent& event);
-
-  void OnDeleteYear(wxCommandEvent& event);
-
-  void OnDeleteCurriculum(wxCommandEvent& event);
-
-  void OnDeleteAll(wxCommandEvent& event);
-
-  //Switches between the Login and Overview panel
-  void SwitchPanels();
-
 private:
   Login *panel_login; //The login panel for all login functionality and components
   Overview *panel_overview; //The overview panel showing the standard overview once logged in
@@ -85,6 +57,39 @@ private:
 
   wxMenuBar *menubar_login; //menubar used for the login screen
   wxMenuBar *menubar_overview; //menubar used for the overview
+
+  //Exits the program when an wxID_EXIT event occurs
+  // event - The wxID_EXIT event
+  void OnExit(wxCommandEvent&);
+
+  //Attempts to log in and on succes switches the program to the Overview panel
+  // event - The event thrown by the 'Login' button
+  void OnSubmit(wxCommandEvent&);
+
+  //If logged in, logs the user out and returns to login screen
+  void OnLogout(wxCommandEvent&);
+
+  //If in overview, opens 'Create new course' dialog
+  void OnNewCourse(wxCommandEvent&);
+
+  //If in overview, opens 'Create new curriculum' dialog
+  void OnNewCurriculum(wxCommandEvent&);
+
+  //If in overview, opens 'Create new year' dialog
+  void OnNewYear(wxCommandEvent&);
+
+  //If in overview, opens 'Delete year' dialog
+  void OnDeleteYear(wxCommandEvent&);
+
+  //If in overivew opens 'Delete curriculum' dialog
+  void OnDeleteCurriculum(wxCommandEvent&);
+
+  //If in overview, confirms if you want to delete all curricula and if so does so
+  void OnDeleteAll(wxCommandEvent&);
+
+  //Switches between the Login and Overview panel
+  void SwitchPanels();
+
   wxDECLARE_EVENT_TABLE();
 };
 
@@ -190,12 +195,12 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   SetSizer(panels);
 }//Frame
 
-void Frame::OnExit(wxCommandEvent& event){
+void Frame::OnExit(wxCommandEvent&){
   delete server_com;
   Close(true);
 }//OnExit
 
-void Frame::OnSubmit(wxCommandEvent& event){
+void Frame::OnSubmit(wxCommandEvent&){
   if(failed_login_txt->IsShown())   //If there was a previous failed login attempt
     failed_login_txt->Show(false);  //remove the error message
   wxString msg = "Checking login info...";
@@ -218,17 +223,14 @@ void Frame::OnSubmit(wxCommandEvent& event){
   }
 }//OnSubmit
 
-void Frame::OnLogout(wxCommandEvent& event){
+void Frame::OnLogout(wxCommandEvent&){
   SwitchPanels();
 }//OnLogout
 
-void Frame::OnNewCourse(wxCommandEvent& event){
+void Frame::OnNewCourse(wxCommandEvent&){
   CourseCreator cc(this, panel_overview->getCourses());
   while (cc.ShowModal() == wxID_OK){
     std::vector<wxString> data = cc.getData();
-    //SetStatusText(wxString("name: |") << data[0] << wxString("| ects: |") << data[1] <<
-    //              wxString("| aff: |") << data[2] << wxString("| type: |") << data[3] <<
-    //              wxString("| line: |") << data[4] << wxString("| number: |") << data[5]);
     int ret = panel_overview->addNewCourse(data);
     if(ret >= 0){
       SetStatusText(wxString("Succesfully added new course") << ret);
@@ -241,7 +243,7 @@ void Frame::OnNewCourse(wxCommandEvent& event){
   SetStatusText("");
 }//OnNewCourse
 
-void Frame::OnNewCurriculum(wxCommandEvent& event){
+void Frame::OnNewCurriculum(wxCommandEvent&){
   CurriculumCreator cc(this);
   while(cc.ShowModal() == wxID_OK){
     std::vector<wxString> data = cc.getData();
@@ -255,23 +257,23 @@ void Frame::OnNewCurriculum(wxCommandEvent& event){
     }
   }
   SetStatusText("");
-}
+}//OnNewCurriculum
 
-void Frame::OnNewYear(wxCommandEvent& event){
+void Frame::OnNewYear(wxCommandEvent&){
   panel_overview->addNewYear(this);
-}
+}//OnNewYear
 
-void Frame::OnDeleteYear(wxCommandEvent& event){
+void Frame::OnDeleteYear(wxCommandEvent&){
   panel_overview->OnDeleteYear(this);
-}
+}//OnDeleteYear
 
-void Frame::OnDeleteCurriculum(wxCommandEvent& event){
+void Frame::OnDeleteCurriculum(wxCommandEvent&){
   panel_overview->OnDeleteCurriculum(this);
-}
+}//OnDeleteCurriculum
 
-void Frame::OnDeleteAll(wxCommandEvent& event){
+void Frame::OnDeleteAll(wxCommandEvent&){
   panel_overview->OnDeleteAll();
-}
+}//OnDeleteAll
 
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview

@@ -74,23 +74,6 @@ YearCreator::~YearCreator(){
   ClearErrors();
 }//~CourseCreator
 
-void YearCreator::OnTextEnter(wxCommandEvent& event){
-  wxCommandEvent event1(wxEVT_BUTTON, ID_SUBMIT_YEAR);
-  wxPostEvent(this, event1);
-}//OnTextEnter
-
-void YearCreator::OnSubmitYear(wxCommandEvent& event){
-  ClearErrors(); //Clear the errors of the previous creation attempt
-  if(year_name->GetValue() == "")
-    DisplayError(ERROR_NO_YEAR); //No course name was specified
-
-  if(errors.size() == 0)
-    EndModal(wxID_OK);
-
-  for(int i = 0; i < errors.size(); i++)
-    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
-}//OnSubmitCourse
-
 void YearCreator::DisplayError(int error){
   switch(error){
     case ERROR_NO_YEAR:
@@ -105,15 +88,32 @@ void YearCreator::DisplayError(int error){
   }
 }//DisplayError
 
-void YearCreator::ClearErrors(){
-  for(int i = 0; i < errors.size(); i++)
-    errors[i]->Destroy();
-  errors.clear();
-}//ClearErrors
-
 std::vector<wxString> YearCreator::getData(){
   std::vector<wxString> data;
   data.push_back(study_program->GetValue());
   data.push_back(year_name->GetValue());
   return data;
 }//getData
+
+void YearCreator::OnTextEnter(wxCommandEvent&){
+  wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_YEAR);
+  wxPostEvent(this, event);
+}//OnTextEnter
+
+void YearCreator::OnSubmitYear(wxCommandEvent&){
+  ClearErrors(); //Clear the errors of the previous creation attempt
+  if(year_name->GetValue() == "")
+    DisplayError(ERROR_NO_YEAR); //No course name was specified
+
+  if(errors.size() == 0)
+    EndModal(wxID_OK);
+
+  for(unsigned int i = 0; i < errors.size(); i++)
+    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
+}//OnSubmitCourse
+
+void YearCreator::ClearErrors(){
+  for(unsigned int i = 0; i < errors.size(); i++)
+    errors[i]->Destroy();
+  errors.clear();
+}//ClearErrors

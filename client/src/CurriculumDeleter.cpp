@@ -51,12 +51,12 @@ CurriculumDeleter::~CurriculumDeleter(){
 
 }//~CourseCreator
 
-void CurriculumDeleter::OnDeleteCurriculum(wxCommandEvent& event){
-  EndModal(wxID_OK);
-}//OnSubmitCourse
-
 std::vector<wxString> CurriculumDeleter::getData(){
   std::vector<wxString> data;
   data.push_back(study_program->GetValue());
   return data;
 }//getData
+
+void CurriculumDeleter::OnDeleteCurriculum(wxCommandEvent&){
+  EndModal(wxID_OK);
+}//OnSubmitCourse

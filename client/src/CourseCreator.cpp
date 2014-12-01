@@ -146,33 +146,16 @@ CourseCreator::~CourseCreator(){
   ClearErrors();
 }//~CourseCreator
 
-void CourseCreator::OnTextEnter(wxCommandEvent& event){
-  int id = event.GetId();
-  if(id == ID_COURSE_NAME) //Enter was pressed in the course name box
-    ects->SetFocus();
-  else if(id == ID_ECTS) //Enter was pressed in the ects box
-    affiliation->SetFocus();
-  else{ //Enter was pressed in any other box that doesn't inherently handle these events
-    wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_COURSE);
-    wxPostEvent(this, event);
-  }
-}//OnTextEnter
-
-void CourseCreator::OnSubmitCourse(wxCommandEvent& event){
-  ClearErrors(); //Clear the errors of the previous creation attempt
-  if(course_name->GetValue() == "")
-    DisplayError(ERROR_NO_NAME); //No course name was specified
-  if(ects->GetValue() == "")
-    DisplayError(ERROR_NO_ECTS); //No ects amount specified
-  if(course_number->GetValue() == "")
-    DisplayError(ERROR_NO_NUMBER);
-
-  if(errors.size() == 0)
-    EndModal(wxID_OK);
-
-  for(int i = 0; i < errors.size(); i++)
-    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
-}//OnSubmitCourse
+std::vector<wxString> CourseCreator::getData(){
+  std::vector<wxString> data;
+  data.push_back(course_name->GetValue());
+  data.push_back(ects->GetValue());
+  data.push_back(affiliation->GetValue());
+  data.push_back(course_type->GetValue());
+  data.push_back(determineLine());
+  data.push_back(course_number->GetValue());
+  return data;
+}//getData
 
 void CourseCreator::DisplayError(int error){
   switch(error){
@@ -196,28 +179,45 @@ void CourseCreator::DisplayError(int error){
   }
 }//DisplayError
 
+void CourseCreator::OnTextEnter(wxCommandEvent& event){
+  int id = event.GetId();
+  if(id == ID_COURSE_NAME) //Enter was pressed in the course name box
+    ects->SetFocus();
+  else if(id == ID_ECTS) //Enter was pressed in the ects box
+    affiliation->SetFocus();
+  else{ //Enter was pressed in any other box that doesn't inherently handle these events
+    wxCommandEvent event(wxEVT_BUTTON, ID_SUBMIT_COURSE);
+    wxPostEvent(this, event);
+  }
+}//OnTextEnter
+
+void CourseCreator::OnSubmitCourse(wxCommandEvent&){
+  ClearErrors(); //Clear the errors of the previous creation attempt
+  if(course_name->GetValue() == "")
+    DisplayError(ERROR_NO_NAME); //No course name was specified
+  if(ects->GetValue() == "")
+    DisplayError(ERROR_NO_ECTS); //No ects amount specified
+  if(course_number->GetValue() == "")
+    DisplayError(ERROR_NO_NUMBER);
+
+  if(errors.size() == 0)
+    EndModal(wxID_OK);
+
+  for(unsigned int i = 0; i < errors.size(); i++)
+    errors[i]->SetForegroundColour(wxColour(wxT("RED")));
+}//OnSubmitCourse
+
 void CourseCreator::ClearErrors(){
-  for(int i = 0; i < errors.size(); i++)
+  for(unsigned int i = 0; i < errors.size(); i++)
     errors[i]->Destroy();
   errors.clear();
 }//ClearErrors
 
-std::vector<wxString> CourseCreator::getData(){
-  std::vector<wxString> data;
-  data.push_back(course_name->GetValue());
-  data.push_back(ects->GetValue());
-  data.push_back(affiliation->GetValue());
-  data.push_back(course_type->GetValue());
-  data.push_back(determineLine());
-  data.push_back(course_number->GetValue());
-  return data;
-}//getData
-
-void CourseCreator::updatePreview(wxCommandEvent& event){
+void CourseCreator::updatePreview(wxCommandEvent&){
   Refresh();
-}
+}//updatePreview
 
-void CourseCreator::drawPreview(wxPaintEvent& event){
+void CourseCreator::drawPreview(wxPaintEvent&){
   Course course = Course();
   course.name = course_name->GetValue();
   course.line = determineLine();
@@ -269,4 +269,3 @@ wxString CourseCreator::determineLine(){
 
   return line;
 }//determineLine
-

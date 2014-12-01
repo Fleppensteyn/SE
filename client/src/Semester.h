@@ -26,7 +26,7 @@ public:
   ~Semester();
 
   //Returns the root
-  Node* GetRoot(){return root;}
+  Node* GetRoot();
   //Set root to different node
   void  SetRoot(Course *course);
   void  SetRootNode(Node *node);
@@ -42,12 +42,9 @@ public:
   void setPositions(unsigned int x_start);
   void show(wxDC& dc, wxPoint dragpos);
   void show(wxDC& dc);
-  std::vector<int> checkDragEffect(Node *node);
-  std::vector<int> checkUnder(Node *node);
-  std::vector<int> checkUnder(int x, int y);
 
-  unsigned int getWidth(){determineWidth(root); return total_width;}
-  unsigned int getHeight(){determineHeight(); return total_height;}
+  unsigned int getWidth();
+  unsigned int getHeight();
   void getNodes(std::vector<Node*> &nodes, Node *node);
 
   bool drop(wxPoint dragpos, Course *course);
@@ -60,6 +57,9 @@ private:
   wxPoint dragpos;
   bool drageffect, dragging;
 
+  std::vector<int> checkDragEffect(Node *node);
+  std::vector<int> checkUnder(Node *node);
+  std::vector<int> checkUnder(int x, int y);
   void setLine(unsigned int sx, unsigned int sy, Node *snode, unsigned int x_start);
   void showLine(wxDC& dc, Node *snode, Node *par);
   bool dropLine(Node *snode, Node *par, Course *course);
