@@ -839,3 +839,7 @@ void Database::deleteAll(){
           wxString("INTEGER REFERENCES courses(id),\n  ind INTEGER\n);");
   simpleQuery(query, "Creating options table");
 }
+
+const char* Database::getDatabaseFile(){
+  return filename;
+}

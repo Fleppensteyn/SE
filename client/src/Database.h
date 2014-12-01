@@ -68,6 +68,7 @@ public:
   void saveYear(wxString curname, wxString yearname, std::vector<Semester*>& tree);
   void deleteCurriculum(wxString curname, bool complete);
   void deleteAll();
+  const char* getDatabaseFile();
 
 private:
   bool connect();

@@ -62,14 +62,20 @@ bool ServerCommunication::checkLogin(const char * username, const char * passwor
   return login;
 }
 
-size_t catch_resp(void * buffer, size_t size, size_t nmemb, void *userp){
-  size_t len = size * nmemb;
-  ((std::string *) userp)->append((char *)buffer, len);
-  return len;
+bool ServerCommunication::uploadDatabase(const char * dbname){
+  //TODO:
+  //Upload the database of given name 'dbname' to server
+  return true;
 }
 
 void ServerCommunication::sha1Hash(const char * data, char * hash){
   unsigned char buf[20];
   sha1::calc(data, strlen(data), &buf[0]);
   sha1::toHexString(buf, hash);
+}
+
+size_t catch_resp(void * buffer, size_t size, size_t nmemb, void *userp){
+  size_t len = size * nmemb;
+  ((std::string *) userp)->append((char *)buffer, len);
+  return len;
 }

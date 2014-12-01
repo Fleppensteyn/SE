@@ -36,7 +36,8 @@ enum{
   ID_NEW_YEAR           = 4,
   ID_DELETE_YEAR        = 5,
   ID_DELETE_CURRICULUM  = 6,
-  ID_RESET              = 7
+  ID_RESET              = 7,
+  ID_EXPORT             = 8
 };
 
 //The frame within which the entire program is run.
@@ -87,6 +88,8 @@ private:
   //If in overview, confirms if you want to delete all curricula and if so does so
   void OnDeleteAll(wxCommandEvent&);
 
+  void OnExport(wxCommandEvent&);
+
   //Switches between the Login and Overview panel
   void SwitchPanels();
 
@@ -98,6 +101,7 @@ private:
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU    (wxID_EXIT, Frame::OnExit)
   EVT_MENU    (ID_LOGOUT, Frame::OnLogout)
+  EVT_MENU    (ID_EXPORT, Frame::OnExport)
   EVT_MENU    (ID_NEW_COURSE, Frame::OnNewCourse)
   EVT_MENU    (ID_NEW_CURRICULUM, Frame::OnNewCurriculum)
   EVT_MENU    (ID_NEW_YEAR, Frame::OnNewYear)
@@ -131,6 +135,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Create the menu bar for the overview screen
   wxMenu *menuFile_overview = new wxMenu; //The overview File menu
+  menuFile_overview->Append(ID_EXPORT, wxT("&Export"));
   menuFile_overview->Append(ID_LOGOUT, wxT("&Logout"));
   menuFile_overview->Append(wxID_EXIT);
 
@@ -274,6 +279,16 @@ void Frame::OnDeleteCurriculum(wxCommandEvent&){
 void Frame::OnDeleteAll(wxCommandEvent&){
   panel_overview->OnDeleteAll();
 }//OnDeleteAll
+
+void Frame::OnExport(wxCommandEvent&){
+  SetStatusText("Exporting database...");
+  const char* dbname = panel_overview->getDatabaseFile();
+  bool exported = server_com->uploadDatabase(dbname);
+  if(exported)
+    SetStatusText("Database exported");
+  else
+    SetStatusText("Failed to export database");
+}//OnExport
 
 void Frame::SwitchPanels(){
   if(panel_login->IsShown()){ //Switch from login to overview

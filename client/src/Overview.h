@@ -60,6 +60,8 @@ public:
 
   void OnDeleteAll();
 
+  const char* getDatabaseFile();
+
 private:
   Curriculum *curriculum; //The open curriculum
   Catalogue *catalogue; //The course catalogue

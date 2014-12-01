@@ -200,6 +200,10 @@ void Overview::OnDeleteAll(){
   }
 }
 
+const char* Overview::getDatabaseFile(){
+  return database->getDatabaseFile();
+}
+
 void Overview::OnUpdateFaculty(wxCommandEvent&){
   years->Clear();
   wxArrayString *temp = database->getYears(faculties->GetValue());

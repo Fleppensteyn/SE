@@ -19,6 +19,8 @@ public:
 
   bool checkLogin(const char * username, const char * password, std::string &mesg);
 
+  bool uploadDatabase(const char * dbname);
+
 private:
   std::string url;
 
