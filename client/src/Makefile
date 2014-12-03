@@ -1,6 +1,6 @@
 CXX = $(shell wx-config --cxx) -Wall -Wextra
 
-PROGRAM = main
+PROGRAM = CurriculumBuilder
 CCFLAGS =$(shell curl-config --cflags) $(shell curl-config --libs) $(shell wx-config --cxxflags) $(shell wx-config --libs) -lpthread -ldl
 OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(patsubst %.cpp,%.o,$(wildcard sha1/*.cpp)) $(patsubst %.cpp,%.o,$(wildcard newmouseman/*.cpp))
 
