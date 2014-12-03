@@ -19,10 +19,12 @@ public:
 
   bool checkLogin(const char * username, const char * password, std::string &mesg);
 
-  bool uploadDatabase(const char * dbname);
+  bool uploadDatabase(const char * dbname, std::string& mesg);
+  void clearLoginData();
 
 private:
   std::string url;
+  std::string logindata;
 
   void sha1Hash(const char * data, char * hash);
 };

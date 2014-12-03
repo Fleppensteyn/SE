@@ -229,6 +229,7 @@ void Frame::OnSubmit(wxCommandEvent&){
 }//OnSubmit
 
 void Frame::OnLogout(wxCommandEvent&){
+  server_com->clearLoginData();
   SwitchPanels();
 }//OnLogout
 
@@ -283,11 +284,12 @@ void Frame::OnDeleteAll(wxCommandEvent&){
 void Frame::OnExport(wxCommandEvent&){
   SetStatusText("Exporting database...");
   const char* dbname = panel_overview->getDatabaseFile();
-  bool exported = server_com->uploadDatabase(dbname);
+  std::string msg;
+  bool exported = server_com->uploadDatabase(dbname, msg);
   if(exported)
     SetStatusText("Database exported");
   else
-    SetStatusText("Failed to export database");
+    SetStatusText(wxString("Failed to export database: ") << msg);
 }//OnExport
 
 void Frame::SwitchPanels(){
