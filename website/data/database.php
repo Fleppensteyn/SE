@@ -9,11 +9,15 @@ class DatabaseAccess
 
   //Get an instance with access to the database
   //$file is the filename for the SQLite database
-  public function __construct($file){
+  public function __construct($file, $userfile){
     $this->filename = $file;
+    $this->userfile = $userfile;
     $this->db = NULL;
+    $this->userdb = NULL;
     if (!file_exists($file)){
       throw new Exception("Database error: '$file' could not be found");
+    } elseif (!file_exists($userfile)) {
+      throw new Exception("Database error: '$userfile' could not be found");
     } else {
       $this->connect();
     }
@@ -33,12 +37,16 @@ class DatabaseAccess
   private function connect(){
     if ($this->db == NULL)
       $this->db = new SQLite3($this->filename);
+    if ($this->userdb == NULL)
+      $this->userdb = new SQLite3($this->userfile);
   }
 
   //Close the database connection
   private function close(){
-    if ($this->db!=NULL)
+    if ($this->db != NULL)
       $this->db->close();
+    if ($this->userdb != NULL)
+      $this->userdb->close();
   }
 
   //Creates an array of associative arrays for a given resultset
@@ -55,9 +63,10 @@ class DatabaseAccess
   //$query - is the query to execute
   //$verb  - determines if some output is printed [false]
   //Returns the result of a query in an array of associative arrays
-  private function result_array($query, $verb = false){
-    if($verb) echo "Executing: $query\n";
-    $res = $this->db->query($query);
+  private function result_array($query, $verb = false, $db = NULL){
+   if($verb) echo "Executing: $query\n";
+    if ($db == NULL) $db = $this->db;
+    $res = $db->query($query);
     $r = $this->result_to_assoc($res);
     $res->finalize();
     return $r;
@@ -105,7 +114,8 @@ class DatabaseAccess
       return array(LOGIN_ERROR,"Password contains illegal character(s)");
 
     $hashed = $this->pwhash($user, $pass, $prehashed);
-    $res = $this->result_array(sprintf("SELECT pass, class FROM users WHERE name='%s';",strtolower($user)));
+    $res = $this->result_array(sprintf("SELECT pass, class FROM users WHERE name='%s';", 
+                               strtolower($user)), false, $this->userdb);
     if (count($res)==0)
       return array(-1,"Unknown username '$user'");
 
@@ -115,5 +125,23 @@ class DatabaseAccess
     else
       return array(LOGIN_ERROR,"Invalid password");
   }
+
+  public function generate_curricula()
+  {
+  // TODO: Genereer data
+    echo "0";
+    $res = $this->result_array("SELECT pass, class FROM users", true);
+    echo "0";
+    echo $res[0]['class'];
+    echo "0";
+  }
+
+
+  public function do_query($query){
+    $res = $this->result_array($query, false);
+    return $res;
+  }
+
+
 }
 ?>

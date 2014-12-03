@@ -7,12 +7,12 @@ require(DATA_ROOT."database.php");
 
 header("Content-type: text/plain");
 if ($_POST["a"] == "login"){
-  $db = new DatabaseAccess(DATA_ROOT.DB_NAME);
+  $db = new DatabaseAccess(DATA_ROOT.DB_NAME, DATA_ROOT.DB_USERS);
   $res = $db->check_login($_POST["u"], $_POST["p"], true);
   echo $res[0]."|".$res[1];
   die();
 } elseif ($_POST["a"] == "export"){
-  $db = new DatabaseAccess(DATA_ROOT.DB_NAME);
+  $db = new DatabaseAccess(DATA_ROOT.DB_NAME, DATA_ROOT.DB_USERS);
   if (!isset($_POST["l"])) die();
   $msg = "";
   $logindata = explode("|",$_POST["l"]);

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once(DATA_ROOT."database.php");
-$GLOBALS["db"] = new DatabaseAccess(DATA_ROOT.DB_NAME);
+$GLOBALS["db"] = new DatabaseAccess(DATA_ROOT.DB_NAME, DATA_ROOT.DB_USERS);
 
 
 /* This is something related to data storage between sessions, not useful for now.
