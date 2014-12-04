@@ -453,23 +453,22 @@ int Database::addYear(wxString curname, int year){
 }
 
 int Database::addYear(int cid, int year){
-  int ret;
-  sqlite3_stmt *stmt;
-  const char *pzt;
+  int ret, rc;
+  // sqlite3_stmt *stmt;
+  // const char *pzt;
   wxString query = wxString("INSERT INTO years(cid, ind, name) VALUES ('") << cid <<
                    wxString("' ,'") << year << wxString("' ,'Year ") << year << wxString("');");
-  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
-  if (rc){
-    error("Preparing statement");
-    sqlite3_finalize(stmt);
-    return -1;
-  }
-  rc = sqlite3_step(stmt);
+  // int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
+  // if (rc){
+  //   error("Preparing statement");
+  //   sqlite3_finalize(stmt);
+  //   return -1;
+  // }
+  rc = simpleQuery(query, "adding a year");
   if(rc == SQLITE_ERROR)
     ret = -1;
   else
     ret = sqlite3_last_insert_rowid(this->db);
-  sqlite3_finalize(stmt);
   return ret;
 }
 
@@ -798,7 +797,7 @@ void Database::deleteAll(){
   query = wxString("DROP TABLE IF EXISTS years;");
   simpleQuery(query, "Deleting years table");
   query = wxString("CREATE TABLE years (\n  id INTEGER PRIMARY KEY,\n  cid INTEGER REFERENCES ") <<
-          wxString("curriculum(id),\n  ind INTEGER,\n  name VARCHAR(60)\n);");
+          wxString("curriculum(id),\n  ind INTEGER,\n  name VARCHAR(60), UNIQUE(cid,name)\n);");
   simpleQuery(query, "Creating years table");
 
   query = wxString("DROP TABLE IF EXISTS columns;");

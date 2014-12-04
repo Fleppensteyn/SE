@@ -10,7 +10,8 @@ CREATE TABLE years (
   id INTEGER PRIMARY KEY,
   cid INTEGER REFERENCES curriculum(id),
   ind INTEGER,
-  name VARCHAR(60)
+  name VARCHAR(60),
+  UNIQUE(cid, name)
 );
 
 DROP TABLE IF EXISTS columns;
