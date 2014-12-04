@@ -11,10 +11,10 @@ wxBEGIN_EVENT_TABLE(CurriculumCreator, wxDialog)
 wxEND_EVENT_TABLE()
 
 CurriculumCreator::CurriculumCreator(wxFrame *frame)
-      :wxDialog(frame, wxID_ANY, wxT("Study Program creation"), wxPoint(100,100), wxSize(500, 230),
+      :wxDialog(frame, wxID_ANY, wxT("Study program creation"), wxPoint(100,100), wxSize(500, 230),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP){
 
-  box1 = new wxStaticBox(this, wxID_ANY, "Study Program specifics", wxPoint(20, 10),
+  box1 = new wxStaticBox(this, wxID_ANY, "Study program specifics", wxPoint(20, 10),
                          wxSize(460, 160));
 
   wxFont font = box1->GetFont();

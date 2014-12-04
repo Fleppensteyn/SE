@@ -13,7 +13,7 @@ wxBEGIN_EVENT_TABLE(YearDeleter, wxDialog)
 wxEND_EVENT_TABLE()
 
 YearDeleter::YearDeleter(wxFrame *frame, Database *database)
-      :wxDialog(frame, wxID_ANY, wxT("Curriculum deleter"), wxPoint(100,100), wxSize(500, 180),
+      :wxDialog(frame, wxID_ANY, wxT("Year deleter"), wxPoint(100,100), wxSize(500, 180),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
   this->database = database;

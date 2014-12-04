@@ -12,7 +12,7 @@ wxBEGIN_EVENT_TABLE(CurriculumDeleter, wxDialog)
 wxEND_EVENT_TABLE()
 
 CurriculumDeleter::CurriculumDeleter(wxFrame *frame, Database *database)
-      :wxDialog(frame, wxID_ANY, wxT("Curriculum deleter"), wxPoint(100,100), wxSize(500, 130),
+      :wxDialog(frame, wxID_ANY, wxT("Study program deleter"), wxPoint(100,100), wxSize(500, 130),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
   wxStaticText *study_program_text = new wxStaticText(this, -1, "Study program:");
