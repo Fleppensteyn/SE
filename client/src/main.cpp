@@ -117,6 +117,10 @@ bool App::OnInit(){
   Frame *frame = new Frame("Curriculum Builder by Genius@Work", wxPoint(50,50),
                            wxSize(700, 500));
   frame->Show(true);
+  wxInitAllImageHandlers();
+  wxIcon icon;
+  icon.CopyFromBitmap(wxBitmap("Icon.ico",wxBITMAP_TYPE_ICO));
+  frame->SetIcon(icon);
   return true;
 }
 
