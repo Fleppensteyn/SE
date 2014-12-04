@@ -19,7 +19,7 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
 
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  wxStaticText *name_text = new wxStaticText(box1, -1, "Study Program Name:");
+  wxStaticText *name_text = new wxStaticText(box1, -1, "Study program name:");
   name_text->SetFont(font);
   wxStaticText *years_text = new wxStaticText(box1, -1, "Years:");
   years_text->SetFont(font);

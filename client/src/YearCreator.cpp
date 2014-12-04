@@ -22,7 +22,7 @@ YearCreator::YearCreator(wxFrame *frame, Database *database)
 
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  wxStaticText *study_program_text = new wxStaticText(box1, -1, "Study Program:");
+  wxStaticText *study_program_text = new wxStaticText(box1, -1, "Study program:");
   study_program_text->SetFont(font);
   wxStaticText *year_name_text = new wxStaticText(box1, -1, "Year:");
   year_name_text->SetFont(font);
