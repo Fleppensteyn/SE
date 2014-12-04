@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS curriculum;
 CREATE TABLE curriculum (
   id INTEGER PRIMARY KEY,
-  name VARCHAR(60),
+  name VARCHAR(60) UNIQUE,
   semesters INTEGER
 );
 

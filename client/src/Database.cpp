@@ -413,25 +413,14 @@ void Database::populateSplit(int fid, Node *splitnode, Semester *sem){
 }//getPopulation
 
 int Database::addCurriculum(wxString name, int semesters, int years){
-  int ret;
-  sqlite3_stmt *stmt;
-  const char *pzt;
+  int ret, rc;
   wxString query = wxString("INSERT INTO curriculum(name, semesters) VALUES ('") << name <<
                    wxString("', '") << semesters << wxString("');");
-  int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
-  if (rc){
-    error("Preparing statement");
-    sqlite3_finalize(stmt);
-    return -1;
-  }
-  rc = sqlite3_step(stmt);
-  if(rc == SQLITE_ERROR){
+  rc = simpleQuery(query, "adding curriculum");
+  if(rc == SQLITE_ERROR)
     ret = -1;
-    sqlite3_finalize(stmt);
-  }
   else{
     ret = sqlite3_last_insert_rowid(this->db);
-    sqlite3_finalize(stmt);
     for(int i = 1; i <= years; i++){
       if(addYear(ret, i) < 0)
         ret = -1;
