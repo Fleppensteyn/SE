@@ -791,7 +791,7 @@ void Database::deleteCurriculum(wxString curname, bool complete){
 void Database::deleteAll(){
   wxString query = wxString("DROP TABLE IF EXISTS curriculum;");
   simpleQuery(query, "Deleting curriculum table");
-  query = wxString("CREATE TABLE curriculum (\n  id INTEGER PRIMARY KEY,\n  name VARCHAR(60),\n") <<
+  query = wxString("CREATE TABLE curriculum (\n  id INTEGER PRIMARY KEY,\n  name VARCHAR(60) UNIQUE,\n") <<
           wxString("  semesters INTEGER\n);");
   simpleQuery(query, "Creating curriculum table");
 

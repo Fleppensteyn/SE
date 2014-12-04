@@ -32,6 +32,12 @@ wxBitmap DrawingHelper::drawCourse(Course *ccourse){
   wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
   font.SetPointSize(11);
   dc.SetFont(font);
+  wxString test("A");
+  
+  while (dc.GetTextExtent(test).GetHeight() > 20){
+    font = font.Smaller();
+    dc.SetFont(font);
+  }
 
   drawTextAligned(dc, "-", 30, 5, ALIGN_CENTER);
   drawTextAligned(dc, course.line, 25, 5, ALIGN_RIGHT);

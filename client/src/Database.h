@@ -26,7 +26,7 @@ enum
 
 struct SearchPars
 {
-  int category;
+  int coursetype;
   int affiliation;
   int ects;
   char * pattern;
