@@ -238,6 +238,8 @@ wxString CourseCreator::determineLine(){
     line = wxT("E");
   else if(type == wxT("Biology Essentials"))
     line = wxT("B");
+  else if(type == wxT("Mathematics"))
+    line = wxT("M");
   else if(aff == wxT("Affiliated to CS") ||
      aff == wxT("Affiliated to Biology") ||
      aff == wxT("Affiliated to Economics") ||
@@ -245,8 +247,6 @@ wxString CourseCreator::determineLine(){
   {
     if(type == wxT("Academic Skills"))
       line = wxT("AS");
-    else if(type == wxT("Mathematics"))
-      line = wxT("M");
     else if(type == wxT("CS Essentials"))
       line = wxT("CE");
     else if(type == wxT("CS Mandatory"))

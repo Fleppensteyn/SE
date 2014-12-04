@@ -140,23 +140,28 @@ Courses* Overview::getCourses(){
 void Overview::OnDeleteYear(wxFrame *frame){
   YearDeleter yd(frame, database);
   if(yd.ShowModal() == wxID_OK){
-    std::vector<wxString> data = yd.getData();
-    database->deleteYear(data[0], data[1]);
-    if(data[0] == faculties->GetValue() && data[1] == years->GetValue()){
-      clearYears();
-      wxArrayString *temp = database->getYears(data[0]);
-      years->Append(*temp);
+    wxString msg = wxString("Do you want to permanently delete this year?\n") <<
+                 wxString("Beware this can not be undone!");
+    wxMessageDialog md(this, msg, wxT("Confirmation of deletion"), wxYES_NO);
+    if(md.ShowModal() == wxID_YES){
+      std::vector<wxString> data = yd.getData();
+      database->deleteYear(data[0], data[1]);
+      if(data[0] == faculties->GetValue() && data[1] == years->GetValue()){
+        clearYears();
+        wxArrayString *temp = database->getYears(data[0]);
+        years->Append(*temp);
 
-      curriculum->clear();
-    }
-    else if(data[0] == faculties->GetValue()){
-      wxString text = years->GetValue();
-      years->Clear();
-      wxArrayString *temp = database->getYears(data[0]);
-      years->Append(*temp);
-      for(unsigned int i = 0; i < years->GetCount(); i++){
-        if(years->GetString(i) == text)
-          years->SetSelection(i);
+        curriculum->clear();
+      }
+      else if(data[0] == faculties->GetValue()){
+        wxString text = years->GetValue();
+        years->Clear();
+        wxArrayString *temp = database->getYears(data[0]);
+        years->Append(*temp);
+        for(unsigned int i = 0; i < years->GetCount(); i++){
+          if(years->GetString(i) == text)
+            years->SetSelection(i);
+        }
       }
     }
   }
@@ -165,24 +170,29 @@ void Overview::OnDeleteYear(wxFrame *frame){
 void Overview::OnDeleteCurriculum(wxFrame *frame){
   CurriculumDeleter cd(frame, database);
   if(cd.ShowModal() == wxID_OK){
-    std::vector<wxString> data = cd.getData();
-    database->deleteCurriculum(data[0], true);
-    if(data[0] == faculties->GetValue()){
-      clearFaculties();
-      clearYears();
-      wxArrayString *temp = database->getFaculties();
-      faculties->Append(*temp);
+    wxString msg = wxString("Do you want to permanently delete this study program?\n") <<
+                 wxString("Beware this can not be undone!");
+    wxMessageDialog md(this, msg, wxT("Confirmation of deletion"), wxYES_NO);
+    if(md.ShowModal() == wxID_YES){
+      std::vector<wxString> data = cd.getData();
+      database->deleteCurriculum(data[0], true);
+      if(data[0] == faculties->GetValue()){
+        clearFaculties();
+        clearYears();
+        wxArrayString *temp = database->getFaculties();
+        faculties->Append(*temp);
 
-      curriculum->clear();
-    }
-    else{
-      wxString text = faculties->GetValue();
-      faculties->Clear();
-      wxArrayString *temp = database->getFaculties();
-      faculties->Append(*temp);
-      for(unsigned int i = 0; i < faculties->GetCount(); i++){
-        if(faculties->GetString(i) == text)
-          faculties->SetSelection(i);
+        curriculum->clear();
+      }
+      else{
+        wxString text = faculties->GetValue();
+        faculties->Clear();
+        wxArrayString *temp = database->getFaculties();
+        faculties->Append(*temp);
+        for(unsigned int i = 0; i < faculties->GetCount(); i++){
+          if(faculties->GetString(i) == text)
+            faculties->SetSelection(i);
+        }
       }
     }
   }

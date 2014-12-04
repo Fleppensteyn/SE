@@ -131,6 +131,7 @@ void Curriculum::startDrag(int item, const wxPoint& pos){
 
 void Curriculum::endDrag(int item){
   wxPoint dragpos;
+  wxPoint view = GetViewStart();
   if (!dragdrop->needsDrawing(dragpos, DRAGDROP_CURRICULUM)){
     if(item != -1){
       nodes.erase(nodes.begin() + selected);
@@ -167,6 +168,7 @@ void Curriculum::endDrag(int item){
   removeEmptySplits();
   drawCurriculum();
   dragging = false;
+  Scroll(view);
   Refresh();
 }//endDrag
 
