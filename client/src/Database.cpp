@@ -425,14 +425,17 @@ int Database::addCurriculum(wxString name, int semesters, int years){
     return -1;
   }
   rc = sqlite3_step(stmt);
-  if(rc == SQLITE_ERROR)
+  if(rc == SQLITE_ERROR){
     ret = -1;
-  else
+    sqlite3_finalize(stmt);
+  }
+  else{
     ret = sqlite3_last_insert_rowid(this->db);
-  sqlite3_finalize(stmt);
-  for(int i = 1; i <= years; i++){
-    if(addYear(ret, i) < 0)
-      ret = -1;
+    sqlite3_finalize(stmt);
+    for(int i = 1; i <= years; i++){
+      if(addYear(ret, i) < 0)
+        ret = -1;
+    }
   }
   return ret;
 }
