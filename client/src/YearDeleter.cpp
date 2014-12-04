@@ -18,7 +18,7 @@ YearDeleter::YearDeleter(wxFrame *frame, Database *database)
 {
   this->database = database;
 
-  wxStaticText *study_program_text = new wxStaticText(this, -1, "Study Program:");
+  wxStaticText *study_program_text = new wxStaticText(this, -1, "Study program:");
   wxFont font = study_program_text->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   study_program_text->SetFont(font);

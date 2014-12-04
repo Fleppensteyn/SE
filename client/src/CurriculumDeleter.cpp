@@ -15,7 +15,7 @@ CurriculumDeleter::CurriculumDeleter(wxFrame *frame, Database *database)
       :wxDialog(frame, wxID_ANY, wxT("Curriculum deleter"), wxPoint(100,100), wxSize(500, 130),
        wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP)
 {
-  wxStaticText *study_program_text = new wxStaticText(this, -1, "Study Program:");
+  wxStaticText *study_program_text = new wxStaticText(this, -1, "Study program:");
   wxFont font = study_program_text->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
   study_program_text->SetFont(font);

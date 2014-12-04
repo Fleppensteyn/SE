@@ -27,13 +27,13 @@ CourseCreator::CourseCreator(wxFrame *frame, Courses *courses)
 
   wxFont font = box1->GetFont();
   font.SetWeight(wxFONTWEIGHT_BOLD);
-  wxStaticText *name_text = new wxStaticText(box1, -1, "Course Name:");
+  wxStaticText *name_text = new wxStaticText(box1, -1, "Course name:");
   name_text->SetFont(font);
   wxStaticText *ects_text = new wxStaticText(box1, -1, "ECTS:");
   ects_text->SetFont(font);
   wxStaticText *affiliation_text = new wxStaticText(box2, -1, "Affiliation:");
   affiliation_text->SetFont(font);
-  wxStaticText *course_type_text = new wxStaticText(box2, -1, "Course Type:");
+  wxStaticText *course_type_text = new wxStaticText(box2, -1, "Course type:");
   course_type_text->SetFont(font);
   wxStaticText *number_text = new wxStaticText(box2, -1, "Course number:");
   number_text->SetFont(font);
