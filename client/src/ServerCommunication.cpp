@@ -44,7 +44,9 @@ bool ServerCommunication::checkLogin(const char * username, const char * passwor
     else {
       // printf("Resp: %s\n", resp.c_str());
       size_t sep = resp.find('|');
-      if (sep == std::string::npos) mesg += resp;
+      if (sep == std::string::npos){
+        mesg += "Invalid response, check the API_URL";
+      }
       else if(resp[0] == '-')
         mesg += resp.substr(sep+1);
       else{
@@ -63,7 +65,7 @@ bool ServerCommunication::checkLogin(const char * username, const char * passwor
     logindata += username;
     logindata += "|";
     logindata +=  hash;
-  } 
+  }
   delete[] data;
   return login;
 }
@@ -81,7 +83,7 @@ bool ServerCommunication::uploadDatabase(const char * dbname, std::string &mesg)
                CURLFORM_COPYNAME, "db",
                CURLFORM_FILE, dbname,
                CURLFORM_END);
- 
+
   curl_formadd(&formpost,
                &lastptr,
                CURLFORM_COPYNAME, "a",
@@ -101,10 +103,10 @@ bool ServerCommunication::uploadDatabase(const char * dbname, std::string &mesg)
     curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, catch_resp);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
- 
-    /* Perform the request, res will get the return code */ 
+
+    /* Perform the request, res will get the return code */
     res = curl_easy_perform(curl);
-    /* Check for errors */ 
+    /* Check for errors */
     if(res != CURLE_OK){
       fprintf(stderr, "curl_easy_perform() failed: %s\n",
               curl_easy_strerror(res));

@@ -9,11 +9,7 @@
 //and the function call they should trigger.
 wxBEGIN_EVENT_TABLE(Overview, wxPanel)
   EVT_COMBOBOX          (ID_FACULTY, Overview::OnUpdateFaculty)
-  //EVT_COMBOBOX_CLOSEUP  (ID_FACULTY, Overview::OnUpdateFaculty)
-  // EVT_TEXT              (ID_FACULTY, Overview::OnUpdateFaculty)
   EVT_COMBOBOX          (ID_YEARS, Overview::OnUpdateYear)
-  //EVT_COMBOBOX_CLOSEUP  (ID_YEARS, Overview::OnUpdateYear)
-  // EVT_TEXT              (ID_YEARS, Overview::OnUpdateYear)
   EVT_BUTTON            (ID_SPLIT, Overview::OnSplit)
   EVT_PAINT             (Overview::drawStuff)
   EVT_SIZE              (Overview::OnResize)

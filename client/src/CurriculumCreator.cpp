@@ -33,15 +33,16 @@ CurriculumCreator::CurriculumCreator(wxFrame *frame)
   curriculum_name->SetFocus();
   curriculum_name->SetMaxLength(50);
 
-  //Years input box
-  years = new wxTextCtrl(box1, ID_CURYEARS, wxT("3"), wxPoint(120, 67), wxSize(40, 25),
-                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
-  years->SetMaxLength(2);
 
   //Semesters per year input box
   semesters = new wxTextCtrl(box1, ID_CURSEMESTERS, wxT("2"), wxPoint(120, 67), wxSize(40, 25),
                         wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
   semesters->SetMaxLength(2);
+
+  //Years input box
+  years = new wxTextCtrl(box1, ID_CURYEARS, wxT("3"), wxPoint(120, 67), wxSize(40, 25),
+                        wxTE_PROCESS_ENTER | wxTE_RIGHT, wxTextValidator(wxFILTER_DIGITS));
+  years->SetMaxLength(2);
 
   //Create button
   wxButton *create = new wxButton(this, ID_SUBMIT_CURRICULUM, wxT("Create"));

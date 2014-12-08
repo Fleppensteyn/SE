@@ -130,7 +130,31 @@ bool App::OnInit(){
 Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
       : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
-  server_com = new ServerCommunication("http://se.putman.pw/api.php");
+  //Read the url for the api from the API_URL file
+  char url[256];
+  bool fileread = false;
+  FILE * file = fopen("API_URL", "r");
+  if (file != NULL){
+    if (fgets(url, 256, file) != NULL){
+      int i = 0;
+      while (i < 256 && url[i] != '\0'){
+        if (url[i] == '\n' || url[i] == '\r' || url[i] == ' '){
+          url[i] = '\0';
+          break;
+        }
+        else i++;
+      }
+      fileread = true;
+    } else {
+      fileread = false;
+    }
+    fclose(file);
+  }
+  if (fileread)
+    server_com = new ServerCommunication(url);
+  else
+    server_com = new ServerCommunication("http://se.putman.pw/api.php");
+
 
   //Create the menu bar for the login screen
   wxMenu *menuFile_login = new wxMenu; //The login File menu
@@ -169,6 +193,11 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size)
   failed_login_txt = new wxStaticText(GetStatusBar(), wxID_ANY,wxT("Login failed: incorrect username and/or password"), wxPoint(3, 5), wxDefaultSize, 0 );
   failed_login_txt->Show(false);
   GetStatusBar()->SetForegroundColour(wxColour(wxT("BLACK")));
+
+  if (!fileread){
+    failed_login_txt->SetLabel("Error reading API_URL, using the default url instead");
+    failed_login_txt->Show(true);
+  }
 
   //Create the program title bar at the top of the screen
   wxPanel *title_panel = new wxPanel(this);

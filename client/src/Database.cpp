@@ -13,7 +13,6 @@ Database::Database(const char* filename){
 }
 Database::~Database(){
   sqlite3_close(this->db);
-  // delete filename;
   pop.clear();
 }
 
@@ -279,12 +278,10 @@ void Database::getPopulation(int fid){
       curind = indind;
       i2++;
     }
-    // printf("ROWS AND STUFF %d %d %d %d %d %d\n", indind, lineind, curind, curline, i1, i2);
     for(int i = 0; i < 5; i++)
       pop[i1][i2].push_back(sqlite3_column_int(stmt, i));
     rc = sqlite3_step(stmt);
   }
-  // printf("What the stuff\n");
   if (rc != SQLITE_DONE)
     error("evaluating statement");
   sqlite3_finalize(stmt);
@@ -292,7 +289,6 @@ void Database::getPopulation(int fid){
 }//getPopulation
 
 void Database::orderPopulation(std::vector<std::vector<std::vector<int> > > pop){
-  // printf("Ordering\n");
   std::vector<std::vector<int> > tempcur;
   std::vector<int> templine;
   //Order on semester
@@ -326,7 +322,6 @@ void Database::orderPopulation(std::vector<std::vector<std::vector<int> > > pop)
 }//orderPopulation
 
 void Database::populateLine(int ind, Node *parent, Semester *sem){
-  // printf("Populating line\n");
   Course *course;
   Node *par = parent;
   unsigned int i = 0;
@@ -454,16 +449,8 @@ int Database::addYear(wxString curname, int year){
 
 int Database::addYear(int cid, int year){
   int ret, rc;
-  // sqlite3_stmt *stmt;
-  // const char *pzt;
   wxString query = wxString("INSERT INTO years(cid, ind, name) VALUES ('") << cid <<
                    wxString("' ,'") << year << wxString("' ,'Year ") << year << wxString("');");
-  // int rc = sqlite3_prepare_v2(this->db, query, -1, &stmt, &pzt);
-  // if (rc){
-  //   error("Preparing statement");
-  //   sqlite3_finalize(stmt);
-  //   return -1;
-  // }
   rc = simpleQuery(query, "adding a year");
   if(rc == SQLITE_ERROR)
     ret = -1;

@@ -20,7 +20,7 @@ wxBitmap DrawingHelper::drawCourse(Course *ccourse){
   dc.SetBrush(wxBrush(course.type));
   dc.DrawRectangle(0,0,width,height);
 
-  dc.SetPen(wxPen(wxColour("#366092"), 1.5, wxPENSTYLE_SOLID));
+  dc.SetPen(wxPen(wxColour("#366092"), 1, wxPENSTYLE_SOLID));
   dc.SetBrush(wxBrush(course.affiliation));
   dc.DrawRoundedRectangle(10, 30, 40, 25, 6);
 
@@ -33,7 +33,7 @@ wxBitmap DrawingHelper::drawCourse(Course *ccourse){
   font.SetPointSize(11);
   dc.SetFont(font);
   wxString test("A");
-  
+
   while (dc.GetTextExtent(test).GetHeight() > 20){
     font = font.Smaller();
     dc.SetFont(font);
