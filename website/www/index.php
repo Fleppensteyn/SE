@@ -1,27 +1,26 @@
 <?php
 include("../config.php"); //contains some useful global definitions
 require(DATA_ROOT."core.php");//Include everywhere for session related stuff.
+session_start();
+if($_SESSION['logged_in'] == true){
+	header("Location: ./login_success.php");
+} 
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-   <link rel="stylesheet" href="genius.css">
-   <title>Curriculum Viewer</title>
-</head>
-
 <body>
-
 <div id="wrap">
-   <h1>Curriculum Viewer</h1>
-
-   <ul id="nav">
-		<li><a href="index.php">Home</a></li>
-      <li><a href="logout.php">Log out</a></li>
-      <li><a href="curricula.php">Curricula</a></li>
-      <li><a href="vakken.php">Alle vakken weergeven</a></li>
-   </ul>
+   <?php 
+		include("../data/header.php"); // contains all information that would be shown as header. It contains also the head parameters
+	?>
 
    <div id="content">
+	<P align="center"><b>
+		This is the website of the Curriculum Viewer, provided by Genius@Work! 
+		<BR> To have access to all features of the website, you have to log in with your username and password.
+		<BR><BR><BR><BR>
+	</b></P>
+
       <table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
 			<tr>
 		<form name="form1" method="post" action="checklogin.php">
@@ -29,16 +28,20 @@ require(DATA_ROOT."core.php");//Include everywhere for session related stuff.
 			<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">
 				<tr>
 					<td colspan="3"><strong>Login</strong></td>
+					<error>
+					<?php
+						if (isset($_GET['error_message']))
+   						echo $_GET['error_message'];	
+					?>
+					</error>
 				</tr>
 				<tr>
-					<td width="78">Gebruikersnaam</td>
-					<td width="6">:</td>
+					<td width="78">Username: </td>
 					<td width="294"><input name="myusername" type="text" id="myusername"></td>
 				</tr>
 				<tr>
-					<td>Wachtwoord</td>
-					<td>:</td>
-					<td><input name="password" type="text" id="mypassword"></td>
+					<td>Password: </td>
+					<td><input name="password" type="password" id="mypassword"></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
@@ -50,11 +53,10 @@ require(DATA_ROOT."core.php");//Include everywhere for session related stuff.
 		</form>
 			</tr>
 		</table>
-
-      <pre><?php echo $content; ?></pre>
-
    </div>
-   <h2>&#169; 2014 Genius@Work <br> Powered by Group8</br></h2>
+	<?php 
+		include("../data/footer.php"); // contains all information that would be shown as header. It contains also the head parameters
+	?>
 </div>
 
 </body>

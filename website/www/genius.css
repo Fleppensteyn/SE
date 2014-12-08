@@ -1,10 +1,10 @@
-body {
-    background-color: #E4E4E4;
-    font: 15px arial, sans-serif;
-}
+	body {
+		 background-color: #E4E4E4;
+		 font: 15px arial, sans-serif;
+	}
 
 /* Begin Navigation Bar Styling */
-   #nav {
+	 #nav {
       width: 100%;
       float: left;
       margin: 0 0 3em 0;
@@ -13,26 +13,61 @@ body {
       background-color: #f2f2f2;
       border-bottom: 1px solid #ccc;
       border-top: 1px solid #ccc; }
-   #nav li {
-      float: left; }
-   #nav li a {
+	
+	#nav, #nav ul {
+		padding: 0;
+		margin: 0;
+		list-style: none; }
+
+	#nav li {
+		float: left; }
+	
+	#nav li a {
       display: block;
       padding: 8px 15px;
       text-decoration: none;
       font-weight: bold;
       color: #069;
-      border-right: 1px solid #ccc; }
-   #nav li a:hover {
-      color: #c00;
+		background-color: #f2f2f2;
+      border-right: 1px solid #ccc;}
+
+	#nav ul {
+		position: absolute;
+		width: auto;
+		left: -1000px;
+		clear: both; }
+
+	#nav ul li a {
+		display: block;
+      padding: 8px 15px;
+		width: 180px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #069;
+      border-right: 0px solid #ccc;
+		border-bottom: 1px solid #ccc; 
+		overflow: hidden; }
+	
+	#nav li:hover ul, #nav li.ie_does_hover ul {
+		left: auto;
+		background-position: 0 0;
+		color: #c00;
+		border: 0px;
       background-color: #fff; }
+	
+
+	#nav a {
+		display: block; } 
    /* End navigation bar styling. */
 
    /* This is just styling for this specific page. */
    #wrap {
       width: 80%; /* Edit: 80% looks better on smaller screens/windows */
-      max-width: 1280px; /* Edit: Still impose a limit on >=1920x* monitors? */
+		min-width: 680px;
+      max-width: 1920px; /* Edit: Still impose a limit on >=1920x* monitors? */
       margin: 0 auto;
-      background-color: #fff; }
+      background-color: #fff;}
+		
    h1 {
       font-size: 1.5em;
       padding: 1em 8px;
@@ -49,4 +84,118 @@ body {
 
    #content {
       clear: both; /* Edit: Fix alignment problems */
-      padding: 0 50px 50px; }
+      padding: 0 50px 50px;
+		font-size: 16px;
+		font-type: Arial;
+      overflow: hidden; }
+
+	error {
+		font-size: 1em;
+		color: #FF0000;
+		font_weight: bold; }
+
+	#vakcontainer {    
+		border: 1px solid #000000;
+		padding: 8px ;
+		margin: 5px;
+		width: 230px;
+		height: 60px;
+		border-radius: 2px;
+		font-size: 18px;
+		overflow: hidden;
+		color: #366092;
+		float: left;}
+
+	#innercontainer {
+		border: 1px solid #4F81BD;
+		padding: 3px;
+		width: 35px;
+		height: 20px;
+		border-radius: 7px; 
+		margin-top: 5px;
+		text-align: center;}
+
+	#leftcontainer {
+		border: 0px;
+		border-right: 2.5px solid #4F81BD;
+		padding: 0px;
+		width: 50px;
+		heigth: 55px;
+		float: left;
+		overflow: hidden;}
+
+	#rightcontainer {
+		border: 0px;
+		padding: 0px;
+		padding-left: 3px;
+		width: 170px;
+		heigth: 55px;
+		overflow: hidden;
+		text-align: center;}
+	
+	#sortbox{
+		border: 0px;
+		padding: 0px;
+		margin: 15px;
+		width: auto;
+		heigth: 3.5em; 
+		overflow: hidden;
+		float: left;}
+	
+	#curriculum{
+		border: 0px;
+		padding: 0px;
+		margin: 5 px;
+		width: auto;
+		min-width: 550px;
+		text-align: center;
+		overflow: auto;}
+		
+	#currtitle{
+		border: 0px;
+		padding: 0px;
+		margin: 10px;
+		width: auto;
+		font-size: 30px;
+		font-style: bold;}
+		
+	#curryear{
+		width: 100%;
+		border: 0px;
+		padding: 0px;
+		margin: auto;
+		clear: both;
+		float: left;
+		overflow: auto;}
+		
+	#yeartitle{
+		border: 0px;
+		padding: 0px;
+		margin: 15px;
+		width: auto;
+		font-size: 23px;
+		font-style: bold;}
+		
+	#semester{
+		/*width: auto;*/
+		/*min-width: 550px;*/
+		border: 0px;
+		padding: 2px;
+		margin: 0px;
+		float: left;
+		display: inline;}
+		
+	#split{
+		width: 255px;
+		border: 0px solid black;
+		padding: 2px;
+		margin: 0px;
+		overflow: hidden;
+		float: left}
+	
+	#clear{
+		clear: both;}
+		
+	#center{
+		display: inline-block;
+	}
