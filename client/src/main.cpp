@@ -118,8 +118,11 @@ bool App::OnInit(){
                            wxSize(700, 500));
   frame->Show(true);
   wxInitAllImageHandlers();
-  wxIcon icon;
-  icon.CopyFromBitmap(wxBitmap("Icon.ico",wxBITMAP_TYPE_ICO));
+#ifdef EMBED_ICON
+  wxIcon icon("icres");
+#else
+  wxIcon icon("client_icon.ico", wxBITMAP_TYPE_ICO);
+#endif
   frame->SetIcon(icon);
   return true;
 }

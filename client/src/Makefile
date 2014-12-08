@@ -1,28 +1,37 @@
-CXX = $(shell wx-config --cxx) -Wall -Wextra
+CXX = g++
+CC  = gcc
 
 PROGRAM = CurriculumBuilder
-CCFLAGS =$(shell curl-config --cflags) $(shell curl-config --libs) $(shell wx-config --cxxflags) $(shell wx-config --libs) -lpthread -ldl
-OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(patsubst %.cpp,%.o,$(wildcard sha1/*.cpp)) $(patsubst %.cpp,%.o,$(wildcard newmouseman/*.cpp))
+CFLAGS = -Wall -Wextra
+WXFLAGS = $(shell wx-config --cxxflags)
+CURLFLAGS = $(shell curl-config --cflags)
+LDFLAGS = $(shell curl-config --libs) $(shell wx-config --libs) -lpthread -ldl
+OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(patsubst %.cpp,%.o,$(wildcard */*.cpp))
 
-# implementation
-
-.SUFFIXES:      .o .cpp
-
+.SUFFIXES: .o .cpp
 
 .cpp.o :
-	$(CXX) -c  -o $@ $<  $(CCFLAGS)
+	$(CXX) -c -o $@ $< $(CFLAGS) $(WXFLAGS)
 
-all:  $(PROGRAM)
+all: $(PROGRAM)
 
 $(PROGRAM): sqlite/sqlite3.o $(OBJECTS)
-	$(CXX) -o $(PROGRAM) $(OBJECTS) sqlite/sqlite3.o $(CCFLAGS)
+	$(CXX) -o $(PROGRAM) $(OBJECTS) sqlite/sqlite3.o $(CFLAGS) $(LDFLAGS)
+
+ServerCommunication.o: ServerCommunication.cpp
+	$(CXX) -c -o ServerCommunication.o ServerCommunication.cpp $(CURLFLAGS)
+
+main.o: main.cpp
+	$(CXX) -c -o main.o main.cpp $(CURLFLAGS) $(WXFLAGS)
+
+sha1/sha1.o: sha1/sha1.cpp
+	$(CXX) -c sha1/sha1.cpp -o sha1/sha1.o $(CFLAGS)
 
 sqlite/sqlite3.o: sqlite/sqlite3.c
-	gcc -c -o sqlite/sqlite3.o sqlite/sqlite3.c
+	$(CC) -c -o sqlite/sqlite3.o sqlite/sqlite3.c
 
 sqlite/sqlite3.c:
 	unzip sqlite.zip
 
-
 clean:
-	rm -f *.o sha1/*.o sqlite/*.o newmouseman/*.o $(PROGRAM) $(PROGRAM).exe
+	rm -f *.o */*.o $(PROGRAM) $(PROGRAM).exe
