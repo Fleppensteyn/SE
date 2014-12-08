@@ -24,13 +24,13 @@ enum
   FILL_COURSETYPES
 };
 
-struct SearchPars
-{
-  int coursetype;
-  int affiliation;
-  int ects;
-  char * pattern;
-};
+// struct SearchPars
+// {
+//   int coursetype;
+//   int affiliation;
+//   int ects;
+//   char * pattern;
+// };
 
 struct InsertData
 {
@@ -54,7 +54,7 @@ public:
   void fillCourses(Courses* courses);
   int addNewCourse(wxString name, wxString line, wxString number, int ects,
                    unsigned int affiliation, unsigned int type);
-  std::vector<int> filter(SearchPars par);
+  std::vector<int> filter();
   wxArrayString* getFaculties();
   wxArrayString* getYears(wxString name);
   std::vector<Semester*> populateTree(wxString curname, wxString yearname);

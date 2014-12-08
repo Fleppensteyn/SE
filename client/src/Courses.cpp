@@ -110,8 +110,8 @@ wxString Courses::getTypeName(wxColour colour){
   return wxT("");
 }
 
-std::vector<Course *> Courses::filter(SearchPars pars){
-  std::vector<int> ids = database->filter(pars);
+std::vector<Course *> Courses::filter(){
+  std::vector<int> ids = database->filter();
   std::vector<Course *> ret;
 
   int index;

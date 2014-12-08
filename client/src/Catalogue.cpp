@@ -26,8 +26,7 @@ Catalogue::Catalogue(wxPanel *panel, Courses *courses, DragDropHelp *dragdrop)
   selected = -1;
   doubleclick = false;
 
-  SearchPars sp;
-  filter(sp);
+  filter();
 }
 
 Catalogue::~Catalogue(){
@@ -64,7 +63,7 @@ void Catalogue::startDrag(int item, const wxPoint& pos){
 }
 
 void Catalogue::refreshList(){
-  filter(spars);
+  filter();
 }
 
 void Catalogue::OnDraw(wxDC& dc){
@@ -87,9 +86,8 @@ void Catalogue::OnDraw(wxDC& dc){
     this->overview->Refresh();
 }
 
-void Catalogue::filter(SearchPars pars){
-  this->spars = pars;
-  bmaps = courses->filter(pars);
+void Catalogue::filter(){
+  bmaps = courses->filter();
   updateSizes();
 }
 
@@ -122,8 +120,7 @@ void Catalogue::editCourse(wxCommandEvent&) {
       wxPostEvent(this, event);
     }
     if(ret >= 0){
-      SearchPars sp;
-      filter(sp);
+      filter();
       Refresh();
       return;
     }

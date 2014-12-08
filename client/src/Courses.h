@@ -60,7 +60,7 @@ public:
 
   wxString getTypeName(wxColour colour);
 
-  std::vector<Course *> filter(SearchPars pars);
+  std::vector<Course *> filter();
 
   int deleteCourse(unsigned int ID);
 

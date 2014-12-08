@@ -43,10 +43,9 @@ private:
   DragDropHelp * dragdrop;
   CatalogueMouseManager * mousemanager;
   std::vector<Course *> bmaps;
-  SearchPars spars;
 
   void OnDraw(wxDC& dc);
-  void filter(SearchPars pars);
+  void filter();
   void updateSizes();
   void editCourse(wxCommandEvent&);
 

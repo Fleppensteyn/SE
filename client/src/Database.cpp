@@ -124,7 +124,7 @@ int Database::addNewCourse(wxString name, wxString line, wxString number, int ec
   return ret;
 }
 
-std::vector<int> Database::filter(SearchPars par){
+std::vector<int> Database::filter(){
   std::vector<int> ret;
   sqlite3_stmt *stmt;
   const char *pzt;
