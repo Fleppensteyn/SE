@@ -5,7 +5,7 @@
 ?>	
 
 <html>
-<body>
-<h2>&#169; 2014 Genius@Work <br> Powered by Group8</br></h2>
-</body>
+	<body>
+		<h2>&#169; 2014 Genius@Work <br> Powered by Group8</br></h2>
+	</body>
 </html>

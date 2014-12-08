@@ -136,12 +136,9 @@ class DatabaseAccess
     echo "0";
   }
 
-
   public function do_query($query){
     $res = $this->result_array($query, false);
     return $res;
   }
-
-
 }
 ?>
