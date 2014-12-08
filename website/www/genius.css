@@ -1,7 +1,6 @@
 	body {
 		 background-color: #E4E4E4;
-		 font: 15px arial, sans-serif;
-	}
+		 font: 15px arial, sans-serif; }
 
 /* Begin Navigation Bar Styling */
 	 #nav {
@@ -29,7 +28,7 @@
       font-weight: bold;
       color: #069;
 		background-color: #f2f2f2;
-      border-right: 1px solid #ccc;}
+      border-right: 1px solid #ccc; }
 
 	#nav ul {
 		position: absolute;
@@ -94,6 +93,7 @@
 		color: #FF0000;
 		font_weight: bold; }
 
+/* styling for course blocks */
 	#vakcontainer {    
 		border: 1px solid #000000;
 		padding: 8px ;
@@ -104,7 +104,7 @@
 		font-size: 18px;
 		overflow: hidden;
 		color: #366092;
-		float: left;}
+		float: left; }
 
 	#innercontainer {
 		border: 1px solid #4F81BD;
@@ -113,7 +113,7 @@
 		height: 20px;
 		border-radius: 7px; 
 		margin-top: 5px;
-		text-align: center;}
+		text-align: center; }
 
 	#leftcontainer {
 		border: 0px;
@@ -122,7 +122,7 @@
 		width: 50px;
 		heigth: 55px;
 		float: left;
-		overflow: hidden;}
+		overflow: hidden; }
 
 	#rightcontainer {
 		border: 0px;
@@ -131,8 +131,10 @@
 		width: 170px;
 		heigth: 55px;
 		overflow: hidden;
-		text-align: center;}
+		text-align: center; }
+	/* end of styling course blocks*/
 	
+	/* begin styling of curriculum viewer */
 	#sortbox{
 		border: 0px;
 		padding: 0px;
@@ -140,7 +142,7 @@
 		width: auto;
 		heigth: 3.5em; 
 		overflow: hidden;
-		float: left;}
+		float: left; }
 	
 	#curriculum{
 		border: 0px;
@@ -149,7 +151,7 @@
 		width: auto;
 		min-width: 550px;
 		text-align: center;
-		overflow: auto;}
+		overflow: auto; }
 		
 	#currtitle{
 		border: 0px;
@@ -157,7 +159,7 @@
 		margin: 10px;
 		width: auto;
 		font-size: 30px;
-		font-style: bold;}
+		font-style: bold; }
 		
 	#curryear{
 		width: 100%;
@@ -166,7 +168,7 @@
 		margin: auto;
 		clear: both;
 		float: left;
-		overflow: auto;}
+		overflow: auto; }
 		
 	#yeartitle{
 		border: 0px;
@@ -174,28 +176,26 @@
 		margin: 15px;
 		width: auto;
 		font-size: 23px;
-		font-style: bold;}
+		font-style: bold; }
 		
 	#semester{
-		/*width: auto;*/
-		/*min-width: 550px;*/
 		border: 0px;
 		padding: 2px;
 		margin: 0px;
 		float: left;
-		display: inline;}
+		display: inline; }
 		
 	#split{
 		width: 255px;
 		border: 0px solid black;
 		padding: 2px;
 		margin: 0px;
-		overflow: hidden;
-		float: left}
+		overflow: hidden; }
 	
 	#clear{
-		clear: both;}
+		clear: both; }
 		
 	#center{
-		display: inline-block;
-	}
+		display: inline-block; }
+		
+/* end of styling of curriculum viewer */
