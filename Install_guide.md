@@ -7,7 +7,7 @@ A quick list of things that will be enough to figure it out when you're somewhat
 ####Desktop client
 [Download](https://github.com/Fleppensteyn/SE/releases) a Windows binary if you don't care about editing the code.
 
-Build:
+Or build these libraries:
 * [wxWidgets 3.x](https://www.wxwidgets.org/)
 * [libcurl](http://curl.haxx.se/download.html)
 

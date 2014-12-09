@@ -6,6 +6,8 @@ A project for Software Engineering 2014, developed by group 8.
 ##Description
 A simple and intuitive desktop client to edit curricula with a drag-and-drop interface and the ability to export to a website so that other people can also view what you created.
 
+You can read a guide that explains how to set up a working building environment [here](Install_guide.md).
+
 ##Requirements
 
 ###Desktop client
