@@ -7,7 +7,7 @@ A quick list of things that will be enough to figure it out when you're somewhat
 ####Desktop client
 [Download](https://github.com/Fleppensteyn/SE/releases) a Windows binary if you don't care about editing the code.
 
-Or build these libraries:
+Or clone [this repository](https://github.com/Fleppensteyn/SE/) and build these libraries:
 * [wxWidgets 3.x](https://www.wxwidgets.org/)
 * [libcurl](http://curl.haxx.se/download.html)
 
@@ -114,7 +114,7 @@ There are a lot of files in the project, and these are some of the important one
 * **iconres.rs**
   - Used to compile a resource file with the icon for the static build
 
-All of the remaining files are just the code, you can look at the [class diagram](uml/UML_Class_Diagram_client.png) for more of an idea of the structure.
+All of the remaining files are just the code, you can look at the [class diagram](https://raw.githubusercontent.com/Fleppensteyn/SE/master/uml/UML_Class_Diagram_client.png) for more of an idea of the structure.
 
 ###Static builds for Windows
 This is a small explanation of an approach to doing this, not incredibly detailed.
