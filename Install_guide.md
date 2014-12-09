@@ -23,7 +23,7 @@ Desktop client
 --------------
 If you're only interested in using the program and you use Windows, then you can use the latest one from the [releases on GitHub](https://github.com/Fleppensteyn/SE/releases).
 
-For other operating systems and when you plan to modify the code you're going to need a working environment for building including getting the requirements.
+For other operating systems and when you plan to modify the code you're going to need a working environment for building including getting the required libraries.
 
 A good place to start is getting the source code, either you have a supplied copy already or you can clone the repository on [GitHub](https://github.com/Fleppensteyn/SE).
 ```

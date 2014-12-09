@@ -1,0 +1,41 @@
+Assessment - Software Engineering Project 2014
+Koen Putman s1305557 - Group 8
+Curriculum Builder/Viewer for Henk Oppa
+
+Self Reflection
+
+I believe that I contributed a quite significant portion to the final product and functionality and set up many of the environments we used to program and test in.
+I might not be the best at using scrum, but I did keep track of many of the hours I spent on this as long as there was an appropriate task or backlog item to add time to.
+I set up a server, made accounts for people and created a base for the website.
+I implemented the communication between the client and server and handling that on both sides, picked appropriate libraries and technology to use, wrote guides on build environments and helped people set them up.
+I installed several VMs to test cross platform compatibility, worked around and adjusted for platform limitations and spent time on creating distributable binaries for our product.
+I also created the database structure for client and server side, filled that structure with data from the concept, wrote basic database wrappers and wrote code to generate and execute SQL queries.
+The nice visual representation of courses on the client side is also my work, I wrote displaying the course catalogue and I wrote a large part of dragging and dropping including researching, identifying, theorizing solutions for and working around most of the major issues involved with dragging and dropping across several UI elements.
+All in all, I picked libraries, checked cross-platform compatibility including setting everything up in several VMs and debugging compatibility, set up the base for the server-side, handled a lot of technical problems and workarounds for several difficult problems, created the databases and interaction with them, restructured and improved the building process and wrote guides for setting up a build environment.
+I might have forgotten about some parts, but I think I contributed enough to this project to warrant a passing grade albeit a low one.
+
+Peer reviews
+
+Hanjo Boekhout
+A lifesaver, handling so much of the client and UI design/creation so that I could work on some smaller issues that I enjoy dealing with, have more experience with and knowledge of.
+Also created the class diagram and handled most of the code commentary for the client.
+Also helped other group members when they needed it, which is always a plus. If anyone in group 8 were to pass this course it'd be Hanjo.
+
+Jacob Jonkman
+The only group member, apart from Hanjo and myself, to have an idea of the structure and contributed code to the client.
+Consistently delivered some work every sprint and handled a lot of the testing near the end of the project.
+Overall I'd call it a worthy contribution.
+
+Wouter Huijs
+Wrote almost all of the website code and certainly did his part for the final product.
+Having struggled with the client and not much of a contribution near the start I wasn't sure if he was going to end up contributing much, but he delivered.
+Definitely a worthy contribution.
+
+Eline Schuurmans
+Not much of a programming contribution, but she did create part of the site, a lot of the user manual and handled most of the graphic design for the website, the manual, icons and created the database UML.
+Suffered from having conflicting courses on her schedule and wasn't always able to do too much, but at the very least she spent time on it and delivered something for the final product.
+
+Axel Bijlsma
+I can say that he tried and put quite a lot of hours into learning things for this project, but he seems to be lacking practical programming experience on projects like this one.
+Picking something like that up over a short period of time with other courses in the background can be a nightmare if you want to do it properly, so it's an unfortunate situation.
+He did do testing near the end and created the requirements list, so his contributions are definitely not null.
